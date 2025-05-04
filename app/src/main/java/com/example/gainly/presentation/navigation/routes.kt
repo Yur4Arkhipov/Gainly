@@ -8,3 +8,9 @@ sealed class TopLevelRoutes {
     @Serializable object Data : TopLevelRoutes()
     @Serializable object Community : TopLevelRoutes()
 }
+
+@Serializable
+sealed class SubLevelRoutes {
+    @Serializable object Profile : SubLevelRoutes()
+    @Serializable object Auth : SubLevelRoutes()
+}

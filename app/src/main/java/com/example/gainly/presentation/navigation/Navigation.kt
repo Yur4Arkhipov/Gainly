@@ -16,6 +16,8 @@ import com.example.gainly.presentation.community.CommunityScreen
 import com.example.gainly.presentation.data.DataScreen
 import com.example.gainly.presentation.home.HomeScreen
 import com.example.gainly.presentation.navigation.models.TopLevelRoute
+import com.example.gainly.presentation.profile.ProfileScreen
+
 
 @Composable
 fun Navigation() {
@@ -41,9 +43,12 @@ fun Navigation() {
             startDestination = TopLevelRoutes.Home,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable<TopLevelRoutes.Home> { HomeScreen() }
+            composable<TopLevelRoutes.Home> {
+                HomeScreen(navController)
+            }
             composable<TopLevelRoutes.Data> { DataScreen() }
             composable<TopLevelRoutes.Community> { CommunityScreen() }
+            composable<SubLevelRoutes.Profile> { ProfileScreen() }
         }
     }
 }
