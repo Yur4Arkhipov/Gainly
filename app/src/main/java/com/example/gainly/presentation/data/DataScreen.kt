@@ -1,4 +1,4 @@
-package com.example.gainly
+package com.example.gainly.presentation.data
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -1,53 +1,21 @@
-package com.example.gainly.navigation
+package com.example.gainly.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.gainly.DataScreen
-import com.example.gainly.HomeScreen
-import kotlinx.serialization.Serializable
-
-data class TopLevelRoute(
-    val name: String,
-    val route: TopLevelRoutes,
-    val icon: ImageVector
-)
-
-@Serializable
-sealed class TopLevelRoutes {
-    @Serializable object Home : TopLevelRoutes()
-    @Serializable object Data : TopLevelRoutes()
-}
-
-@Composable
-fun BottomNavigation(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    routes: List<TopLevelRoute>
-) {
-    NavigationBar {
-        routes.forEach { route ->
-            NavigationBarItem(
-                icon = { Icon(route.icon, contentDescription = route.name) },
-                selected = false,
-                onClick = { navController.navigate(route.route) }
-            )
-        }
-    }
-}
+import com.example.gainly.presentation.community.CommunityScreen
+import com.example.gainly.presentation.data.DataScreen
+import com.example.gainly.presentation.home.HomeScreen
+import com.example.gainly.presentation.navigation.models.TopLevelRoute
 
 @Composable
 fun Navigation() {
@@ -56,6 +24,7 @@ fun Navigation() {
     val topLevelRoutes = listOf(
         TopLevelRoute("Home", TopLevelRoutes.Home, Icons.Default.Home),
         TopLevelRoute("Data", TopLevelRoutes.Data, Icons.Default.DateRange),
+        TopLevelRoute("Community", TopLevelRoutes.Community, Icons.Default.Person),
     )
 
     Scaffold(
@@ -74,6 +43,7 @@ fun Navigation() {
         ) {
             composable<TopLevelRoutes.Home> { HomeScreen() }
             composable<TopLevelRoutes.Data> { DataScreen() }
+            composable<TopLevelRoutes.Community> { CommunityScreen() }
         }
     }
 }

@@ -1,7 +1,7 @@
-package com.example.gainly.com.example.gainly
+package com.example.gainly
 
 import androidx.compose.runtime.Composable
-import com.example.gainly.navigation.Navigation
+import com.example.gainly.presentation.navigation.Navigation
 
 @Composable
 fun App() {

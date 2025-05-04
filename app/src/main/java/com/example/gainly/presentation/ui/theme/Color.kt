@@ -1,4 +1,4 @@
-package com.example.gainly.ui.theme
+package com.example.gainly.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
