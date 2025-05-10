@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.gainly.presentation.auth.login.LoginScreen
 import com.example.gainly.presentation.auth.register.RegisterScreen
-import com.example.gainly.presentation.community.CommunityScreen
 import com.example.gainly.presentation.data.DataScreen
 import com.example.gainly.presentation.home.HomeScreen
 import com.example.gainly.presentation.navigation.models.TopLevelRoute
@@ -45,7 +45,7 @@ fun Navigation() {
         ) {
             composable<TopLevelRoutes.Home> { HomeScreen(navController) }
             composable<TopLevelRoutes.Data> { DataScreen() }
-            composable<TopLevelRoutes.Community> { CommunityScreen() }
+            composable<TopLevelRoutes.Community> { LoginScreen() }
             composable<SubLevelRoutes.Profile> { ProfileWrapperScreen(navController) }
             composable<SubLevelRoutes.Register> { RegisterScreen() }
         }

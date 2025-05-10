@@ -1,7 +1,7 @@
 [versions]
 agp = "8.9.2"
 converterGsonVersion = "2.9.0"
-datastorePreferences = "1.0.0"
+datastorePreferences = "1.1.6"
 hiltAndroid = "2.56.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.1.20"
