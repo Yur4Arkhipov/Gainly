@@ -8,5 +8,5 @@ import androidx.compose.ui.Modifier
 fun ProfileScreen(
     modifier: Modifier = Modifier
 ) {
-    Text("CommunityScreen")
+    Text("ProfileScreen")
 }

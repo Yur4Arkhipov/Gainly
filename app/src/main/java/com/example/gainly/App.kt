@@ -1,9 +1,8 @@
 package com.example.gainly
 
-import androidx.compose.runtime.Composable
-import com.example.gainly.presentation.navigation.Navigation
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-@Composable
-fun App() {
-    Navigation()
-}
+
+@HiltAndroidApp
+class App: Application()

@@ -12,5 +12,5 @@ sealed class TopLevelRoutes {
 @Serializable
 sealed class SubLevelRoutes {
     @Serializable object Profile : SubLevelRoutes()
-    @Serializable object Auth : SubLevelRoutes()
+    @Serializable object Register : SubLevelRoutes()
 }
