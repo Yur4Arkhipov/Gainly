@@ -17,6 +17,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -32,7 +33,7 @@ class AuthViewModel @Inject constructor(
     val loginState: StateFlow<UiState<LoginResponseDto>> get() = _loginState
 
     private val _authError = MutableStateFlow<String?>(null)
-    val authError: StateFlow<String?> = _authError
+    /*val authError: StateFlow<String?> = _authError*/
 
     private val _isAuthenticated = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val isAuthenticated: StateFlow<AuthState> = _isAuthenticated
@@ -63,9 +64,7 @@ class AuthViewModel @Inject constructor(
                 tokenDataStore.saveTokens(loginResponse.accessToken, loginResponse.refreshToken)
                 _isAuthenticated.value = AuthState.Authenticated
             } catch (e: Exception) {
-                _loginState.value = UiState.Error("Login failed: ${e.message}")
-                _authError.value = "Login failed: ${e.message}"
-                _isAuthenticated.value = AuthState.Unauthenticated
+                handleError(e, "login")
             }
         }
     }
@@ -78,17 +77,39 @@ class AuthViewModel @Inject constructor(
                 _registerState.value = UiState.Success(registerResponse)
                 _isAuthenticated.value = AuthState.Authenticated
             } catch (e: Exception) {
-                _registerState.value = UiState.Error("Registration failed: ${e.message}")
-                _authError.value = "Registration failed: ${e.message}"
-                _isAuthenticated.value = AuthState.Unauthenticated
+                handleError(e, "registration")
             }
         }
     }
 
-    fun logout() {
+/*    fun logout() {
         viewModelScope.launch {
             tokenDataStore.clearTokens()
             _isAuthenticated.value = AuthState.Unauthenticated
         }
+    }*/
+
+    private fun handleError(e: Exception, action: String) {
+        val errorMessage = when(e) {
+            is HttpException -> {
+                val errorBody = e.response()?.errorBody()?.string()
+                _authError.value = "Http error: $errorBody"
+                if (action == "registration") "Registration failed: ${e.message}"
+                else "Login failed: ${e.message}"
+            }
+            else -> {
+                _authError.value = "Some error: ${e.message}"
+                if (action == "registration") "Registration failed: ${e.message}"
+                else "Login failed: ${e.message}"
+            }
+        }
+
+        if (action == "registration") {
+            _registerState.value = UiState.Error(errorMessage)
+        } else {
+            _loginState.value = UiState.Error(errorMessage)
+        }
+
+        _isAuthenticated.value = AuthState.Unauthenticated
     }
 }
