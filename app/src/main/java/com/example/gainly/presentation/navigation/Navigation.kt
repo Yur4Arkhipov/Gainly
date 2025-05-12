@@ -45,9 +45,10 @@ fun Navigation() {
         ) {
             composable<TopLevelRoutes.Home> { HomeScreen(navController) }
             composable<TopLevelRoutes.Data> { DataScreen() }
-            composable<TopLevelRoutes.Community> { LoginScreen() }
+            composable<TopLevelRoutes.Community> { LoginScreen(navController) }
             composable<SubLevelRoutes.Profile> { ProfileWrapperScreen(navController) }
             composable<SubLevelRoutes.Register> { RegisterScreen() }
+            composable<SubLevelRoutes.Login> { LoginScreen(navController) }
         }
     }
 }

@@ -47,7 +47,7 @@ fun AuthRequiredScreen(navController: NavController) {
         ) {
             Text("Для доступа к этому разделу необходимо авторизоваться.")
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = { navController.navigate(SubLevelRoutes.Register) }) {
+            Button(onClick = { navController.navigate(SubLevelRoutes.Login) }) {
                 Text("Войти / Зарегистрироваться")
             }
         }

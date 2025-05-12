@@ -1,7 +1,9 @@
 package com.example.gainly.presentation.auth.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,11 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.gainly.presentation.auth.UiState
 import com.example.gainly.presentation.auth.viewmodel.AuthViewModel
+import com.example.gainly.presentation.navigation.SubLevelRoutes
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
@@ -62,6 +67,13 @@ fun LoginScreen(
         ) {
             Text("Login")
         }
+        Row {
+            Text(text = "Нет аккаунта?")
+            Text(
+                text = "Зарегистрироваться",
+                modifier = modifier.clickable { navController.navigate(SubLevelRoutes.Register) }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -74,5 +86,8 @@ fun LoginScreen(
             )
             else -> Unit
         }
+
+        val errorState by viewModel.authError.collectAsState()
+        Text(errorState.toString())
     }
 }

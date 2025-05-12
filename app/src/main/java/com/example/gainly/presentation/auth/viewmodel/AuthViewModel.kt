@@ -33,7 +33,7 @@ class AuthViewModel @Inject constructor(
     val loginState: StateFlow<UiState<LoginResponseDto>> get() = _loginState
 
     private val _authError = MutableStateFlow<String?>(null)
-    /*val authError: StateFlow<String?> = _authError*/
+    val authError: StateFlow<String?> = _authError
 
     private val _isAuthenticated = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val isAuthenticated: StateFlow<AuthState> = _isAuthenticated
@@ -42,6 +42,9 @@ class AuthViewModel @Inject constructor(
     var password by mutableStateOf("")
 
     init {
+        viewModelScope.launch {
+            tokenDataStore.clearTokens()
+        }
         checkIfAuthenticated()
     }
 
