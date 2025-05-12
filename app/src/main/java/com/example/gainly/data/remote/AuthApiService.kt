@@ -20,4 +20,7 @@ interface AuthApiService {
         @Header("x-api-key") apiKey: String,
         @Body request: RegisterRequestDto
     ): RegisterResponseDto
+
+//    @POST("/api/auth/logout")
+
 }

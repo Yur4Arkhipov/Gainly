@@ -26,10 +26,13 @@ class AuthViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _registerState = MutableStateFlow<UiState<RegisterResponseDto>>(UiState.Idle)
-    val registerState: MutableStateFlow<UiState<RegisterResponseDto>> get() = _registerState
+    val registerState: StateFlow<UiState<RegisterResponseDto>> get() = _registerState
 
     private val _loginState = MutableStateFlow<UiState<LoginResponseDto>>(UiState.Idle)
-    val loginState: MutableStateFlow<UiState<LoginResponseDto>> get() = _loginState
+    val loginState: StateFlow<UiState<LoginResponseDto>> get() = _loginState
+
+    private val _authError = MutableStateFlow<String?>(null)
+    val authError: StateFlow<String?> = _authError
 
     private val _isAuthenticated = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val isAuthenticated: StateFlow<AuthState> = _isAuthenticated
@@ -61,7 +64,8 @@ class AuthViewModel @Inject constructor(
                 _isAuthenticated.value = AuthState.Authenticated
             } catch (e: Exception) {
                 _loginState.value = UiState.Error("Login failed: ${e.message}")
-                _isAuthenticated.value = AuthState.Error("Login failed: ${e.message}")
+                _authError.value = "Login failed: ${e.message}"
+                _isAuthenticated.value = AuthState.Unauthenticated
             }
         }
     }
@@ -75,7 +79,8 @@ class AuthViewModel @Inject constructor(
                 _isAuthenticated.value = AuthState.Authenticated
             } catch (e: Exception) {
                 _registerState.value = UiState.Error("Registration failed: ${e.message}")
-                _isAuthenticated.value = AuthState.Error("Login failed: ${e.message}")
+                _authError.value = "Registration failed: ${e.message}"
+                _isAuthenticated.value = AuthState.Unauthenticated
             }
         }
     }

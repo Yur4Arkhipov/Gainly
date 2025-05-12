@@ -19,7 +19,6 @@ fun ProfileWrapperScreen(
     when (authState) {
         is AuthState.Authenticated -> ProfileScreen()
         is AuthState.Unauthenticated -> AuthRequiredScreen(navController)
-        is AuthState.Error -> TODO()
     }
 }
 

@@ -68,10 +68,7 @@ fun RegisterScreen(
         when (authState) {
             is UiState.Loading -> CircularProgressIndicator()
             is UiState.Success -> Text("Registration successful!", color = Color.Green)
-            is UiState.Error -> Text(
-                (authState as UiState.Error).message,
-                color = Color.Red
-            )
+            is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
             else -> Unit
         }
     }
