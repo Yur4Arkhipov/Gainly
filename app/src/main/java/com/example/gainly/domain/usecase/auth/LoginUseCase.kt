@@ -1,4 +1,4 @@
-package com.example.gainly.domain.use_case
+package com.example.gainly.domain.usecase.auth
 
 import com.example.gainly.data.remote.dto.LoginResponseDto
 import com.example.gainly.domain.repository.AuthRepository

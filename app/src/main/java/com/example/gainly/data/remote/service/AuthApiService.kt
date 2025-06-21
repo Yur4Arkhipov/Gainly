@@ -1,4 +1,4 @@
-package com.example.gainly.data.remote
+package com.example.gainly.data.remote.service
 
 import com.example.gainly.data.remote.dto.LoginRequestDto
 import com.example.gainly.data.remote.dto.LoginResponseDto

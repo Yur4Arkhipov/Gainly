@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.gainly.data.remote.dto.LoginResponseDto
 import com.example.gainly.data.remote.dto.RegisterResponseDto
 import com.example.gainly.data.token.TokenDataStore
-import com.example.gainly.domain.use_case.LoginUseCase
-import com.example.gainly.domain.use_case.RegisterUseCase
+import com.example.gainly.domain.usecase.auth.LoginUseCase
+import com.example.gainly.domain.usecase.auth.RegisterUseCase
 import com.example.gainly.presentation.auth.AuthState
 import com.example.gainly.presentation.auth.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

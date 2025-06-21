@@ -1,6 +1,6 @@
 package com.example.gainly.di
 
-import com.example.gainly.data.remote.AuthApiService
+import com.example.gainly.data.remote.service.AuthApiService
 import com.example.gainly.data.repository.AuthRepositoryImpl
 import com.example.gainly.domain.repository.AuthRepository
 import dagger.Module

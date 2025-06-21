@@ -1,6 +1,6 @@
 package com.example.gainly.data.repository
 
-import com.example.gainly.data.remote.AuthApiService
+import com.example.gainly.data.remote.service.AuthApiService
 import com.example.gainly.data.remote.dto.LoginRequestDto
 import com.example.gainly.data.remote.dto.LoginResponseDto
 import com.example.gainly.data.remote.dto.RegisterRequestDto
