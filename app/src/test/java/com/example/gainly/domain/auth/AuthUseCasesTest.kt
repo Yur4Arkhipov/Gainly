@@ -25,7 +25,8 @@ class AuthUseCasesTest {
             val password = "123123"
             val expectedResponse = RegisterResponseDto(
                 accessToken = "abc",
-                refreshToken = "zxc"
+                refreshToken = "zxc",
+                userId = "1"
             )
 
             whenever(fakeRepository.register(email, password)).thenReturn(expectedResponse)
@@ -45,7 +46,7 @@ class AuthUseCasesTest {
             val expectedResponse = LoginResponseDto(
                 accessToken = "abc",
                 refreshToken = "zxc",
-                id = "1"
+                userId = "1"
             )
 
             whenever(fakeRepository.login(email, password)).thenReturn(expectedResponse)
