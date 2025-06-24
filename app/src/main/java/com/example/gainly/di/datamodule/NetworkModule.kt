@@ -1,4 +1,4 @@
-package com.example.gainly.di
+package com.example.gainly.di.datamodule
 
 import com.example.gainly.data.remote.service.AuthApiService
 import com.example.gainly.data.repository.AuthRepositoryImpl
