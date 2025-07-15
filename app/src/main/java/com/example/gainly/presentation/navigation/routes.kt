@@ -4,14 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class TopLevelRoutes {
-    @Serializable object Home : TopLevelRoutes()
-    @Serializable object Data : TopLevelRoutes()
-    @Serializable object Community : TopLevelRoutes()
+    @Serializable data object Home : TopLevelRoutes()
+    @Serializable data object Data : TopLevelRoutes()
+    @Serializable data object Community : TopLevelRoutes()
 }
 
 @Serializable
 sealed class SubLevelRoutes {
-    @Serializable object Profile : SubLevelRoutes()
-    @Serializable object Register : SubLevelRoutes()
-    @Serializable object Login : SubLevelRoutes()
+    @Serializable data object Profile : SubLevelRoutes()
+    @Serializable data object Register : SubLevelRoutes()
+    @Serializable data object Login : SubLevelRoutes()
 }
