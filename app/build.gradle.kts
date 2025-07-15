@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.gainly"
+    namespace = "com.jacqulin.gainly"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.gainly"
+        applicationId = "com.jacqulin.gainly"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
