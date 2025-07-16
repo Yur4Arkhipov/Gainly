@@ -28,11 +28,7 @@ class AuthManager @Inject constructor(
         .mapLatest { tokens ->
             when {
                 tokens == null -> AuthState.Unauthorized
-
-                tokenValidator.isAccessTokenValid(tokens.accessToken) -> {
-                    AuthState.Authorized
-                }
-
+                tokenValidator.isAccessTokenValid(tokens.accessToken) -> AuthState.Authorized
                 else -> {
                     try {
                         val newTokens = tokenRefresher.refreshToken(tokens.refreshToken)
@@ -48,7 +44,7 @@ class AuthManager @Inject constructor(
         .stateIn(
             scope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = AuthState.Unauthorized
+            initialValue = AuthState.Loading
         )
 }
 

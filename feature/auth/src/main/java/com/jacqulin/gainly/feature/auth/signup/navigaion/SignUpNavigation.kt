@@ -10,9 +10,6 @@ import kotlinx.serialization.Serializable
 data object SignUpRoute
 
 fun NavGraphBuilder.signUpNavigation(navController : NavHostController) {
-//    composable("signin_screen") {
-//        SignInScreen()
-//    }
     composable<SignUpRoute> {
         SignUpScreen(navController)
     }

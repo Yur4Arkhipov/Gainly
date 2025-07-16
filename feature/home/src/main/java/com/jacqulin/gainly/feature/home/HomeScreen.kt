@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
-import com.jacqulin.gainly.feature.home.navigation.HomeRoute
 
 @Composable
 fun HomeScreen(

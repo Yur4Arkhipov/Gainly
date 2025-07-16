@@ -35,7 +35,7 @@ class SignInViewModel @Inject constructor(
                 saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Неизвестная ошибка")
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
     }
