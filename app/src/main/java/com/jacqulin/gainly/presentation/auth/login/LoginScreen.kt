@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.auth.login
 
 import androidx.compose.foundation.clickable
@@ -90,4 +91,4 @@ fun LoginScreen(
         val errorState by viewModel.authError.collectAsState()
         Text(errorState.toString())
     }
-}
+}*/

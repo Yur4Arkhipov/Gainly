@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.navigation
 
 import androidx.compose.material3.Icon
@@ -22,4 +23,4 @@ fun BottomNavigation(
             )
         }
     }
-}
+}*/

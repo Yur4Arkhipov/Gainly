@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.profile
 
 import androidx.compose.material3.Text
@@ -10,3 +11,4 @@ fun ProfileScreen(
 ) {
     Text("ProfileScreen")
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.auth.register
 
 import androidx.compose.foundation.layout.Arrangement
@@ -74,3 +75,4 @@ fun RegisterScreen(
     }
 }
 
+*/

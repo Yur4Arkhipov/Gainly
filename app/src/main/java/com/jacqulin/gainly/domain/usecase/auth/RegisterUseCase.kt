@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.domain.usecase.auth
 
 import com.jacqulin.gainly.data.remote.dto.RegisterResponseDto
@@ -11,3 +12,4 @@ class RegisterUseCase @Inject constructor(
         return authRepository.register(email, password)
     }
 }
+*/

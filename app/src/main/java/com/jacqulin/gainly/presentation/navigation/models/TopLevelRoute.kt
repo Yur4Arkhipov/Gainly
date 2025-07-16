@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.navigation.models
 
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -8,3 +9,4 @@ data class TopLevelRoute(
     val route: TopLevelRoutes,
     val icon: ImageVector
 )
+*/

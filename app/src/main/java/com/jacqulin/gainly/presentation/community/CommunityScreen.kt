@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.community
 
 import androidx.compose.material3.Text
@@ -11,3 +12,4 @@ fun CommunityScreen(
     Text("CommunityScreen")
 }
 
+*/

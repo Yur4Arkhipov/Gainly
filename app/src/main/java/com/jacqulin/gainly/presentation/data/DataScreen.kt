@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.data
 
 import androidx.compose.material3.Text
@@ -12,4 +13,4 @@ fun DataScreen(
         text = "DataScreen",
         modifier = modifier
     )
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.auth.viewmodel
 
 import androidx.compose.runtime.getValue
@@ -85,12 +86,14 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+*/
 /*    fun logout() {
         viewModelScope.launch {
             tokenDataStore.clearTokens()
             _isAuthenticated.value = AuthState.Unauthenticated
         }
-    }*/
+    }*//*
+
 
     private fun handleError(e: Exception, action: String) {
         val errorMessage = when(e) {
@@ -115,4 +118,4 @@ class AuthViewModel @Inject constructor(
 
         _isAuthenticated.value = AuthState.Unauthenticated
     }
-}
+}*/

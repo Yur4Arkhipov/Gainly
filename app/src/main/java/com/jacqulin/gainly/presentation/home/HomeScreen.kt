@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.home
 
 import androidx.compose.foundation.layout.padding
@@ -50,4 +51,4 @@ fun HomeScreen(
     ) { innerPadding ->
         Text(text = "HomeScreen", modifier = Modifier.padding(innerPadding))
     }
-}
+}*/

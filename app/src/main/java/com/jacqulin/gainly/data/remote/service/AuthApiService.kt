@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.data.remote.service
 
 import com.jacqulin.gainly.data.remote.dto.LoginRequestDto
@@ -23,4 +24,4 @@ interface AuthApiService {
 
 //    @POST("/api/auth/logout")
 
-}
+}*/

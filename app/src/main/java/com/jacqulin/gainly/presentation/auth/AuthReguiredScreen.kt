@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.auth
 
 import androidx.compose.foundation.layout.Arrangement
@@ -53,3 +54,4 @@ fun AuthRequiredScreen(navController: NavController) {
         }
     }
 }
+*/

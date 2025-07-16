@@ -1,20 +1,27 @@
 [versions]
-agp = "8.9.2"
+agp = "8.9.3"
 converterGsonVersion = "2.9.0"
-datastorePreferences = "1.1.6"
-hiltAndroid = "2.56.1"
+datastorePreferences = "1.1.7"
+hiltAndroid = "2.56.2"
 hiltNavigationCompose = "1.2.0"
-kotlin = "2.1.20"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-kotlinxSerializationJson = "1.8.0"
-lifecycleRuntimeKtx = "2.8.7"
+kotlinxSerializationJson = "1.8.1"
+lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.04.01"
-navigationCompose = "2.8.9"
-retrofit = "2.9.0"
+composeBom = "2025.06.01"
+navigationCompose = "2.9.1"
+retrofit = "2.11.0"
+appcompat = "1.7.1"
+material = "1.12.0"
+ksp = "2.2.0-2.0.2"
+hilt = "2.56.2"
+kotlinSerialization = "2.2.0"
+appcompatVersion = "1.7.1"
+materialVersion = "1.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,9 +46,17 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGsonVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+#androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+#material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }

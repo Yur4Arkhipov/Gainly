@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.datamodule
 
 import com.jacqulin.gainly.data.remote.service.AuthApiService
@@ -32,3 +33,4 @@ class NetworkModule {
         return AuthRepositoryImpl(api)
     }
 }
+*/

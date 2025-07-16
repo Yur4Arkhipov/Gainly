@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.data.remote.dto
 
 data class RegisterResponseDto(
@@ -5,3 +6,4 @@ data class RegisterResponseDto(
     val refreshToken: String,
     val userId: String
 )
+*/

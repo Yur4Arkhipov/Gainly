@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.navigation
 
 import kotlinx.serialization.Serializable
@@ -14,4 +15,4 @@ sealed class SubLevelRoutes {
     @Serializable data object Profile : SubLevelRoutes()
     @Serializable data object Register : SubLevelRoutes()
     @Serializable data object Login : SubLevelRoutes()
-}
+}*/

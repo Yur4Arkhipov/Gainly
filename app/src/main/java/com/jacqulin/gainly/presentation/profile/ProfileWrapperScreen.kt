@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.profile
 
 import androidx.compose.runtime.Composable
@@ -22,3 +23,4 @@ fun ProfileWrapperScreen(
     }
 }
 
+*/

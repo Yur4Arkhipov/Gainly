@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.presentation.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,3 +53,4 @@ fun Navigation() {
         }
     }
 }
+*/

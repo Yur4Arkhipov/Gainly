@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.data.repository
 
 import com.jacqulin.gainly.data.remote.service.AuthApiService
@@ -27,3 +28,4 @@ class AuthRepositoryImpl @Inject constructor(private val api: AuthApiService): A
         return response
     }
 }
+*/
