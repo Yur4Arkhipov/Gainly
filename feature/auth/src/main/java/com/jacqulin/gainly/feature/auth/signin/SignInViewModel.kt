@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.data.auth.TokenDataStore
-import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.AuthData
+import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
-    private val tokenDataStore: TokenDataStore
+//    private val tokenDataStore: TokenDataStore
+    private val saveTokensUseCase: SaveTokensUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
@@ -34,7 +35,8 @@ class SignInViewModel @Inject constructor(
             try {
                 val result = signInUseCase(email, password)
 //                tokenStorage.saveToken(result)
-                tokenDataStore.saveTokens(result)
+//                tokenDataStore.saveTokens(result)
+                saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Неизвестная ошибка")

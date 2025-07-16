@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.core.data.usecase
+package com.jacqulin.gainly.core.data.usecase.auth
 
 import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
