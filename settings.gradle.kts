@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Gainly"
+rootProject.name = "gainly"
 include(":app")
 include(":feature:auth")
 include(":core")
