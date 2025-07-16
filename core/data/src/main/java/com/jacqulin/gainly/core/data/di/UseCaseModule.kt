@@ -1,8 +1,10 @@
 package com.jacqulin.gainly.core.data.di
 
 import com.jacqulin.gainly.core.data.usecase.SignInUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,4 +24,9 @@ object UseCaseModule {
 //    abstract fun provideSignInUseCase(
 //        impl: SignInUseCaseImpl
 //    ): SignInUseCase
+
+    @Provides
+    fun provideSignUpUseCase(repository: AuthRepository) : SignUpUseCase {
+        return SignUpUseCaseImpl(repository)
+    }
 }

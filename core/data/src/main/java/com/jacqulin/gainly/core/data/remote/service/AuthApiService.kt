@@ -13,11 +13,11 @@ interface AuthApiService {
         @Body request: AuthRequestDto
     ): AuthData
 
-//    @POST("/api/auth/register")
-//    suspend fun register(
-//        @Header("x-api-key") apiKey: String,
-//        @Body request: AuthRequestDto
-//    ): AuthData
+    @POST("/api/auth/register")
+    suspend fun register(
+        @Header("x-api-key") apiKey: String,
+        @Body request: AuthRequestDto
+    ): AuthData
 
 //    @POST("/api/auth/logout")
 

@@ -56,18 +56,4 @@ dependencies {
 
     // Compose navigation
     implementation(libs.androidx.navigation.compose)
-
-/*    implementation libs.activity.compose
-    implementation libs.compose.material
-    implementation libs.hilt.android
-    implementation libs.hilt.common
-    kapt libs.dagger.hilt.compiler
-    kapt libs.hilt.compiler
-    implementation libs.hilt.work
-    implementation libs.hilt.navigation.compose
-    implementation libs.accompanist.swiperefresh
-    implementation libs.firebase.auth
-    implementation(project(":core:domain"))
-    implementation(project(":core:util"))
-    implementation(project(":core:ui"))*/
 }

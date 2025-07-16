@@ -19,55 +19,56 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jacqulin.gainly.core.util.UiState
 
 @Composable
-fun RegisterScreen(
+fun SignUpScreen(
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
-//    val authState by viewModel.registerState.collectAsState()
-//
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        TextField(
-//            value = viewModel.email,
-//            onValueChange = { viewModel.email = it },
-//            label = { Text("Email") },
-//            singleLine = true,
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//        Spacer(modifier = Modifier.height(8.dp))
-//
-//        TextField(
-//            value = viewModel.password,
-//            onValueChange = { viewModel.password = it },
-//            label = { Text("Password") },
-//            singleLine = true,
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        Button(
-//            onClick = { viewModel.register() },
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Register")
-//        }
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        when (authState) {
-//            is UiState.Loading -> CircularProgressIndicator()
-//            is UiState.Success -> Text("Registration successful!", color = Color.Green)
-//            is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
-//            else -> Unit
-//        }
-//    }
+    val authState by viewModel.uiState.collectAsState()
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            value = viewModel.login,
+            onValueChange = { viewModel.login = it },
+            label = { Text("Login") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextField(
+            value = viewModel.password,
+            onValueChange = { viewModel.password = it },
+            label = { Text("Password") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { viewModel.signUp(email = viewModel.login, password = viewModel.password) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Register")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when (authState) {
+            is UiState.Loading -> CircularProgressIndicator()
+            is UiState.Success -> Text("Registration successful!", color = Color.Green)
+            is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
+            else -> Unit
+        }
+    }
 }

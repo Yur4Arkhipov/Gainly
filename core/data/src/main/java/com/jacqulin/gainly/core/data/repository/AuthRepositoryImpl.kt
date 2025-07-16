@@ -19,5 +19,12 @@ class AuthRepositoryImpl @Inject constructor(
         return response
     }
 
-    // TODO: signUp
+    override suspend fun signUp(
+        email: String,
+        password: String
+    ): AuthData {
+        val request = AuthRequestDto(email, password)
+        val response = api.register(apiKey = "your-super-secret-api-key", request = request)
+        return response
+    }
 }
