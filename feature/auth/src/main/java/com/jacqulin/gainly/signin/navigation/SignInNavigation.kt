@@ -14,6 +14,6 @@ fun NavGraphBuilder.signInNavigation(navController : NavHostController) {
 //        SignInScreen()
 //    }
     composable<SignInRoute> {
-//        SignInScreen()
+        SignInScreen(navController)
     }
 }

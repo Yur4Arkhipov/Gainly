@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.jacqulin.gainly.navigation.AppNavGraph
 import com.jacqulin.gainly.presentation.ui.theme.GainlyTheme
-import com.jacqulin.gainly.signin.SignInScreen
-import com.jacqulin.gainly.signup.SignUpScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,8 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GainlyTheme {
-//                SignUpScreen()
-                SignInScreen()
+                AppNavGraph()
             }
         }
     }

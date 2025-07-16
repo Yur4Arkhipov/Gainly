@@ -23,10 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.signup.navigaion.SignUpRoute
 
 @Composable
 fun SignInScreen(
-//    navController: NavController,
+    navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
@@ -65,13 +66,13 @@ fun SignInScreen(
         ) {
             Text("Login")
         }
-//        Row {
-//            Text(text = "Нет аккаунта?")
-//            Text(
-//                text = "Зарегистрироваться",
-//                modifier = modifier.clickable { navController.navigate(SubLevelRoutes.Register) }
-//            )
-//        }
+        Row {
+            Text(text = "Нет аккаунта?")
+            Text(
+                text = "Зарегистрироваться",
+                modifier = modifier.clickable { navController.navigate(SignUpRoute) }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
