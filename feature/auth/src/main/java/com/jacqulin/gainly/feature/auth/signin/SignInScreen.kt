@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.feature.auth.signin
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val authState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = modifier
@@ -76,17 +77,14 @@ fun SignInScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when (authState) {
+        when (uiState) {
             is UiState.Loading -> CircularProgressIndicator()
             is UiState.Success -> Text("Login successful!", color = Color.Green)
             is UiState.Error -> Text(
-                (authState as UiState.Error).message,
+                (uiState as UiState.Error).message,
                 color = Color.Red
             )
             else -> Unit
         }
-
-//        val errorState by viewModel.authError.collectAsState()
-//        Text(errorState.toString())
     }
 }

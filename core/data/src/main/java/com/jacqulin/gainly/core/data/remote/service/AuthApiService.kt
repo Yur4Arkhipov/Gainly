@@ -1,7 +1,9 @@
 package com.jacqulin.gainly.core.data.remote.service
 
 import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -19,6 +21,9 @@ interface AuthApiService {
         @Body request: AuthRequestDto
     ): AuthData
 
-//    @POST("/api/auth/logout")
-
+    @POST("/api/auth/refresh")
+    suspend fun refresh(
+        @Header("x-api-key") apiKey: String,
+        @Body request: RefreshTokenDto
+    ): AuthData
 }

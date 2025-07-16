@@ -47,4 +47,7 @@ dependencies {
 
     //Datastore
     implementation(libs.androidx.datastore.preferences)
+
+    // For jwt token decode
+    implementation(libs.jwtdecode)
 }

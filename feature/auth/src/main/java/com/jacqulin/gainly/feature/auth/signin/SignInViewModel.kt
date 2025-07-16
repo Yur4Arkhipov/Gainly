@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.data.auth.TokenDataStore
 import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
@@ -19,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
-//    private val tokenDataStore: TokenDataStore
     private val saveTokensUseCase: SaveTokensUseCase
 ) : ViewModel() {
 
@@ -34,8 +32,6 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = signInUseCase(email, password)
-//                tokenStorage.saveToken(result)
-//                tokenDataStore.saveTokens(result)
                 saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
