@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.signup
+package com.jacqulin.gainly.feature.auth.signup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

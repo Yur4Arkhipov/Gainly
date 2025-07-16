@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.signin
+package com.jacqulin.gainly.feature.auth.signup
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.signup.navigaion.SignUpRoute
+import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
 
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: SignInViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val authState by viewModel.uiState.collectAsState()
 
@@ -41,9 +41,9 @@ fun SignInScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.email = it },
-            label = { Text("Email") },
+            value = viewModel.login,
+            onValueChange = { viewModel.login = it },
+            label = { Text("Login") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -61,16 +61,17 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.signIn(email = viewModel.email, password = viewModel.password) },
+            onClick = { viewModel.signUp(email = viewModel.login, password = viewModel.password) },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Login")
+            Text("Register")
         }
+
         Row {
-            Text(text = "Нет аккаунта?")
+            Text(text = "Есть аккаунта?")
             Text(
-                text = "Зарегистрироваться",
-                modifier = modifier.clickable { navController.navigate(SignUpRoute) }
+                text = "Войти",
+                modifier = modifier.clickable { navController.navigate(SignInRoute) }
             )
         }
 
@@ -78,15 +79,9 @@ fun SignInScreen(
 
         when (authState) {
             is UiState.Loading -> CircularProgressIndicator()
-            is UiState.Success -> Text("Login successful!", color = Color.Green)
-            is UiState.Error -> Text(
-                (authState as UiState.Error).message,
-                color = Color.Red
-            )
+            is UiState.Success -> Text("Registration successful!", color = Color.Green)
+            is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
             else -> Unit
         }
-
-//        val errorState by viewModel.authError.collectAsState()
-//        Text(errorState.toString())
     }
 }

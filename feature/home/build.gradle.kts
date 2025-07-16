@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jacqulin.gainly.feature.auth"
+    namespace = "com.jacqulin.gainly.feature.home"
     compileSdk = 35
 
     defaultConfig {
@@ -38,8 +38,9 @@ android {
 
 dependencies {
 
-    implementation(project(":core:util"))
-    implementation(project(":core:domain"))
+//    implementation(project(":core:util"))
+//    implementation((project(":core:domain")))
+    implementation(project(":feature:auth"))
     implementation(project(":core:data")) // временно
 
     implementation(libs.androidx.core.ktx)

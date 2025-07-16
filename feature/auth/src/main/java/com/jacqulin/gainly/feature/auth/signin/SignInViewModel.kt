@@ -1,10 +1,12 @@
-package com.jacqulin.gainly.signin
+package com.jacqulin.gainly.feature.auth.signin
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.gainly.core.data.auth.TokenDataStore
+import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.util.UiState
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
@@ -30,6 +33,8 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = signInUseCase(email, password)
+//                tokenStorage.saveToken(result)
+                tokenDataStore.saveTokens(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Неизвестная ошибка")
@@ -37,33 +42,3 @@ class SignInViewModel @Inject constructor(
         }
     }
 }
-
-//@HiltViewModel
-//class SignInViewModel @Inject constructor(
-//    private val signInUseCase: SignInUseCase
-//) : ViewModel() {
-//
-//    // Для состояния экрана
-//    private val _state = MutableStateFlow<UiState<Response>>(UiState.Idle)
-//    val state: StateFlow<UiState<AuthResult>> get() = _state
-//
-//    // Для одноразовых событий
-//    private val _events = MutableSharedFlow<SignInEvent>()
-//    val events = _events.asSharedFlow()
-//
-//    fun signIn(email: String, password: String) = viewModelScope.launch {
-//        _state.value = UiState.Loading
-//        signInUseCase(email, password).collect { response ->
-//            when (response) {
-//                is Response.Success -> {
-//                    _state.value = UiState.Success(response.data)
-//                    _events.emit(SignInEvent.NavigateToHome)
-//                }
-//                is Response.Error -> {
-//                    _state.value = UiState.Error(response.message)
-//                    _events.emit(SignInEvent.ShowToast(response.message))
-//                }
-//            }
-//        }
-//    }
-//}

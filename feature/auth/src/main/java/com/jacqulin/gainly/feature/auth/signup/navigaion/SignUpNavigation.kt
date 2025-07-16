@@ -1,9 +1,9 @@
-package com.jacqulin.gainly.signup.navigaion
+package com.jacqulin.gainly.feature.auth.signup.navigaion
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.jacqulin.gainly.signup.SignUpScreen
+import com.jacqulin.gainly.feature.auth.signup.SignUpScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

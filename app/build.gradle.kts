@@ -45,8 +45,11 @@ android {
 dependencies {
 
     implementation(project(":feature:auth"))
+    implementation(project(":feature:home"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
+    implementation(project(":core:util"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

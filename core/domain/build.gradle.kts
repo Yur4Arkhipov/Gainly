@@ -34,5 +34,7 @@ android {
 
 dependencies {
 
-    implementation(project(":core:util"))
+    implementation(project(":core:util")) // TODO: for Response in the future
+
+    implementation(libs.kotlinx.coroutines.android)
 }

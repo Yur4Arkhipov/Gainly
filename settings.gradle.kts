@@ -20,9 +20,12 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "gainly"
+
 include(":app")
+
 include(":feature:auth")
-include(":core")
+include(":feature:home")
+
 include(":core:util")
 include(":core:domain")
 include(":core:data")
