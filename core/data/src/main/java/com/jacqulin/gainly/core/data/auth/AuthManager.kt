@@ -29,7 +29,7 @@ class AuthManager @Inject constructor(
      *  Maplatest is used because only the latest changes have weight
      *
      *  In StateIn - Flow transforms into StateFlow, it works after subscribers leaving for 5s
-     *  SupervisorJob for future /if you need ro run more one coroutine
+     *  SupervisorJob for future if you need ro run more one coroutine
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     val authState: StateFlow<AuthState> = tokenStorage.tokens
