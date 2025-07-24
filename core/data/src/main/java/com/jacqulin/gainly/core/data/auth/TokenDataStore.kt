@@ -10,7 +10,6 @@ import com.jacqulin.gainly.core.domain.model.AuthData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class TokenDataStore @Inject constructor(
@@ -28,20 +27,6 @@ class TokenDataStore @Inject constructor(
                 preferences[TokenKeys.USER_ID] = authData.id
             }
             Log.d("TokenDataStore", "Tokens saved successfully")
-
-            context.dataStore.edit { preferences ->
-                preferences[TokenKeys.ACCESS_TOKEN] = authData.accessToken
-                preferences[TokenKeys.REFRESH_TOKEN] = authData.refreshToken
-                preferences[TokenKeys.USER_ID] = authData.id
-            }.also {
-                // Читаем обратно для проверки
-                context.dataStore.data.first().let { savedPrefs ->
-                    Log.d("TokenDataStore", "Saved values: " +
-                            "accessToken=${savedPrefs[TokenKeys.ACCESS_TOKEN]}, " +
-                            "refreshToken=${savedPrefs[TokenKeys.REFRESH_TOKEN]}, " +
-                            "userId=${savedPrefs[TokenKeys.USER_ID]}")
-                }
-            }
         } catch (e: Exception) {
             Log.e("TokenDataStore", "Error saving tokens: ${e.message}", e)
         }

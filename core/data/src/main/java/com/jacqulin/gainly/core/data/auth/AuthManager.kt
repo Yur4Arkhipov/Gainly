@@ -15,7 +15,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.mapLatest
 
-
+/**
+ * The class is designed to obtain an authorization state
+ */
 @Singleton
 class AuthManager @Inject constructor(
     private val tokenStorage: TokenStorage,
@@ -23,6 +25,12 @@ class AuthManager @Inject constructor(
     private val tokenRefresher: TokenRefresher
 ) {
 
+    /**
+     *  Maplatest is used because only the latest changes have weight
+     *
+     *  In StateIn - Flow transforms into StateFlow, it works after subscribers leaving for 5s
+     *  SupervisorJob for future /if you need ro run more one coroutine
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     val authState: StateFlow<AuthState> = tokenStorage.tokens
         .mapLatest { tokens ->
