@@ -4,32 +4,40 @@ converterGsonVersion = "2.9.0"
 datastorePreferences = "1.1.7"
 hiltAndroid = "2.56.2"
 hiltNavigationCompose = "1.2.0"
+extJunit = "1.2.1"
 jwtdecode = "2.0.2"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
+junit4 = "4.13.2"
 espressoCore = "3.6.1"
 kotlinxCoroutinesAndroid = "1.10.2"
+kotlinxCoroutinesTest = "1.10.1"
 kotlinxSerializationJson = "1.8.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2025.06.01"
+mockitoCore = "5.11.0"
 navigationCompose = "2.9.1"
 retrofit = "2.11.0"
 ksp = "2.2.0-2.0.2"
 hilt = "2.56.2"
 kotlinSerialization = "2.2.0"
+androidxTestRules = "1.6.1"
+androidxTestCore = "1.6.1"
+androidxTestRunner = "1.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTestRules" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "extJunit" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -43,7 +51,9 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 jwtdecode = { module = "com.auth0.android:jwtdecode", version.ref = "jwtdecode" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGsonVersion" }
 

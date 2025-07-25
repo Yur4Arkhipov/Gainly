@@ -13,16 +13,11 @@ android {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
     compileOptions {
@@ -48,6 +43,15 @@ dependencies {
     //Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    // For jwt token decode
-    implementation(libs.jwtdecode)
+    implementation(libs.jwtdecode) // for jwt token decode
+
+    testImplementation(libs.junit4)
+    testImplementation(libs.mockito.core) // for mock usecases
+    testImplementation(libs.kotlinx.coroutines.test) // for runTest()
+
+    androidTestImplementation(libs.androidx.test.rules)  // this two for instrumented test
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.core)   // for provide app context
+    androidTestImplementation(libs.kotlinx.coroutines.test) // for runTest()
+    androidTestImplementation(libs.androidx.test.ext.junit) // for assertEquals()
 }
