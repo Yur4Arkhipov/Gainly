@@ -11,10 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +38,8 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val authState by viewModel.uiState.collectAsState()
+
+    var emailConfirmState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -55,12 +62,30 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { viewModel.signUp(login = viewModel.login, password = viewModel.password) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Register")
+        if (!emailConfirmState) {
+            Button(
+                onClick = { emailConfirmState = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Register")
+            }
+        } else {
+            OutlinedTextField(
+                value = viewModel.confirmCode,
+                onValueChange = { viewModel.confirmCode = it },
+                label = { Text("Code") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {  },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Confirm")
+            }
         }
+
 
         Row {
             Text(text = "Есть аккаунта?")

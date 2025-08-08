@@ -26,6 +26,7 @@ class SignUpViewModel @Inject constructor(
 
     var login by mutableStateOf("")
     var password by mutableStateOf("")
+    var confirmCode by mutableStateOf("")
 
     fun signUp(login: String, password: String) {
         _uiState.value = UiState.Loading
@@ -38,5 +39,9 @@ class SignUpViewModel @Inject constructor(
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
+    }
+
+    fun confirmEmail() {
+        TODO()
     }
 }
