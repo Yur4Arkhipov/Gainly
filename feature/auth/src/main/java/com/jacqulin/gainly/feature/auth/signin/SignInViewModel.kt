@@ -24,14 +24,14 @@ class SignInViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
     val uiState: StateFlow<UiState<AuthData>> = _uiState
 
-    var email by mutableStateOf("")
+    var login by mutableStateOf("")
     var password by mutableStateOf("")
 
-    fun signIn(email: String, password: String) {
+    fun signIn(login: String, password: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val result = signInUseCase(email, password)
+                val result = signInUseCase(login, password)
                 saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {

@@ -27,11 +27,11 @@ class SignUpViewModel @Inject constructor(
     var login by mutableStateOf("")
     var password by mutableStateOf("")
 
-    fun signUp(email: String, password: String) {
+    fun signUp(login: String, password: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val result = signUpUseCase(email, password)
+                val result = signUpUseCase(login, password)
                 saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)
             } catch (e: Exception) {
