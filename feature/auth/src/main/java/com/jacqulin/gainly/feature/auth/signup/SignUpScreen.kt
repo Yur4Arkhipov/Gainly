@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.auth.LoginTextField
+import com.jacqulin.gainly.core.util.auth.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
 
 @Composable
@@ -33,6 +39,8 @@ fun SignUpScreen(
 ) {
     val authState by viewModel.uiState.collectAsState()
 
+    var emailConfirmState by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -40,32 +48,44 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            value = viewModel.login,
-            onValueChange = { viewModel.login = it },
-            label = { Text("Login") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        LoginTextField(
+            login = viewModel.login,
+            onLoginChange = { viewModel.login = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        PasswordTextField(
+            password = viewModel.password,
+            onPasswordChange = { viewModel.password = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { viewModel.signUp(email = viewModel.login, password = viewModel.password) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Register")
+        if (!emailConfirmState) {
+            Button(
+                onClick = { emailConfirmState = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Register")
+            }
+        } else {
+            OutlinedTextField(
+                value = viewModel.confirmCode,
+                onValueChange = { viewModel.confirmCode = it },
+                label = { Text("Code") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {  },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Confirm")
+            }
         }
+
 
         Row {
             Text(text = "Есть аккаунта?")

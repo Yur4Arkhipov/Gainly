@@ -46,6 +46,7 @@ dependencies {
 
     implementation(project(":feature:auth"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:onboarding"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":core:util"))
@@ -81,6 +82,9 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
+
+    // splash screen for onboarding
+    implementation(libs.androidx.core.splashscreen)
 
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.7.0")
