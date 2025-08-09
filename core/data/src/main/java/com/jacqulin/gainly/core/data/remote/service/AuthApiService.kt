@@ -4,8 +4,10 @@ import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface AuthApiService {
     @POST("/api/auth/login")
@@ -25,4 +27,10 @@ interface AuthApiService {
         @Header("x-api-key") apiKey: String,
         @Body request: RefreshTokenDto
     ): AuthData
+
+    @GET("/api/auth/email_code/{email}")
+    suspend fun getConfirmationCode(
+        @Header("x-api-key") apiKey: String,
+        @Path("email") email: String
+    ): Int
 }

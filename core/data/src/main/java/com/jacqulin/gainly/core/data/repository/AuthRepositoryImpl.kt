@@ -27,4 +27,9 @@ class AuthRepositoryImpl @Inject constructor(
         val response = api.register(apiKey = "your-super-secret-api-key", request = request)
         return response
     }
+
+    override suspend fun getConfirmationCode(email: String): Int {
+        val response = api.getConfirmationCode(apiKey = "your-super-secret-api-key", email = email)
+        return response
+    }
 }

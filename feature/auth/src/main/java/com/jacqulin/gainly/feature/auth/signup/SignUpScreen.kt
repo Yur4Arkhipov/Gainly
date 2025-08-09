@@ -13,7 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,7 +37,6 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val authState by viewModel.uiState.collectAsState()
-
     var emailConfirmState by remember { mutableStateOf(false) }
 
     Column(
@@ -49,8 +47,8 @@ fun SignUpScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoginTextField(
-            login = viewModel.login,
-            onLoginChange = { viewModel.login = it }
+            login = viewModel.email,
+            onLoginChange = { viewModel.email = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -64,41 +62,51 @@ fun SignUpScreen(
 
         if (!emailConfirmState) {
             Button(
-                onClick = { emailConfirmState = true },
-                modifier = Modifier.fillMaxWidth()
+                onClick = {
+                    viewModel.requestConfirmationCode()
+                    emailConfirmState = true
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
             ) {
-                Text("Register")
+                Text("Get code")
             }
         } else {
+            Text("Check your email for confirmation code")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
-                value = viewModel.confirmCode,
-                onValueChange = { viewModel.confirmCode = it },
-                label = { Text("Code") },
+                value = viewModel.userEnteredCode,
+                onValueChange = { viewModel.userEnteredCode = it },
+                label = { Text("Code confirmation") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Button(
-                onClick = {  },
+                onClick = { viewModel.confirmAndSignUp() },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Confirm")
+                Text("Complete registration")
             }
         }
 
-
-        Row {
-            Text(text = "Есть аккаунта?")
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Already have an account?")
             Text(
-                text = "Войти",
+                text = "Login",
                 modifier = modifier.clickable { navController.navigate(SignInRoute) }
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         when (authState) {
-            is UiState.Loading -> CircularProgressIndicator()
+            is UiState.Loading -> {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+            }
             is UiState.Success -> Text("Registration successful!", color = Color.Green)
             is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
             else -> Unit
