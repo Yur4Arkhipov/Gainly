@@ -2,6 +2,7 @@ package com.jacqulin.gainly.feature.auth.signup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,13 +31,20 @@ class SignUpViewModel @Inject constructor(
     var password by mutableStateOf("")
     var userEnteredCode by mutableStateOf("")
     var serverConfirmationCode by mutableStateOf<String?>(null)
+    var emailConfirmState by mutableStateOf(false)
 
     fun requestConfirmationCode() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             try {
                 serverConfirmationCode = getConfirmationCodeUseCase(email)
-                _uiState.value = UiState.Idle
+                val pattern = Regex("^\\d{5}\$")
+                if (!pattern.matches(serverConfirmationCode.toString())) {
+                    _uiState.value = UiState.Error(serverConfirmationCode.toString())
+                } else {
+                    emailConfirmState = true
+                    _uiState.value = UiState.Idle
+                }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Failed to get confirmation code")
             }
@@ -56,7 +64,6 @@ class SignUpViewModel @Inject constructor(
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                // не забыть про git stash сделанный в sandbox
                 val result = signUpUseCase(email, password)
                 saveTokensUseCase(result)
                 _uiState.value = UiState.Success(result)

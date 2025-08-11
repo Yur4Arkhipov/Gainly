@@ -37,7 +37,6 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val authState by viewModel.uiState.collectAsState()
-    var emailConfirmState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -60,12 +59,9 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (!emailConfirmState) {
+        if (!viewModel.emailConfirmState) {
             Button(
-                onClick = {
-                    viewModel.requestConfirmationCode()
-                    emailConfirmState = true
-                },
+                onClick = { viewModel.requestConfirmationCode() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
             ) {

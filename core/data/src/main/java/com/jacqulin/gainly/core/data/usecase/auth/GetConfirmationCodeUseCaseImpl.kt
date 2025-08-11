@@ -8,6 +8,6 @@ class GetConfirmationCodeUseCaseImpl @Inject constructor(
     private val authRepository: AuthRepository
 ) : GetConfirmationCodeUseCase {
     override suspend fun invoke(email: String): String {
-        return authRepository.getConfirmationCode(email).toString()
+        return authRepository.getConfirmationCode(email)
     }
 }
