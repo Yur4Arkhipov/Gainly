@@ -9,5 +9,5 @@ interface AuthRepository {
 
     suspend fun signIn(email: String, password: String): AuthData
     suspend fun signUp(email: String, password: String): AuthData
-    suspend fun getConfirmationCode(email: String): Int
+    suspend fun getConfirmationCode(email: String): String
 }

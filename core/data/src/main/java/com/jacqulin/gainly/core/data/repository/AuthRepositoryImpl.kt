@@ -28,8 +28,16 @@ class AuthRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun getConfirmationCode(email: String): Int {
+    override suspend fun getConfirmationCode(email: String): String {
         val response = api.getConfirmationCode(apiKey = "your-super-secret-api-key", email = email)
-        return response
+        return when {
+            response.isSuccessful -> {
+                val code = response.body()
+                code?.toString() ?: "Empty answer from server"
+            }
+            else -> {
+                response.errorBody()?.string() ?: "Unknown error"
+            }
+        }
     }
 }
