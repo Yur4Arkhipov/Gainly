@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object ProfileRoute
 
-fun NavGraphBuilder.homeNavigation(navController : NavHostController) {
+fun NavGraphBuilder.profileNavigation(navController : NavHostController) {
     composable<ProfileRoute> {
         ProfileScreen(navController)
     }

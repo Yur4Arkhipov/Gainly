@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object FriendsRoute
 
-fun NavGraphBuilder.homeNavigation(navController : NavHostController) {
+fun NavGraphBuilder.friendsNavigation(navController : NavHostController) {
     composable<FriendsRoute> {
         FriendsScreen(navController)
     }
