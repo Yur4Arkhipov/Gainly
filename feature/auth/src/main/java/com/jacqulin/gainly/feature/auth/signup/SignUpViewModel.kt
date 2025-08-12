@@ -2,7 +2,6 @@ package com.jacqulin.gainly.feature.auth.signup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +9,8 @@ import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.GetConfirmationCodeUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
+import com.jacqulin.gainly.core.util.AuthError
+import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,12 +64,21 @@ class SignUpViewModel @Inject constructor(
         }
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            try {
-                val result = signUpUseCase(email, password)
-                saveTokensUseCase(result)
-                _uiState.value = UiState.Success(result)
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Registration failed")
+            when (val result = signUpUseCase(email, password)) {
+                is Result.Success -> {
+                    saveTokensUseCase(result.data)
+                    _uiState.value = UiState.Success(result.data)
+                }
+                is Result.Error -> {
+                    val message = when (result.error) {
+                        AuthError.Network.NO_INTERNET -> "No network connection"
+                        AuthError.Network.UNAUTHORIZED -> ""
+                        AuthError.Network.REQUEST_TIMEOUT -> ""
+                        AuthError.UnknownError -> "Unknown error"
+                        else -> "Something went wrong in signUpViewModel"
+                    }
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
     }

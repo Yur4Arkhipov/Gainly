@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.core.util.auth.LoginTextField
-import com.jacqulin.gainly.core.util.auth.PasswordTextField
+import com.jacqulin.gainly.core.util.auth.components.LoginTextField
+import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signup.navigaion.SignUpRoute
 
 @Composable

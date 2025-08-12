@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.core.util.auth
+package com.jacqulin.gainly.core.util.auth.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
