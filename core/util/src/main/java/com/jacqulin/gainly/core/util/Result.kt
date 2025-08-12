@@ -1,7 +1,5 @@
 package com.jacqulin.gainly.core.util
 
-import com.jacqulin.gainly.core.util.Error
-
 typealias RootError = Error
 
 sealed interface Result<out D, out E: RootError> {

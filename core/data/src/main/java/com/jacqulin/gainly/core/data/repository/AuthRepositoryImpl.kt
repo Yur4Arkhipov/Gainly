@@ -8,6 +8,9 @@ import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
 import jakarta.inject.Inject
 import retrofit2.HttpException
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService
@@ -25,6 +28,12 @@ class AuthRepositoryImpl @Inject constructor(
             when (e.code()) {
                 401 -> Result.Error(AuthError.Network.UNAUTHORIZED)
                 408 -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
+            }
+        } catch (e: IOException) {
+            when (e) {
+                is UnknownHostException -> Result.Error(AuthError.Network.NO_INTERNET)
+                is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
         } catch (e: Exception) {
@@ -46,10 +55,15 @@ class AuthRepositoryImpl @Inject constructor(
                 408 -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
+        } catch (e: IOException) {
+            when (e) {
+                is UnknownHostException -> Result.Error(AuthError.Network.NO_INTERNET)
+                is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
+            }
         } catch (e: Exception) {
             Result.Error(AuthError.UnknownError)
         }
-
     }
 
     override suspend fun getConfirmationCode(email: String): String {

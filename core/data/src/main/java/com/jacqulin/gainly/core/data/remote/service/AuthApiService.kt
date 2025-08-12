@@ -11,6 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface AuthApiService {
+
     @POST("/api/auth/login")
     suspend fun login(
         @Header("x-api-key") apiKey: String,

@@ -12,6 +12,7 @@ import jakarta.inject.Inject
  * Try catch for correctly token check and return false if there is exception
  */
 class JwtTokenValidator @Inject constructor() : TokenValidator {
+
     override suspend fun isAccessTokenValid(accessToken: String): Boolean {
         return try {
             val jwt = JWT(accessToken)

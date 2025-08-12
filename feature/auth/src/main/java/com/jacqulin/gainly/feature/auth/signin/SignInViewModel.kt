@@ -42,7 +42,7 @@ class SignInViewModel @Inject constructor(
                         AuthError.Network.NO_INTERNET -> "No network connection"
                         AuthError.Network.UNAUTHORIZED -> ""
                         AuthError.Network.REQUEST_TIMEOUT -> ""
-                        AuthError.UnknownError -> "Unknown error"
+                        AuthError.UnknownError -> "AuthError in signInViewModel"
                         else -> "Something went wrong in signInViewModel"
                     }
                     _uiState.value = UiState.Error(message)

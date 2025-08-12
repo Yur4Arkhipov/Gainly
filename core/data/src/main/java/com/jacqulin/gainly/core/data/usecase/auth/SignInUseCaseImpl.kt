@@ -10,6 +10,7 @@ import jakarta.inject.Inject
 class SignInUseCaseImpl @Inject constructor(
     private val authRepository: AuthRepository
 ) : SignInUseCase {
+
     override suspend fun invoke(
         email: String,
         password: String
