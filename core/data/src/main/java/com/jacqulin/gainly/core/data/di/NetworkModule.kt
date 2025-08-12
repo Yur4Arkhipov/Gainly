@@ -15,8 +15,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://fitness-app-auth-api.fly.dev/")
-//            .baseUrl("https://fitness-app-api-gateway.fly.dev/")
+            .baseUrl("https://fitness-app-api-gateway.fly.dev/auth/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

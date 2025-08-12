@@ -36,7 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
                 is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.Error(AuthError.UnknownError)
         }
     }
@@ -61,7 +61,7 @@ class AuthRepositoryImpl @Inject constructor(
                 is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.Error(AuthError.UnknownError)
         }
     }

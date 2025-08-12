@@ -12,25 +12,25 @@ import retrofit2.http.Path
 
 interface AuthApiService {
 
-    @POST("/api/auth/login")
+    @POST("api/auth/login")
     suspend fun login(
         @Header("x-api-key") apiKey: String,
         @Body request: AuthRequestDto
     ): AuthData
 
-    @POST("/api/auth/register")
+    @POST("api/auth/register")
     suspend fun register(
         @Header("x-api-key") apiKey: String,
         @Body request: AuthRequestDto
     ): AuthData
 
-    @POST("/api/auth/refresh")
+    @POST("api/auth/refresh")
     suspend fun refresh(
         @Header("x-api-key") apiKey: String,
         @Body request: RefreshTokenDto
     ): AuthData
 
-    @GET("/api/auth/email_code/{email}")
+    @GET("api/auth/email_code/{email}")
     suspend fun getConfirmationCode(
         @Header("x-api-key") apiKey: String,
         @Path("email") email: String

@@ -71,10 +71,11 @@ class SignUpViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     val message = when (result.error) {
+                        AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
+                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
                         AuthError.Network.NO_INTERNET -> "No network connection"
-                        AuthError.Network.UNAUTHORIZED -> ""
-                        AuthError.Network.REQUEST_TIMEOUT -> ""
-                        AuthError.UnknownError -> "Unknown error"
+                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
+                        AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
                         else -> "Something went wrong in signUpViewModel"
                     }
                     _uiState.value = UiState.Error(message)
