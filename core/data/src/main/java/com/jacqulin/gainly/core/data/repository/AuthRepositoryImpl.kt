@@ -7,6 +7,7 @@ import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
 import jakarta.inject.Inject
+import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -22,7 +23,10 @@ class AuthRepositoryImpl @Inject constructor(
     ): Result<AuthData, AuthError> {
         return try {
             val request = AuthRequestDto(email, password)
-            val response = api.login(apiKey = "your-super-secret-api-key", request = request)
+            val response = api.login(
+                apiKey = "your-super-secret-api-key",
+                request = request
+            )
             Result.Success(response)
         } catch (e: HttpException) {
             when (e.code()) {
@@ -36,6 +40,8 @@ class AuthRepositoryImpl @Inject constructor(
                 is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
+        } catch (_: SerializationException) {
+            Result.Error(AuthError.Network.SERIALIZATION)
         } catch (_: Exception) {
             Result.Error(AuthError.UnknownError)
         }
@@ -47,7 +53,10 @@ class AuthRepositoryImpl @Inject constructor(
     ): Result<AuthData, AuthError> {
         return try {
             val request = AuthRequestDto(email, password)
-            val response = api.register(apiKey = "your-super-secret-api-key", request = request)
+            val response = api.register(
+                apiKey = "your-super-secret-api-key",
+                request = request
+            )
             Result.Success(response)
         } catch (e: HttpException) {
             when (e.code()) {
@@ -61,21 +70,35 @@ class AuthRepositoryImpl @Inject constructor(
                 is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
                 else -> Result.Error(AuthError.Network.UNKNOWN)
             }
+        } catch (_: SerializationException) {
+            Result.Error(AuthError.Network.SERIALIZATION)
         } catch (_: Exception) {
             Result.Error(AuthError.UnknownError)
         }
     }
 
-    override suspend fun getConfirmationCode(email: String): String {
-        val response = api.getConfirmationCode(apiKey = "your-super-secret-api-key", email = email)
-        return when {
-            response.isSuccessful -> {
-                val code = response.body()
-                code?.toString() ?: "Empty answer from server"
+    override suspend fun getConfirmationCode(email: String): Result<Int, AuthError> {
+        return try {
+            val response = api.getConfirmationCode(
+                apiKey = "your-super-secret-api-key",
+                email = email
+            )
+            Result.Success(response)
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400 -> Result.Error(AuthError.Network.BAD_REQUEST)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
             }
-            else -> {
-                response.errorBody()?.string() ?: "Unknown error"
+        } catch (e: IOException) {
+            when (e) {
+                is UnknownHostException -> Result.Error(AuthError.Network.NO_INTERNET)
+                is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
             }
+        } catch (_: SerializationException) {
+            Result.Error(AuthError.Network.SERIALIZATION)
+        } catch (_: Exception) {
+            Result.Error(AuthError.UnknownError)
         }
     }
 }

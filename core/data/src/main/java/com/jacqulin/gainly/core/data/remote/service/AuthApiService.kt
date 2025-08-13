@@ -34,5 +34,5 @@ interface AuthApiService {
     suspend fun getConfirmationCode(
         @Header("x-api-key") apiKey: String,
         @Path("email") email: String
-    ): Response<Int>
+    ): Int
 }

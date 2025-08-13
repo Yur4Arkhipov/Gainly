@@ -37,27 +37,27 @@ class SignUpViewModel @Inject constructor(
     fun requestConfirmationCode() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            try {
-                serverConfirmationCode = getConfirmationCodeUseCase(email)
-                val pattern = Regex("^\\d{5}\$")
-                if (!pattern.matches(serverConfirmationCode.toString())) {
-                    _uiState.value = UiState.Error(serverConfirmationCode.toString())
-                } else {
+            when (val result = getConfirmationCodeUseCase(email)) {
+                is Result.Success -> {
+                    serverConfirmationCode = result.data.toString()
                     emailConfirmState = true
                     _uiState.value = UiState.Idle
                 }
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Failed to get confirmation code")
+                is Result.Error -> {
+                    val message = when (result.error) {
+                        AuthError.Network.BAD_REQUEST -> "Account already exist"
+                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
+                        AuthError.Network.NO_INTERNET -> "No network connection"
+                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
+                        else -> "Something went wrong in signUpViewModel [request confirmation code]"
+                    }
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
     }
 
     fun confirmAndSignUp() {
-        if (serverConfirmationCode == null) {
-            _uiState.value = UiState.Error("Please request confirmation code first")
-            return
-        }
-
         if (userEnteredCode != serverConfirmationCode) {
             _uiState.value = UiState.Error("Invalid confirmation code")
             return
