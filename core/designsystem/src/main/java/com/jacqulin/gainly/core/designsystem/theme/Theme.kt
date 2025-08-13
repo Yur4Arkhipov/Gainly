@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.theme
+package com.jacqulin.gainly.core.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,7 +19,11 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+
+    onPrimary = OnboardingTextColor,
+    secondaryContainer = OnboardingNextButtonColor,
+    onSecondaryContainer = CircularProgressIndicatorColor
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

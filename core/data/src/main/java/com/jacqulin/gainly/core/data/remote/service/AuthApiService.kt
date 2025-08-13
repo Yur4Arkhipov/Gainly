@@ -3,7 +3,6 @@ package com.jacqulin.gainly.core.data.remote.service
 import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header

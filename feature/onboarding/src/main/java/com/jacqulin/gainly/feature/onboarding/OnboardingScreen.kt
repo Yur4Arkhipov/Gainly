@@ -20,7 +20,8 @@ fun OnboardingScreen(
     val pages = listOf(
         OnboardingModel.FirstPage,
         OnboardingModel.SecondPage,
-        OnboardingModel.ThirdPage
+        OnboardingModel.ThirdPage,
+        OnboardingModel.FourthPage
     )
 
     val pagerState = rememberPagerState { pages.size }
