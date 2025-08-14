@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.core.util.auth.components.LoginTextField
+import com.jacqulin.gainly.core.util.auth.components.EmailTextField
+import com.jacqulin.gainly.core.util.auth.components.GradientButton
 import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
 
@@ -42,9 +43,9 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoginTextField(
-            login = viewModel.email,
-            onLoginChange = { viewModel.email = it }
+        EmailTextField(
+            email = viewModel.email,
+            onEmailChange = { viewModel.email = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -57,13 +58,19 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (!viewModel.emailConfirmState) {
-            Button(
+//            Button(
+//                onClick = { viewModel.requestConfirmationCode() },
+//                modifier = Modifier.fillMaxWidth(),
+//                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
+//            ) {
+//                Text("Get code")
+//            }
+            GradientButton(
+                text = "Get code",
                 onClick = { viewModel.requestConfirmationCode() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
-            ) {
-                Text("Get code")
-            }
+            )
         } else {
             Text("Check your email for confirmation code")
 

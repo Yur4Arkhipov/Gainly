@@ -1,49 +1,55 @@
 package com.jacqulin.gainly.core.util.auth.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 
 @Composable
 fun PasswordTextField(
     password: String,
-    onPasswordChange: (String) -> Unit
+    onPasswordChange: (String) -> Unit,
 ) {
-    var showPassword by remember { mutableStateOf(false) }
+    var hidePassword by remember { mutableStateOf(true) }
+    val trailingIcon =
+        if (hidePassword) R.drawable.ic_eye_close
+        else R.drawable.ic_eye_close
 
-    OutlinedTextField(
+    val visualTransformation =
+        if (hidePassword) PasswordVisualTransformation()
+        else VisualTransformation.None
+
+    CustomTextField(
+        modifier = Modifier.fillMaxWidth(),
         value = password,
         onValueChange = onPasswordChange,
-        label = { Text("Password") },
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
-        visualTransformation = if (showPassword) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
-        trailingIcon = {
-            val image = if (showPassword) {
-                Icons.Filled.Visibility
-            } else {
-                Icons.Filled.VisibilityOff
-            }
-            IconButton(onClick = { showPassword = !showPassword }) {
-                Icon(image, contentDescription = null)
-            }
-        }
+        leadingIcon = painterResource(id = R.drawable.ic_lock),
+        trailingIcon = painterResource(id = trailingIcon),
+        onTrailingIconClick = { hidePassword = !hidePassword },
+        label = "Password",
+        shape = RoundedCornerShape(16.dp),
+        visualTransformation = visualTransformation,
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PasswordTextFieldPreview() {
+    GainlyTheme {
+        PasswordTextField(
+            password = "",
+            onPasswordChange = {},
+        )
+    }
 }

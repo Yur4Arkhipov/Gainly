@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project(":core:domain"))
     implementation(project(":core:data")) // временно
+    implementation(project(":core:designsystem"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
