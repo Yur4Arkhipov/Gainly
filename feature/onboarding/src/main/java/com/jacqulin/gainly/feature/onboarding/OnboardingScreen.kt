@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,3 +62,16 @@ fun OnboardingScreen(
         }
     }
 }
+
+@Preview(
+    showBackground = true
+)
+@Composable
+fun OnboardingScreenPreview() {
+    GainlyTheme {
+        OnboardingScreen(
+            onFinish = { }
+        )
+    }
+}
+

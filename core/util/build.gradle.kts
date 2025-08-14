@@ -34,6 +34,9 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":core:designsystem"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -44,4 +47,6 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.androidx.material.icons.extended)
+
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 }
