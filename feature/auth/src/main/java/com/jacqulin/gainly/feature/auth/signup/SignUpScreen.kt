@@ -1,115 +1,141 @@
 package com.jacqulin.gainly.feature.auth.signup
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Red
+import com.jacqulin.gainly.core.designsystem.theme.onboardingCircularIndicatorGradient
+import com.jacqulin.gainly.core.designsystem.theme.type.LocalCustomAuthTypography
 import com.jacqulin.gainly.core.util.UiState
 import com.jacqulin.gainly.core.util.auth.components.EmailTextField
 import com.jacqulin.gainly.core.util.auth.components.GradientButton
+import com.jacqulin.gainly.core.util.auth.components.GradientCircularLoadingIndicator
 import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
+import com.jacqulin.gainly.feature.auth.signup.navigaion.OtpRoute
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    val authState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = modifier
+    val uiState by viewModel.uiState.collectAsState()
+
+    var navigateToOtp by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
-        EmailTextField(
-            email = viewModel.email,
-            onEmailChange = { viewModel.email = it }
-        )
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(100.dp))
+            Image(
+                painter = painterResource(R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.size(200.dp)
+            )
+        }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Column(
+            modifier = Modifier.align(Alignment.Center).offset(y = 100.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EmailTextField(
+                email = viewModel.email,
+                onEmailChange = { viewModel.email = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            PasswordTextField(
+                password = viewModel.password,
+                onPasswordChange = { viewModel.password = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        PasswordTextField(
-            password = viewModel.password,
-            onPasswordChange = { viewModel.password = it }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (!viewModel.emailConfirmState) {
-//            Button(
-//                onClick = { viewModel.requestConfirmationCode() },
-//                modifier = Modifier.fillMaxWidth(),
-//                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
-//            ) {
-//                Text("Get code")
-//            }
             GradientButton(
                 text = "Get code",
-                onClick = { viewModel.requestConfirmationCode() },
+                onClick = { navigateToOtp = true },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
             )
-        } else {
-            Text("Check your email for confirmation code")
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (navigateToOtp) {
+                LaunchedEffect(Unit) {
+                    val success = viewModel.requestConfirmationCode()
+                    if (success) navController.navigate(OtpRoute)
+                    navigateToOtp = false
+                }
+            }
 
-            OutlinedTextField(
-                value = viewModel.userEnteredCode,
-                onValueChange = { viewModel.userEnteredCode = it },
-                label = { Text("Code confirmation") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Button(
-                onClick = { viewModel.confirmAndSignUp() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Complete registration")
+            Spacer(Modifier.height(20.dp))
+            when (uiState) {
+                is UiState.Loading ->
+                    GradientCircularLoadingIndicator(
+                        strokeWidth = 4.dp,
+                        progressBrush = Brush.linearGradient(MaterialTheme.colorScheme.onboardingCircularIndicatorGradient),
+                        trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+                        modifier = Modifier.size(36.dp)
+                    )
+                is UiState.Success -> Text("Register successful!", color = Color.Green)
+                is UiState.Error -> Text(
+                    (uiState as UiState.Error).message,
+                    color = Red
+                )
+                else -> Unit
             }
         }
 
         Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = (-30).dp)
+                .padding(bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Already have an account?")
+            Text(
+                text = "Already have an account?",
+                style = LocalCustomAuthTypography.current.text
+            )
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Login",
-                modifier = modifier.clickable { navController.navigate(SignInRoute) }
+                style = LocalCustomAuthTypography.current.urlText,
+                modifier = Modifier.clickable {
+                    navController.navigate(SignInRoute)
+                }
             )
-        }
-
-        when (authState) {
-            is UiState.Loading -> {
-                Spacer(modifier = Modifier.height(16.dp))
-                CircularProgressIndicator()
-            }
-            is UiState.Success -> Text("Registration successful!", color = Color.Green)
-            is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
-            else -> Unit
         }
     }
 }
