@@ -13,10 +13,9 @@ class TokenStorageImpl @Inject constructor(
     override val tokens: Flow<AuthData?> = combine(
         tokenDataStore.accessTokenFlow,
         tokenDataStore.refreshTokenFlow,
-        tokenDataStore.userIdFlow
-    ) { access, refresh, userId ->
-        if (access == null || refresh == null || userId == null) null
-        else AuthData(access, refresh, userId)
+    ) { access, refresh->
+        if (access == null || refresh == null) null
+        else AuthData(access, refresh)
     }
     override suspend fun saveToken(data: AuthData) {
         tokenDataStore.saveTokens(data)

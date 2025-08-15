@@ -25,7 +25,6 @@ class TokenDataStore @Inject constructor(
             context.dataStore.edit { preferences ->
                 preferences[TokenKeys.ACCESS_TOKEN] = authData.accessToken
                 preferences[TokenKeys.REFRESH_TOKEN] = authData.refreshToken
-                preferences[TokenKeys.USER_ID] = authData.id
             }
             Log.d("TokenDataStore", "Tokens saved successfully")
         } catch (e: Exception) {
@@ -41,11 +40,6 @@ class TokenDataStore @Inject constructor(
     val refreshTokenFlow: Flow<String?> = context.dataStore.data
         .map { preferences ->
             preferences[TokenKeys.REFRESH_TOKEN]
-        }
-
-    val userIdFlow: Flow<String?> = context.dataStore.data
-        .map { preferences ->
-            preferences[TokenKeys.USER_ID]
         }
 
     suspend fun clearTokens() {
