@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +22,7 @@ import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 fun PasswordTextField(
     password: String,
     onPasswordChange: (String) -> Unit,
+    focusRequester: FocusRequester,
 ) {
     var hidePassword by remember { mutableStateOf(true) }
     val trailingIcon =
@@ -40,6 +43,8 @@ fun PasswordTextField(
         label = "Password",
         shape = RoundedCornerShape(16.dp),
         visualTransformation = visualTransformation,
+        focusRequester = focusRequester,
+        imeAction = ImeAction.Done,
     )
 }
 
@@ -50,6 +55,7 @@ fun PasswordTextFieldPreview() {
         PasswordTextField(
             password = "",
             onPasswordChange = {},
+            focusRequester = FocusRequester()
         )
     }
 }

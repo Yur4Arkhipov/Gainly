@@ -9,6 +9,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
@@ -28,11 +31,14 @@ fun CustomTextField(
     trailingIcon: Painter? = null,
     onTrailingIconClick: () -> Unit = {},
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    focusRequester: FocusRequester = FocusRequester(),
+    imeAction: ImeAction = ImeAction.Next,
+    onNext: (() -> Unit)? = null
 ) {
     val focusManager = LocalFocusManager.current
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.focusRequester(focusRequester),
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
@@ -61,10 +67,15 @@ fun CustomTextField(
         },
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
+            imeAction = imeAction
         ),
         keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() }
+            onNext = {
+                onNext?.invoke() ?: focusManager.moveFocus(FocusDirection.Next)
+            },
+            onDone = {
+                focusManager.clearFocus()
+            }
         )
     )
 }

@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -58,6 +59,9 @@ fun SignUpScreen(
     val scope = rememberCoroutineScope()
     var showOtp by remember { mutableStateOf(false) }
 
+    val focusRequesterEmailTextField = remember { FocusRequester() }
+    val focusRequesterPasswordTextField = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,14 +85,17 @@ fun SignUpScreen(
         ) {
             EmailTextField(
                 email = viewModel.email,
-                onEmailChange = { viewModel.email = it }
+                onEmailChange = { viewModel.email = it },
+                focusRequester = focusRequesterEmailTextField,
+                onNext = { focusRequesterPasswordTextField.requestFocus() }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             PasswordTextField(
                 password = viewModel.password,
-                onPasswordChange = { viewModel.password = it }
+                onPasswordChange = { viewModel.password = it },
+                focusRequester = focusRequesterPasswordTextField
             )
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -53,6 +55,9 @@ fun SignInScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val focusRequesterEmailTextField = remember { FocusRequester() }
+    val focusRequesterPasswordTextField = remember { FocusRequester() }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -76,12 +81,15 @@ fun SignInScreen(
         ) {
             EmailTextField(
                 email = viewModel.login,
-                onEmailChange = { viewModel.login = it }
+                onEmailChange = { viewModel.login = it },
+                focusRequester = focusRequesterEmailTextField,
+                onNext = { focusRequesterPasswordTextField.requestFocus() }
             )
             Spacer(modifier = Modifier.height(8.dp))
             PasswordTextField(
                 password = viewModel.password,
-                onPasswordChange = { viewModel.password = it }
+                onPasswordChange = { viewModel.password = it },
+                focusRequester = focusRequesterPasswordTextField
             )
             Spacer(modifier = Modifier.height(16.dp))
             GradientButton(
