@@ -37,6 +37,7 @@ val LightAuthGradientButtonSecond = Color(0xFF9DCEFF)
 //val DarkAuthGradientButtonSecond = Color(0xFF9DCEFF)
 
 val ModalBottomSheetContainer = Color(0xFFFFFFFF)
+val PasswordInputHintColor = Color(0xFFFC8888)
 
 val LightAuthButtonTextColor = Color(0xFFFFFFFF)
 //val DarkAuthButtonTextColor = Color(0xFFFFFFFF)

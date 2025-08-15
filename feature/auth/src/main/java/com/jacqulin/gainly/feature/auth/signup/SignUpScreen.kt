@@ -98,6 +98,14 @@ fun SignUpScreen(
                 focusRequester = focusRequesterPasswordTextField
             )
 
+            if (viewModel.password.isNotEmpty() && !viewModel.isValidPassword(viewModel.password)) {
+                Text(
+                    text = "Use at least 6 characters",
+                    style = LocalCustomAuthTypography.current.passwordInputHint,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             GradientButton(
@@ -112,7 +120,7 @@ fun SignUpScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
+                enabled = viewModel.isValidEmail(email = viewModel.email) && viewModel.password.isNotBlank()
             )
 
             Spacer(Modifier.height(20.dp))

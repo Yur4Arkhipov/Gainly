@@ -150,6 +150,16 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        return email.matches(emailRegex.toRegex())
+    }
+
+    fun isValidPassword(password: String): Boolean {
+        val passwordPattern = Regex("^[a-zA-Zа-яА-Я0-9]{6,}$")
+        return password.matches(passwordPattern)
+    }
+
     private fun signUp() {
         _uiState.value = UiState.Loading
         viewModelScope.launch {

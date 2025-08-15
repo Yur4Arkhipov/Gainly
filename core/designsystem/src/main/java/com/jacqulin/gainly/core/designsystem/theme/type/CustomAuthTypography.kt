@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayText
 import com.jacqulin.gainly.core.designsystem.theme.LightAuthButtonTextColor
+import com.jacqulin.gainly.core.designsystem.theme.PasswordInputHintColor
 import com.jacqulin.gainly.core.designsystem.theme.UrlTextColor
 
 
@@ -17,7 +18,8 @@ data class CustomAuthTypography(
     val urlText: TextStyle,
     val helpText: TextStyle,
     val codeDigits: TextStyle,
-    val modalBottomSheetText: TextStyle
+    val modalBottomSheetText: TextStyle,
+    val passwordInputHint: TextStyle
 )
 
 val LocalCustomAuthTypography = staticCompositionLocalOf {
@@ -54,11 +56,17 @@ val LocalCustomAuthTypography = staticCompositionLocalOf {
             fontSize = 20.sp
         ),
         modalBottomSheetText = TextStyle(
-           fontFamily = GainlyFontFamily,
+            fontFamily = GainlyFontFamily,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.W600,
             color = GrayText,
             fontSize = 20.sp
+        ),
+        passwordInputHint = TextStyle(
+            fontFamily = GainlyFontFamily,
+            fontWeight = FontWeight.W200,
+            color = PasswordInputHintColor,
+            fontSize = 12.sp
         )
     )
 }
