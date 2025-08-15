@@ -61,4 +61,6 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
 }

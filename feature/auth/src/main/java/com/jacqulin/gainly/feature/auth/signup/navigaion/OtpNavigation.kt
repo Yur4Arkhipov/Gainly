@@ -11,6 +11,6 @@ data object OtpRoute
 
 fun NavGraphBuilder.otpNavigation(navController : NavHostController) {
     composable<OtpRoute> {
-        OtpScreenHost(navController = navController)
+        OtpScreenHost()
     }
 }

@@ -20,7 +20,6 @@ val GrayHandleSelectedText = Color(0xFFB2B1B1)
 val White = Color(0xFFFFFFFF)
 val LightGray = Color(0xFFEDEDED)
 val UrlTextColor = Color(0xFFF192F8)
-//val helpTextColor = Color()
 
 //<--------------ONBOARDING----------------->
 val LightOnboardingGradientFirst = Color(0xFF72B6FB)
@@ -36,6 +35,8 @@ val LightAuthGradientButtonFirst = Color(0xFF92A3FD)
 val LightAuthGradientButtonSecond = Color(0xFF9DCEFF)
 //val DarkAuthGradientButtonFirst = Color(0xFF92A3FD)
 //val DarkAuthGradientButtonSecond = Color(0xFF9DCEFF)
+
+val ModalBottomSheetContainer = Color(0xFFFFFFFF)
 
 val LightAuthButtonTextColor = Color(0xFFFFFFFF)
 //val DarkAuthButtonTextColor = Color(0xFFFFFFFF)

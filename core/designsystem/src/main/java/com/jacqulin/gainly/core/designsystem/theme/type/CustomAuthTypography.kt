@@ -16,7 +16,8 @@ data class CustomAuthTypography(
     val text: TextStyle,
     val urlText: TextStyle,
     val helpText: TextStyle,
-    val codeDigits: TextStyle
+    val codeDigits: TextStyle,
+    val modalBottomSheetText: TextStyle
 )
 
 val LocalCustomAuthTypography = staticCompositionLocalOf {
@@ -49,6 +50,13 @@ val LocalCustomAuthTypography = staticCompositionLocalOf {
             fontFamily = GainlyFontFamily,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.W400,
+            color = GrayText,
+            fontSize = 20.sp
+        ),
+        modalBottomSheetText = TextStyle(
+           fontFamily = GainlyFontFamily,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.W600,
             color = GrayText,
             fontSize = 20.sp
         )
