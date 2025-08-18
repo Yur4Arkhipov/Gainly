@@ -27,13 +27,13 @@ fun PasswordTextField(
     var hidePassword by remember { mutableStateOf(true) }
     val trailingIcon =
         if (hidePassword) R.drawable.ic_eye_close
-        else R.drawable.ic_eye_close
+        else R.drawable.ic_eye_open
 
     val visualTransformation =
         if (hidePassword) PasswordVisualTransformation()
         else VisualTransformation.None
 
-    CustomTextField(
+    CustomOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = password,
         onValueChange = onPasswordChange,

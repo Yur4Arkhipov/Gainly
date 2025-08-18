@@ -19,7 +19,7 @@ fun EmailTextField(
     focusRequester: FocusRequester,
     onNext: () -> Unit
 ) {
-    CustomTextField(
+    CustomOutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
         label = "Email",

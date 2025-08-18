@@ -20,6 +20,7 @@ val GrayHandleSelectedText = Color(0xFFB2B1B1)
 val White = Color(0xFFFFFFFF)
 val LightGray = Color(0xFFEDEDED)
 val UrlTextColor = Color(0xFFF192F8)
+val GrayBackgroundOutlinedFieldLabel = Color(0xFFFDFCFC)
 
 //<--------------ONBOARDING----------------->
 val LightOnboardingGradientFirst = Color(0xFF72B6FB)

@@ -6,7 +6,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 
-val TextInputColors: TextFieldColors
+val CustomOutlinedTextFieldColors: TextFieldColors
     @Composable
     get() = OutlinedTextFieldDefaults.colors(
         focusedTextColor = GrayText,

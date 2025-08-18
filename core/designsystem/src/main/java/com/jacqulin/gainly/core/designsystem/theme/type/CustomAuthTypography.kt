@@ -19,7 +19,8 @@ data class CustomAuthTypography(
     val helpText: TextStyle,
     val codeDigits: TextStyle,
     val modalBottomSheetText: TextStyle,
-    val passwordInputHint: TextStyle
+    val passwordInputHint: TextStyle,
+    val outlinedTextFieldLabel: TextStyle
 )
 
 val LocalCustomAuthTypography = staticCompositionLocalOf {
@@ -67,6 +68,12 @@ val LocalCustomAuthTypography = staticCompositionLocalOf {
             fontWeight = FontWeight.W200,
             color = PasswordInputHintColor,
             fontSize = 12.sp
+        ),
+        outlinedTextFieldLabel = TextStyle(
+            fontFamily = GainlyFontFamily,
+            fontWeight = FontWeight.W100,
+            color = GrayText,
+            fontSize = 14.sp
         )
     )
 }
