@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.auth.components.LoginTextField
+import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signup.navigaion.SignUpRoute
 
 @Composable
@@ -40,28 +41,22 @@ fun SignInScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.email = it },
-            label = { Text("Email") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        LoginTextField(
+            login = viewModel.login,
+            onLoginChange = { viewModel.login = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        PasswordTextField(
+            password = viewModel.password,
+            onPasswordChange = { viewModel.password = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.signIn(email = viewModel.email, password = viewModel.password) },
+            onClick = { viewModel.signIn(login = viewModel.login, password = viewModel.password) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")

@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.auth.components.LoginTextField
+import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
 
 @Composable
@@ -40,45 +42,64 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            value = viewModel.login,
-            onValueChange = { viewModel.login = it },
-            label = { Text("Login") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        LoginTextField(
+            login = viewModel.email,
+            onLoginChange = { viewModel.email = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        PasswordTextField(
+            password = viewModel.password,
+            onPasswordChange = { viewModel.password = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { viewModel.signUp(email = viewModel.login, password = viewModel.password) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Register")
+        if (!viewModel.emailConfirmState) {
+            Button(
+                onClick = { viewModel.requestConfirmationCode() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank()
+            ) {
+                Text("Get code")
+            }
+        } else {
+            Text("Check your email for confirmation code")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = viewModel.userEnteredCode,
+                onValueChange = { viewModel.userEnteredCode = it },
+                label = { Text("Code confirmation") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = { viewModel.confirmAndSignUp() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Complete registration")
+            }
         }
 
-        Row {
-            Text(text = "Есть аккаунта?")
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Already have an account?")
             Text(
-                text = "Войти",
+                text = "Login",
                 modifier = modifier.clickable { navController.navigate(SignInRoute) }
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         when (authState) {
-            is UiState.Loading -> CircularProgressIndicator()
+            is UiState.Loading -> {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+            }
             is UiState.Success -> Text("Registration successful!", color = Color.Green)
             is UiState.Error -> Text((authState as UiState.Error).message, color = Color.Red)
             else -> Unit

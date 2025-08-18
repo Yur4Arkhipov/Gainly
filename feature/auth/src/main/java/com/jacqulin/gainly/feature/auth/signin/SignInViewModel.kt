@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
+import com.jacqulin.gainly.core.util.AuthError
+import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,18 +26,28 @@ class SignInViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
     val uiState: StateFlow<UiState<AuthData>> = _uiState
 
-    var email by mutableStateOf("")
+    var login by mutableStateOf("")
     var password by mutableStateOf("")
 
-    fun signIn(email: String, password: String) {
+    fun signIn(login: String, password: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            try {
-                val result = signInUseCase(email, password)
-                saveTokensUseCase(result)
-                _uiState.value = UiState.Success(result)
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+            when (val result = signInUseCase(login, password)) {
+                is Result.Success -> {
+                    saveTokensUseCase(result.data)
+                    _uiState.value = UiState.Success(result.data)
+                }
+                is Result.Error -> {
+                    val message = when (result.error) {
+                        AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
+                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
+                        AuthError.Network.NO_INTERNET -> "No network connection"
+                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
+                        AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
+                        else -> "Something went wrong in signInViewModel"
+                    }
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
     }

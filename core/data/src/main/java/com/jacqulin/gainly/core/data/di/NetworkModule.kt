@@ -7,7 +7,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.annotation.PropertyKey
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -16,7 +15,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://fitness-app-auth-api.fly.dev/")
+            .baseUrl("https://fitness-app-api-gateway.fly.dev/auth/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
