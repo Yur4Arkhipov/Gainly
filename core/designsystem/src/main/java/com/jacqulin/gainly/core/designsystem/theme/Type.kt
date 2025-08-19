@@ -14,17 +14,17 @@ val Typography = Typography(
 //        lineHeight = 24.sp,
 //        letterSpacing = 0.5.sp
 //    ),
-    bodySmall = TextStyle(
-        fontFamily = GainlyFontFamily,
-        fontWeight = FontWeight.W400,
-        color = OnboardingTextColor,
-        fontSize = 16.sp,
-    ),
-    titleMedium = TextStyle(
-        fontFamily = GainlyFontFamily,
-        fontWeight = FontWeight.W700,
-        fontSize = 32.sp,
-    )
+//    bodySmall = TextStyle(
+//        fontFamily = GainlyFontFamily,
+//        fontWeight = FontWeight.W400,
+//        color = OnboardingTextColor,
+//        fontSize = 16.sp,
+//    ),
+//    titleMedium = TextStyle(
+//        fontFamily = GainlyFontFamily,
+//        fontWeight = FontWeight.W700,
+//        fontSize = 32.sp,
+//    )
 
     /* Other default text styles to override
     titleLarge = TextStyle(

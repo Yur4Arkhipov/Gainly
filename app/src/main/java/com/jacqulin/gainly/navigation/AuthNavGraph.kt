@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.jacqulin.gainly.feature.auth.signin.navigation.SignInRoute
 import com.jacqulin.gainly.feature.auth.signin.navigation.signInNavigation
+import com.jacqulin.gainly.feature.auth.signup.navigaion.otpNavigation
 import com.jacqulin.gainly.feature.auth.signup.navigaion.signUpNavigation
 
 @Composable
@@ -16,5 +17,6 @@ fun AuthNavGraph(navController: NavHostController = rememberNavController()) {
     ) {
         signInNavigation(navController = navController)
         signUpNavigation(navController = navController)
+        otpNavigation(navController = navController)
     }
 }

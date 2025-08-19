@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.type.LocalCustomOnboardingTypography
 
 @Composable
 fun OnboardingItem(onboardingModel: OnboardingModel) {
@@ -34,7 +34,7 @@ fun OnboardingItem(onboardingModel: OnboardingModel) {
 
         Text(
             text = onboardingModel.title,
-            style = MaterialTheme.typography.titleMedium,
+            style = LocalCustomOnboardingTypography.current.onboardingTitle,
             modifier = Modifier.padding(start = 20.dp, end = 20.dp)
         )
 
@@ -42,7 +42,7 @@ fun OnboardingItem(onboardingModel: OnboardingModel) {
 
         Text(
             text = onboardingModel.description,
-            style = MaterialTheme.typography.bodySmall,
+            style = LocalCustomOnboardingTypography.current.onboardingDescription,
             modifier = Modifier.padding(start = 20.dp, end = 20.dp)
         )
     }

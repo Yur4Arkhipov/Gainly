@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.data.auth
 
+import android.util.Log
 import com.jacqulin.gainly.core.domain.auth.TokenRefresher
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.auth.TokenValidator
@@ -35,14 +36,23 @@ class AuthManager @Inject constructor(
     val authState: StateFlow<AuthState> = tokenStorage.tokens
         .mapLatest { tokens ->
             when {
-                tokens == null -> AuthState.Unauthorized
-                tokenValidator.isAccessTokenValid(tokens.accessToken) -> AuthState.Authorized
+                tokens == null -> {
+                    Log.d("AuthManager", "No tokens found -> Unauthorized")
+                    AuthState.Unauthorized
+                }
+                tokenValidator.isAccessTokenValid(tokens.accessToken) -> {
+                    Log.d("AuthManager", "Access token valid -> Authorized")
+                    AuthState.Authorized
+                }
                 else -> {
                     try {
+                        Log.d("AuthManager", "Access token expired -> Refreshing token...")
                         val newTokens = tokenRefresher.refreshToken(tokens.refreshToken)
                         tokenStorage.saveToken(newTokens)
+                        Log.d("AuthManager", "Token refreshed successfully -> Authorized")
                         AuthState.Authorized
                     } catch (e: Exception) {
+                        Log.e("AuthManager", "Token refresh failed -> Unauthorized", e)
                         tokenStorage.clear()
                         AuthState.Unauthorized
                     }

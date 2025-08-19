@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.remote.service
 
 import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
@@ -34,4 +35,10 @@ interface AuthApiService {
         @Header("x-api-key") apiKey: String,
         @Path("email") email: String
     ): Int
+
+    @POST("api/auth/google")
+    suspend fun loginGoogle(
+        @Header("x-api-key") apiKey: String,
+        @Body request: GoogleSignInRequestDto
+    ): AuthData
 }

@@ -22,8 +22,10 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40,
 
     onPrimary = OnboardingTextColor,
-    secondaryContainer = OnboardingNextButtonColor,
-    onSecondaryContainer = CircularProgressIndicatorColor
+//    secondaryContainer = OnboardingNextButtonColor,
+////    primaryContainer = OnboardingNextButtonCBackgroundColor,
+//    onPrimaryContainer = CircularProgressIndicatorColor
+    onSurfaceVariant = LightGray
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

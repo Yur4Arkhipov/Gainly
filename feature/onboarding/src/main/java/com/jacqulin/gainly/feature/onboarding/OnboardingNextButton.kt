@@ -8,17 +8,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.White
+import com.jacqulin.gainly.core.designsystem.theme.onboardingButtonGradient
+import com.jacqulin.gainly.core.designsystem.theme.onboardingCircularIndicatorGradient
+import com.jacqulin.gainly.core.util.auth.components.GradientCircularProgressIndicator
 
 @Composable
 fun OnboardingNextButton(
@@ -34,11 +37,12 @@ fun OnboardingNextButton(
             .size(72.dp),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            progress = { progress },
-            modifier = Modifier.fillMaxSize(),
+        GradientCircularProgressIndicator(
+            progress = progress,
             strokeWidth = 4.dp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            progressBrush = Brush.linearGradient(MaterialTheme.colorScheme.onboardingCircularIndicatorGradient),
+            trackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+            modifier = Modifier.fillMaxSize()
         )
 
         IconButton(
@@ -46,14 +50,14 @@ fun OnboardingNextButton(
             modifier = Modifier
                 .size(56.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    brush = Brush.linearGradient(MaterialTheme.colorScheme.onboardingButtonGradient),
                     shape = CircleShape
                 )
         ) {
             Icon(
                 imageVector = if (isLastPage) Icons.Default.Check else Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = if (isLastPage) "Finish" else "Next",
-                tint = Color.White
+                tint = White
             )
         }
     }
