@@ -1,13 +1,17 @@
 package com.jacqulin.gainly.core.data.di
 
 import com.jacqulin.gainly.core.data.usecase.auth.GetConfirmationCodeUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.auth.GetGoogleIdTokenUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SaveTokensUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.auth.SignInGoogleUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.usecase.auth.GetConfirmationCodeUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import dagger.Module
@@ -37,5 +41,15 @@ object UseCaseModule {
     @Provides
     fun provideGetConfirmationCodeUseCase(repository: AuthRepository) : GetConfirmationCodeUseCase {
         return GetConfirmationCodeUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideSignInGoogleUseCase(repository: AuthRepository) : SignInGoogleUseCase {
+        return SignInGoogleUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideGetTokenUseCase(repository: AuthRepository) : GetGoogleIdTokenUseCase {
+        return GetGoogleIdTokenUseCaseImpl(repository)
     }
 }

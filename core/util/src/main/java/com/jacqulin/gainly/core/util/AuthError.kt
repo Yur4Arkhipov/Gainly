@@ -17,7 +17,9 @@ sealed interface AuthError: Error {
         INVALID_TOKEN_FORMAT,
         STORAGE_ERROR
     }
-//    enum class Domain : AuthError {
-//    }
+    enum class GoogleToken : AuthError {
+        NO_TOKEN,
+        GOOGLE_TOKEN_ERROR
+    }
     object UnknownError : AuthError
 }

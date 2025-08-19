@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.feature.auth.signin
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,6 +59,8 @@ fun SignInScreen(
     val focusRequesterEmailTextField = remember { FocusRequester() }
     val focusRequesterPasswordTextField = remember { FocusRequester() }
 
+    val activity = LocalActivity.current // for get google token
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +109,9 @@ fun SignInScreen(
             DividerWithText("Or")
             Spacer(modifier = Modifier.height(30.dp))
             IconButton(
-                onClick = { },
+                onClick = {
+                    activity?.let { viewModel.signInWithGoogle(it) }
+                },
                 modifier = Modifier
                     .size(60.dp)
                     .background(

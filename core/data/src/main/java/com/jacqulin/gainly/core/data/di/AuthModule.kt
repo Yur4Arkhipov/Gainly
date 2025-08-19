@@ -40,5 +40,4 @@ object AuthModule {
     ): AuthManager {
         return AuthManager(tokenStorage, tokenValidator, tokenRefresher)
     }
-
 }
