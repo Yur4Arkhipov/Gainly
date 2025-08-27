@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.model.AuthData
-import com.jacqulin.gainly.core.domain.usecase.auth.GetConfirmationCodeUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.util.AuthError
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
-    private val getConfirmationCodeUseCase: GetConfirmationCodeUseCase
+    private val sendCodeToEmailUseCase: SendCodeToEmailUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
@@ -128,9 +128,9 @@ class SignUpViewModel @Inject constructor(
         return currentFocusedIndex
     }
 
-    suspend fun requestConfirmationCode(): Boolean {
+    suspend fun sendCodeToEmail(): Boolean {
         _uiState.value = UiState.Loading
-        return when (val result = getConfirmationCodeUseCase(email)) {
+        return when (val result = sendCodeToEmailUseCase(email)) {
             is Result.Success -> {
                 serverConfirmationCode = result.data
                 _uiState.value = UiState.Idle

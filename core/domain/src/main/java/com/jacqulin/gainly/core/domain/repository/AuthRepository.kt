@@ -8,7 +8,7 @@ import com.jacqulin.gainly.core.util.Result
 interface AuthRepository {
     suspend fun signIn(email: String, password: String): Result<AuthData, AuthError>
     suspend fun signUp(email: String, password: String): Result<AuthData, AuthError>
-    suspend fun getConfirmationCode(email: String): Result<Int, AuthError>
+    suspend fun sendCodeToEmail(email: String): Result<Int, AuthError>
     suspend fun signInGoogle(googleIdToken: String): Result<AuthData, AuthError>
     suspend fun getGoogleIdToken(activity: Activity): Result<String, AuthError>
 }

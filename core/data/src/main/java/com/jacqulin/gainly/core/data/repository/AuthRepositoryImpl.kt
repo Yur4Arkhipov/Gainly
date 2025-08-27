@@ -33,7 +33,6 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val request = AuthRequestDto(email, password)
             val response = api.login(
-                apiKey = "your-super-secret-api-key",
                 request = request
             )
             Result.Success(response)
@@ -63,7 +62,6 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val request = AuthRequestDto(email, password)
             val response = api.register(
-                apiKey = "your-super-secret-api-key",
                 request = request
             )
             Result.Success(response)
@@ -86,10 +84,9 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConfirmationCode(email: String): Result<Int, AuthError> {
+    override suspend fun sendCodeToEmail(email: String): Result<Int, AuthError> {
         return try {
-            val response = api.getConfirmationCode(
-                apiKey = "your-super-secret-api-key",
+            val response = api.sendCodeToEmail(
                 email = email
             )
             Result.Success(response)
@@ -115,7 +112,6 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val request = GoogleSignInRequestDto(googleIdToken)
             val response = api.loginGoogle(
-                apiKey = "your-super-secret-api-key",
                 request = request
             )
             Result.Success(response)
