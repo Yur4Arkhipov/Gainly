@@ -2,10 +2,12 @@ package com.jacqulin.gainly.core.data.remote.service
 
 import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -40,4 +42,9 @@ interface AuthApiService {
     suspend fun loginGoogle(
         @Body request: GoogleSignInRequestDto
     ): AuthData
+
+    @HTTP(method = "DELETE", path = "api/auth/logout", hasBody = true)
+    suspend fun logout(
+        @Body request: LogoutRequestDto
+    )
 }

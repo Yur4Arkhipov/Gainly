@@ -12,4 +12,5 @@ interface AuthRepository {
     suspend fun verifyCode(email: String, code: Int): Result<Unit, AuthError>
     suspend fun signInGoogle(googleIdToken: String): Result<AuthData, AuthError>
     suspend fun getGoogleIdToken(activity: Activity): Result<String, AuthError>
+    suspend fun logout(refreshToken: String): Result<Unit, AuthError>
 }

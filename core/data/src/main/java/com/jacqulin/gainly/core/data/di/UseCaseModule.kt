@@ -1,7 +1,10 @@
 package com.jacqulin.gainly.core.data.di
 
+import com.jacqulin.gainly.core.data.usecase.auth.ClearTokensUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SendCodeToEmailUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.GetGoogleIdTokenUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.auth.GetRefreshTokenUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.auth.LogoutUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SaveTokensUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInGoogleUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
@@ -9,8 +12,11 @@ import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
+import com.jacqulin.gainly.core.domain.usecase.auth.ClearTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.GetRefreshTokenUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.LogoutUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
@@ -58,5 +64,23 @@ object UseCaseModule {
     @Provides
     fun provideGetTokenUseCase(repository: AuthRepository) : GetGoogleIdTokenUseCase {
         return GetGoogleIdTokenUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideLogoutUseCase(
+        repository: AuthRepository,
+        getRefreshTokensUseCase: GetRefreshTokenUseCase
+    ) : LogoutUseCase {
+        return LogoutUseCaseImpl(repository, getRefreshTokensUseCase)
+    }
+
+    @Provides
+    fun provideClearTokensUseCase(tokenStorage: TokenStorage) : ClearTokensUseCase {
+        return ClearTokensUseCaseImpl(tokenStorage)
+    }
+
+    @Provides
+    fun provideGetRefreshTokenUseCase(tokenStorage: TokenStorage) : GetRefreshTokenUseCase {
+        return GetRefreshTokenUseCaseImpl(tokenStorage)
     }
 }

@@ -9,6 +9,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.domain.model.AuthData
@@ -184,6 +185,34 @@ class AuthRepositoryImpl @Inject constructor(
                 ?: Result.Error(AuthError.GoogleToken.NO_TOKEN)
         } catch (e: Exception) {
             Log.e("GOOGLE_CRED", "Unexpected error", e)
+            Result.Error(AuthError.UnknownError)
+        }
+    }
+
+    override suspend fun logout(refreshToken: String): Result<Unit, AuthError> {
+        return try {
+            val request = LogoutRequestDto(refreshToken)
+            val response = api.logout(request = request)
+            Result.Success(response)
+        } catch (e: HttpException) {
+                Log.e("LOGOUT", "HTTP error: ${e.code()}, ${e.response()?.errorBody()?.string()}")
+                when (e.code()) {
+                    400 -> Result.Error(AuthError.Network.BAD_REQUEST)
+                    401 -> Result.Error(AuthError.Network.UNAUTHORIZED)
+                    404 -> Result.Error(AuthError.Network.UNKNOWN)
+                    in 500..599 -> Result.Error(AuthError.Network.SERVER_ERROR)
+                    else -> Result.Error(AuthError.Network.UNKNOWN)
+                }
+            } catch (e: IOException) {
+            when (e) {
+                is UnknownHostException -> Result.Error(AuthError.Network.NO_INTERNET)
+                is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
+            }
+        } catch (_: SerializationException) {
+            Result.Error(AuthError.Network.SERIALIZATION)
+        } catch (e: Exception) {
+            Log.e("LOGOUT", "Unexpected error", e)
             Result.Error(AuthError.UnknownError)
         }
     }

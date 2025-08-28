@@ -10,6 +10,6 @@ class SaveTokensUseCaseImpl @Inject constructor(
 ) : SaveTokensUseCase {
 
     override suspend fun invoke(data: AuthData) {
-        tokenStorage.saveToken(data)
+        tokenStorage.saveTokens(data)
     }
 }

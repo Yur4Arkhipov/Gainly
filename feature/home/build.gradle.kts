@@ -38,8 +38,8 @@ android {
 
 dependencies {
 
-//    implementation(project(":core:util"))
-//    implementation((project(":core:domain")))
+    implementation(project(":core:util"))
+    implementation((project(":core:domain")))
     implementation(project(":feature:auth"))
     implementation(project(":core:data")) // временно
 
