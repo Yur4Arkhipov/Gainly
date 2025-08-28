@@ -87,6 +87,9 @@ dependencies {
     // splash screen for onboarding
     implementation(libs.androidx.core.splashscreen)
 
+    // app start up
+    implementation("androidx.startup:startup-runtime:1.2.0")
+
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
