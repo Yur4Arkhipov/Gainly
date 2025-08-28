@@ -9,6 +9,7 @@ import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
 import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
-    private val sendCodeToEmailUseCase: SendCodeToEmailUseCase
+    private val sendCodeToEmailUseCase: SendCodeToEmailUseCase,
+    private val verifyCodeUseCase: VerifyCodeUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
@@ -32,7 +34,6 @@ class SignUpViewModel @Inject constructor(
 
     var email by mutableStateOf("")
     var password by mutableStateOf("")
-    var serverConfirmationCode by mutableStateOf<Int?>(null)
 
     var otpState by mutableStateOf(OtpState())
         private set
@@ -66,28 +67,23 @@ class SignUpViewModel @Inject constructor(
             if(currentIndex == index) number else currentNumber
         }
         val wasNumberRemoved = number == null
-
         val allFilled = newCode.none { it == null }
-        val enteredCode= newCode.joinToString("").toIntOrNull()
-        val isValidLocal = if (allFilled) enteredCode == serverConfirmationCode else null
 
         otpState = otpState.copy(
             code = newCode,
             focusedIndex = if (wasNumberRemoved || otpState.code.getOrNull(index) != null) {
-                otpState.focusedIndex
-            } else {
-                getNextFocusedTextFieldIndex(
-                    currentCode = otpState.code,
-                    currentFocusedIndex = otpState.focusedIndex
-                )
-            },
-            isValid = isValidLocal
+                    otpState.focusedIndex
+                } else {
+                    getNextFocusedTextFieldIndex(
+                        currentCode = otpState.code,
+                        currentFocusedIndex = otpState.focusedIndex
+                    )
+                }
         )
 
-        if (otpState.isValid == true) {
-            signUp()
-        } else if (otpState.isValid == false) {
-            _uiState.value = UiState.Error("Invalid confirmation code")
+        if (allFilled) {
+            val enteredCode = newCode.joinToString("") { it.toString() }.toInt()
+            verifyCode(enteredCode)
         }
     }
 
@@ -132,7 +128,6 @@ class SignUpViewModel @Inject constructor(
         _uiState.value = UiState.Loading
         return when (val result = sendCodeToEmailUseCase(email)) {
             is Result.Success -> {
-                serverConfirmationCode = result.data
                 _uiState.value = UiState.Idle
                 true
             }
@@ -142,10 +137,35 @@ class SignUpViewModel @Inject constructor(
                     AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
                     AuthError.Network.NO_INTERNET -> "No network connection"
                     AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
-                    else -> "Something went wrong in signUpViewModel [request confirmation code]"
+                    else -> "Something went wrong in signUpViewModel [send code to email]"
                 }
                 _uiState.value = UiState.Error(message)
                 false
+            }
+        }
+    }
+
+    fun verifyCode(code: Int) {
+        _uiState.value = UiState.Loading
+        viewModelScope.launch {
+            when (val result = verifyCodeUseCase(email, code)) {
+                is Result.Success -> {
+                    otpState = otpState.copy(isValid = true)
+                    signUp()
+                }
+                is Result.Error -> {
+                    val message = when (result.error) {
+                        AuthError.Network.BAD_REQUEST -> "Invalid code entered"
+                        AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
+                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
+                        AuthError.Network.NO_INTERNET -> "No network connection"
+                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
+                        AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
+                        else -> "Something went wrong in signUpViewModel"
+                    }
+                    _uiState.value = UiState.Error(message)
+                    otpState = otpState.copy(isValid = false)
+                }
             }
         }
     }

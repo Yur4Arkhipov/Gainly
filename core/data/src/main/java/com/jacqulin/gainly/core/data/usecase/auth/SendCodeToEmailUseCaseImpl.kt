@@ -10,7 +10,7 @@ class SendCodeToEmailUseCaseImpl @Inject constructor(
     private val authRepository: AuthRepository
 ) : SendCodeToEmailUseCase {
 
-    override suspend fun invoke(email: String): Result<Int, AuthError> {
+    override suspend fun invoke(email: String): Result<Unit, AuthError> {
         return authRepository.sendCodeToEmail(email)
     }
 }

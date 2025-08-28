@@ -6,8 +6,6 @@ import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -31,7 +29,7 @@ interface AuthApiService {
     @POST("api/auth/email_code/{email}")
     suspend fun sendCodeToEmail(
         @Path("email") email: String
-    ): Int
+    )
 
     @POST("api/auth/email_code/verify")
     suspend fun verifyCode(
