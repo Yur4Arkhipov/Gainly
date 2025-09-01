@@ -5,6 +5,7 @@ import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
+import com.jacqulin.gainly.core.data.remote.dto.TelegramRequestDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
 import retrofit2.http.HTTP
@@ -47,4 +48,9 @@ interface AuthApiService {
     suspend fun logout(
         @Body request: LogoutRequestDto
     )
+
+    @POST("api/auth/tglogin")
+    suspend fun loginTelegram(
+        @Body request: TelegramRequestDto
+    ): AuthData
 }

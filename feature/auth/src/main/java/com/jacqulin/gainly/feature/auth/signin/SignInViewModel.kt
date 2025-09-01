@@ -11,6 +11,7 @@ import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
@@ -26,7 +27,8 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val saveTokensUseCase: SaveTokensUseCase,
     private val signInGoogleUseCase: SignInGoogleUseCase,
-    private val getGoogleIdTokenUseCase: GetGoogleIdTokenUseCase
+    private val getGoogleIdTokenUseCase: GetGoogleIdTokenUseCase,
+    private val signInTelegramUseCase: SignInTelegramUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<AuthData>>(UiState.Idle)
@@ -64,6 +66,19 @@ class SignInViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> handleAuthError(googleResult.error)
+            }
+        }
+    }
+
+    fun signInWithTelegram(data: String) {
+        _uiState.value = UiState.Loading
+        viewModelScope.launch {
+            when (val telegramResult = signInTelegramUseCase(data)) {
+                is Result.Success -> {
+                    saveTokensUseCase(telegramResult.data)
+                    _uiState.value = UiState.Success(telegramResult.data)
+                }
+                is Result.Error -> handleAuthError(telegramResult.error)
             }
         }
     }

@@ -11,6 +11,7 @@ import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.TelegramRequestDto
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.domain.model.AuthData
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
@@ -213,6 +214,29 @@ class AuthRepositoryImpl @Inject constructor(
             Result.Error(AuthError.Network.SERIALIZATION)
         } catch (e: Exception) {
             Log.e("LOGOUT", "Unexpected error", e)
+            Result.Error(AuthError.UnknownError)
+        }
+    }
+
+    override suspend fun signInTelegram(data: String): Result<AuthData, AuthError> {
+        return try {
+            val request = TelegramRequestDto(data)
+            val response = api.loginTelegram(request = request)
+            Result.Success(response)
+        } catch (e: HttpException) {
+            when (e.code()) {
+                400 -> Result.Error(AuthError.Network.BAD_REQUEST)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
+            }
+        } catch (e: IOException) {
+            when (e) {
+                is UnknownHostException -> Result.Error(AuthError.Network.NO_INTERNET)
+                is SocketTimeoutException -> Result.Error(AuthError.Network.REQUEST_TIMEOUT)
+                else -> Result.Error(AuthError.Network.UNKNOWN)
+            }
+        } catch (_: SerializationException) {
+            Result.Error(AuthError.Network.SERIALIZATION)
+        } catch (_: Exception) {
             Result.Error(AuthError.UnknownError)
         }
     }

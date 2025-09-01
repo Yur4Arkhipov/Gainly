@@ -7,6 +7,7 @@ import com.jacqulin.gainly.core.data.usecase.auth.GetRefreshTokenUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.LogoutUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SaveTokensUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInGoogleUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.auth.SignInTelegramUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
@@ -19,6 +20,7 @@ import com.jacqulin.gainly.core.domain.usecase.auth.GetRefreshTokenUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.LogoutUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
+import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
@@ -82,5 +84,10 @@ object UseCaseModule {
     @Provides
     fun provideGetRefreshTokenUseCase(tokenStorage: TokenStorage) : GetRefreshTokenUseCase {
         return GetRefreshTokenUseCaseImpl(tokenStorage)
+    }
+
+    @Provides
+    fun provideSignInTelegramUseCase(repository: AuthRepository) : SignInTelegramUseCase {
+        return SignInTelegramUseCaseImpl(repository)
     }
 }
