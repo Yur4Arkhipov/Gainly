@@ -11,7 +11,6 @@ class GetRefreshTokenUseCaseImpl @Inject constructor(
 ) : GetRefreshTokenUseCase {
 
     override suspend fun invoke(): String? {
-//        return tokenStorage.tokens.firstOrNull()?.refreshToken
         val token = tokenStorage.tokens.firstOrNull()?.refreshToken
         Log.d("REFRESHTOKEN", "Refresh token: $token")
         return token

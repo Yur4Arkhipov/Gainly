@@ -10,9 +10,9 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
-import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacqulin.gainly.feature.auth.signup.otp.OtpAction
 import com.jacqulin.gainly.feature.auth.signup.otp.OtpState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -132,13 +132,7 @@ class SignUpViewModel @Inject constructor(
                 true
             }
             is Result.Error -> {
-                val message = when (result.error) {
-                    AuthError.Network.BAD_REQUEST -> "Account already exist"
-                    AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
-                    AuthError.Network.NO_INTERNET -> "No network connection"
-                    AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
-                    else -> "Something went wrong in signUpViewModel [send code to email]"
-                }
+                val message = ErrorUiMapper.toMessage(result.error)
                 _uiState.value = UiState.Error(message)
                 false
             }
@@ -154,15 +148,7 @@ class SignUpViewModel @Inject constructor(
                     signUp()
                 }
                 is Result.Error -> {
-                    val message = when (result.error) {
-                        AuthError.Network.BAD_REQUEST -> "Invalid code entered"
-                        AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
-                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
-                        AuthError.Network.NO_INTERNET -> "No network connection"
-                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
-                        AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
-                        else -> "Something went wrong in signUpViewModel"
-                    }
+                    val message = ErrorUiMapper.toMessage(result.error)
                     _uiState.value = UiState.Error(message)
                     otpState = otpState.copy(isValid = false)
                 }
@@ -189,14 +175,7 @@ class SignUpViewModel @Inject constructor(
                     _uiState.value = UiState.Success(result.data)
                 }
                 is Result.Error -> {
-                    val message = when (result.error) {
-                        AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
-                        AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
-                        AuthError.Network.NO_INTERNET -> "No network connection"
-                        AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
-                        AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
-                        else -> "Something went wrong in signUpViewModel"
-                    }
+                    val message = ErrorUiMapper.toMessage(result.error)
                     _uiState.value = UiState.Error(message)
                 }
             }

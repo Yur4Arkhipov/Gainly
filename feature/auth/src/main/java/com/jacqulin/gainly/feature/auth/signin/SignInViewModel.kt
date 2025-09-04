@@ -13,9 +13,9 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
-import com.jacqulin.gainly.core.util.AuthError
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +45,10 @@ class SignInViewModel @Inject constructor(
                     saveTokensUseCase(result.data)
                     _uiState.value = UiState.Success(result.data)
                 }
-                is Result.Error -> handleAuthError(result.error)
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
     }
@@ -62,10 +65,16 @@ class SignInViewModel @Inject constructor(
                             saveTokensUseCase(signInResult.data)
                             _uiState.value = UiState.Success(signInResult.data)
                         }
-                        is Result.Error -> handleAuthError(signInResult.error)
+                        is Result.Error -> {
+                            val message = ErrorUiMapper.toMessage(signInResult.error)
+                            _uiState.value = UiState.Error(message)
+                        }
                     }
                 }
-                is Result.Error -> handleAuthError(googleResult.error)
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(googleResult.error)
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
     }
@@ -73,34 +82,16 @@ class SignInViewModel @Inject constructor(
     fun signInWithTelegram(data: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            when (val telegramResult = signInTelegramUseCase(data)) {
+            when (val result = signInTelegramUseCase(data)) {
                 is Result.Success -> {
-                    saveTokensUseCase(telegramResult.data)
-                    _uiState.value = UiState.Success(telegramResult.data)
+                    saveTokensUseCase(result.data)
+                    _uiState.value = UiState.Success(result.data)
                 }
-                is Result.Error -> handleAuthError(telegramResult.error)
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    _uiState.value = UiState.Error(message)
+                }
             }
         }
-    }
-
-    private fun handleAuthError(error: AuthError) {
-        val message = when (error) {
-            AuthError.Network.UNAUTHORIZED -> "Please check your email and password"
-            AuthError.Network.REQUEST_TIMEOUT -> "Request timed out"
-            AuthError.Network.NO_INTERNET -> "No network connection"
-            AuthError.Network.UNKNOWN -> "Something went wrong [AuthError->Network]"
-            AuthError.UnknownError -> "Unknown error [AuthError->UnknownError]"
-            AuthError.GoogleToken.NO_TOKEN -> "Google returned no token"
-            AuthError.GoogleToken.GOOGLE_TOKEN_ERROR -> "Google Sign In failed"
-            AuthError.Local.TOKEN_NOT_FOUND -> "Local tokens not found"
-            AuthError.Local.INVALID_TOKEN_FORMAT -> "Invalid token format"
-            AuthError.Local.STORAGE_ERROR -> "Storage error"
-            AuthError.Network.BAD_REQUEST -> "Bad request"
-            AuthError.Network.TOO_MANY_REQUESTS -> "Too many requests"
-            AuthError.Network.PAYLOAD_TOO_LARGE -> "Payload too large"
-            AuthError.Network.SERVER_ERROR -> "Server error"
-            AuthError.Network.SERIALIZATION -> "Serialization error"
-        }
-        _uiState.value = UiState.Error(message)
     }
 }
