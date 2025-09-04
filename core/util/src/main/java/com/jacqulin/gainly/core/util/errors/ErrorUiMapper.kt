@@ -9,8 +9,8 @@ object ErrorUiMapper {
 
     private fun mapAuthError(error: AuthError): String = when (error) {
         is AuthError.HttpError -> when (error.type) {
-            AuthError.Http.BAD_REQUEST -> "Http 400: Bad request"
-            AuthError.Http.UNAUTHORIZED -> "Http 401: Please check your email and password"
+            AuthError.Http.BAD_REQUEST -> "Account already exist"
+            AuthError.Http.UNAUTHORIZED -> "Please check your email and password"
             AuthError.Http.PAYMENT_REQUIRED -> "Http 402: Payment required"
             AuthError.Http.FORBIDDEN -> "Http 403: Forbidden"
             AuthError.Http.NOT_FOUND -> "Http 404: Not found"
@@ -45,7 +45,8 @@ object ErrorUiMapper {
         AuthError.Serialization -> "Data processing error"
         is AuthError.GoogleError -> when (error.type) {
             AuthError.Google.NO_TOKEN -> "Google token not found"
-            AuthError.Google.GOOGLE_TOKEN_ERROR -> "Google token error"
+            AuthError.Google.GOOGLE_TOKEN_ERROR -> "Please try sign in with Google again"
+            AuthError.Google.CANCELLED -> "Please try sign in with Google again"
         }
         AuthError.Unknown -> "Unknown authorization error"
     }

@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.util.errors
 
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
@@ -50,9 +51,11 @@ object ErrorHandler {
             // ---> Local auth errors <---
 
             // ---> Google Sign-In errors <---
+            is GetCredentialCancellationException -> {
+                AuthError.GoogleError(AuthError.Google.GOOGLE_TOKEN_ERROR)
+            }
 
             else -> AuthError.Unknown
         }
     }
-
 }

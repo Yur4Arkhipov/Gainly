@@ -105,9 +105,8 @@ class AuthRepositoryImpl @Inject constructor(
             } else null
             googleIdToken?.let { Result.Success(it) }
                 ?: Result.Error(AuthError.GoogleError(AuthError.Google.NO_TOKEN))
-        } catch (e: Exception) {
-            Log.e("GOOGLE_CRED", "Unexpected error", e)
-            Result.Error(AuthError.Unknown)
+        } catch (e: Throwable) {
+            Result.Error(ErrorHandler.mapAuthError(e))
         }
     }
 

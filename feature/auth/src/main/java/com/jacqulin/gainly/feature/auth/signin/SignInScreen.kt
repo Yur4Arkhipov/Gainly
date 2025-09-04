@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -77,16 +78,18 @@ fun SignInScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(180.dp)
             )
         }
 
         Column(
-            modifier = Modifier.align(Alignment.Center).offset(y = 100.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             EmailTextField(
@@ -169,7 +172,7 @@ fun SignInScreen(
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(15.dp))
 
             when (uiState) {
                 is UiState.Loading ->
@@ -181,8 +184,12 @@ fun SignInScreen(
                     )
                 is UiState.Success -> Text("Login successful!", color = Color.Green)
                 is UiState.Error -> Text(
-                    (uiState as UiState.Error).message,
-                    color = Red
+                    text = (uiState as UiState.Error).message,
+                    color = Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    textAlign = TextAlign.Center
                 )
                 else -> Unit
             }

@@ -52,6 +52,7 @@ sealed interface AuthError : RootError {
 
     enum class Google {
         NO_TOKEN,
-        GOOGLE_TOKEN_ERROR
+        GOOGLE_TOKEN_ERROR,
+        CANCELLED
     }
 }
