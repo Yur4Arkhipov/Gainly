@@ -3,13 +3,18 @@ package com.jacqulin.gainly.core.util.errors
 import com.jacqulin.gainly.core.util.RootError
 
 object ErrorUiMapper {
-    fun toMessage(error: RootError): String = when(error) {
-        is AuthError -> mapAuthError(error)
+    fun toMessage(error: RootError, context: ErrorContext = ErrorContext.GENERAL): String = when(error) {
+        is AuthError -> mapAuthError(error, context)
     }
 
-    private fun mapAuthError(error: AuthError): String = when (error) {
+    private fun mapAuthError(error: AuthError, context: ErrorContext): String = when (error) {
         is AuthError.HttpError -> when (error.type) {
-            AuthError.Http.BAD_REQUEST -> "Account already exist"
+            AuthError.Http.BAD_REQUEST -> when (context) {
+                ErrorContext.GENERAL -> "Http 400: Bad Request"
+                ErrorContext.SEND_CODE -> "Account already exist"
+                ErrorContext.VERIFY_CODE -> "Invalid code"
+                ErrorContext.SIGN_UP -> "Error then sign up"
+            }
             AuthError.Http.UNAUTHORIZED -> "Please check your email and password"
             AuthError.Http.PAYMENT_REQUIRED -> "Http 402: Payment required"
             AuthError.Http.FORBIDDEN -> "Http 403: Forbidden"
@@ -45,7 +50,7 @@ object ErrorUiMapper {
         AuthError.Serialization -> "Data processing error"
         is AuthError.GoogleError -> when (error.type) {
             AuthError.Google.NO_TOKEN -> "Google token not found"
-            AuthError.Google.GOOGLE_TOKEN_ERROR -> "Please try sign in with Google again"
+            AuthError.Google.GOOGLE_TOKEN_ERROR -> "Please try sign in with Google or other method again"
             AuthError.Google.CANCELLED -> "Please try sign in with Google again"
         }
         AuthError.Unknown -> "Unknown authorization error"

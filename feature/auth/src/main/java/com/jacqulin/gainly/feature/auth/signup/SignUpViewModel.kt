@@ -12,6 +12,7 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.core.util.errors.ErrorContext
 import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacqulin.gainly.feature.auth.signup.otp.OtpAction
 import com.jacqulin.gainly.feature.auth.signup.otp.OtpState
@@ -132,7 +133,10 @@ class SignUpViewModel @Inject constructor(
                 true
             }
             is Result.Error -> {
-                val message = ErrorUiMapper.toMessage(result.error)
+                val message = ErrorUiMapper.toMessage(
+                    error = result.error,
+                    context = ErrorContext.SEND_CODE
+                )
                 _uiState.value = UiState.Error(message)
                 false
             }
@@ -148,7 +152,10 @@ class SignUpViewModel @Inject constructor(
                     signUp()
                 }
                 is Result.Error -> {
-                    val message = ErrorUiMapper.toMessage(result.error)
+                    val message = ErrorUiMapper.toMessage(
+                        error = result.error,
+                        context = ErrorContext.VERIFY_CODE
+                    )
                     _uiState.value = UiState.Error(message)
                     otpState = otpState.copy(isValid = false)
                 }
