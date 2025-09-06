@@ -45,8 +45,9 @@ android {
 dependencies {
 
     implementation(project(":feature:auth"))
-    implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:friends"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
@@ -101,4 +102,10 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("androidx.compose.material3.adaptive:adaptive:1.2.0-beta01")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.2.0-beta01")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.2.0-beta01")
+
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 }

@@ -1,18 +1,30 @@
 package com.jacqulin.gainly.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.jacqulin.gainly.feature.home.navigation.HomeRoute
-import com.jacqulin.gainly.feature.home.navigation.homeNavigation
+import com.jacqulin.gainly.feature.friends.navigation.friendsSection
+import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
+import com.jacqulin.gainly.feature.home.navigation.homeSection
+import com.jacqulin.gainly.mainapp.AppState
 
 @Composable
-fun MainNavGraph(navController: NavHostController = rememberNavController()) {
+fun MainNavHost(
+    appState: AppState,
+    modifier: Modifier = Modifier
+) {
+    val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = HomeRoute
+        startDestination = HomeBaseRoute,
+        modifier = modifier
     ) {
-        homeNavigation(navController = navController)
+        homeSection {
+
+        }
+
+        friendsSection {
+
+        }
     }
 }

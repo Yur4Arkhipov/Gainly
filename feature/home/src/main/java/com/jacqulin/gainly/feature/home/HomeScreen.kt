@@ -14,12 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.jacqulin.gainly.core.util.UiState
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     Column(
