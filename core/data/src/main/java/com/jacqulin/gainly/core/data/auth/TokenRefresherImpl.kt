@@ -12,7 +12,7 @@ class TokenRefresherImpl @Inject constructor(
 
     override suspend fun refreshToken(refreshToken: String): AuthData {
         val request = RefreshTokenDto(refreshToken)
-        val response = api.refresh(apiKey = "your-super-secret-api-key", request = request)
+        val response = api.refresh(request = request)
         return response
     }
 }

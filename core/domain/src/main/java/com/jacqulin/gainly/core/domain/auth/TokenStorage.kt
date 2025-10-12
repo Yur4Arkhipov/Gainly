@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TokenStorage {
     val tokens: Flow<AuthData?>
-    suspend fun saveToken(data: AuthData)
-    suspend fun clear()
+    suspend fun saveTokens(data: AuthData)
+    suspend fun clearTokens()
 }

@@ -49,4 +49,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+
+    implementation(libs.retrofit)
+//    implementation(libs.retrofit2.converter.gson)
+
+    implementation(libs.androidx.credentials)
 }

@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            GainlyTheme {
+            GainlyTheme(dynamicColor = false) {
                 RootScreen()
             }
         }

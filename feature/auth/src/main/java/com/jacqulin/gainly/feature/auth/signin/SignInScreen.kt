@@ -1,10 +1,12 @@
 package com.jacqulin.gainly.feature.auth.signin
 
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,13 +27,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -47,6 +52,7 @@ import com.jacqulin.gainly.core.util.auth.components.EmailTextField
 import com.jacqulin.gainly.core.util.auth.components.GradientButton
 import com.jacqulin.gainly.core.util.auth.components.GradientCircularLoadingIndicator
 import com.jacqulin.gainly.core.util.auth.components.PasswordTextField
+import com.jacqulin.gainly.feature.auth.signin.telegram.TelegramLoginSheet
 import com.jacqulin.gainly.feature.auth.signup.navigaion.SignUpRoute
 
 @Composable
@@ -61,6 +67,8 @@ fun SignInScreen(
 
     val activity = LocalActivity.current // for get google token
 
+    var showTgBottomSheet by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,16 +78,18 @@ fun SignInScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(180.dp)
             )
         }
 
         Column(
-            modifier = Modifier.align(Alignment.Center).offset(y = 100.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             EmailTextField(
@@ -108,30 +118,62 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(30.dp))
             DividerWithText("Or")
             Spacer(modifier = Modifier.height(30.dp))
-            IconButton(
-                onClick = {
-                    activity?.let { viewModel.signInWithGoogle(it) }
-                },
-                modifier = Modifier
-                    .size(60.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = GrayBackground,
-                        shape = RoundedCornerShape(16.dp)
-                    )
+            Row(
+               horizontalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Google Sign-In",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(25.dp)
-                )
+                IconButton(
+                    onClick = {
+                        activity?.let { viewModel.signInWithGoogle(it) }
+                    },
+                    modifier = Modifier
+                        .size(60.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = GrayBackground,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = "Google Sign-In",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+
+                Spacer(Modifier.width(10.dp))
+
+                IconButton(
+                    onClick = {
+                        showTgBottomSheet = true
+                    },
+                    modifier = Modifier
+                        .size(60.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = GrayBackground,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_telegram),
+                        contentDescription = "Telegram Sign-In",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(34.dp)
+                    )
+                }
             }
-            Spacer(Modifier.height(20.dp))
+
+            Spacer(Modifier.height(15.dp))
+
             when (uiState) {
                 is UiState.Loading ->
                     GradientCircularLoadingIndicator(
@@ -142,8 +184,12 @@ fun SignInScreen(
                     )
                 is UiState.Success -> Text("Login successful!", color = Color.Green)
                 is UiState.Error -> Text(
-                    (uiState as UiState.Error).message,
-                    color = Red
+                    text = (uiState as UiState.Error).message,
+                    color = Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    textAlign = TextAlign.Center
                 )
                 else -> Unit
             }
@@ -169,6 +215,17 @@ fun SignInScreen(
                 }
             )
         }
+    }
+
+    if (showTgBottomSheet) {
+        TelegramLoginSheet(
+            onAuthAccess = { data ->
+                Log.d("TelegramAuth", "data: $data")
+                viewModel.signInWithTelegram(data)
+                showTgBottomSheet = false
+            },
+            onDismissRequest = { showTgBottomSheet = false }
+        )
     }
 }
 

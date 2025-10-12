@@ -17,11 +17,11 @@ class TokenStorageImpl @Inject constructor(
         if (access == null || refresh == null) null
         else AuthData(access, refresh)
     }
-    override suspend fun saveToken(data: AuthData) {
+    override suspend fun saveTokens(data: AuthData) {
         tokenDataStore.saveTokens(data)
     }
 
-    override suspend fun clear() {
+    override suspend fun clearTokens() {
         tokenDataStore.clearTokens()
     }
 }

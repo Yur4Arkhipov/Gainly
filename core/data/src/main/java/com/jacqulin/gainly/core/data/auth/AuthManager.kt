@@ -48,12 +48,12 @@ class AuthManager @Inject constructor(
                     try {
                         Log.d("AuthManager", "Access token expired -> Refreshing token...")
                         val newTokens = tokenRefresher.refreshToken(tokens.refreshToken)
-                        tokenStorage.saveToken(newTokens)
+                        tokenStorage.saveTokens(newTokens)
                         Log.d("AuthManager", "Token refreshed successfully -> Authorized")
                         AuthState.Authorized
                     } catch (e: Exception) {
                         Log.e("AuthManager", "Token refresh failed -> Unauthorized", e)
-                        tokenStorage.clear()
+                        tokenStorage.clearTokens()
                         AuthState.Unauthorized
                     }
                 }

@@ -71,11 +71,11 @@ fun SignUpScreen(
             modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(80.dp))
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(180.dp)
             )
         }
 
@@ -112,7 +112,7 @@ fun SignUpScreen(
                 text = "Get code",
                 onClick = {
                     scope.launch {
-                        val success = viewModel.requestConfirmationCode()
+                        val success = viewModel.sendCodeToEmail()
                         if (success) {
                             showOtp = true
                             modalBottomSheetState.show()
@@ -120,7 +120,7 @@ fun SignUpScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = viewModel.isValidEmail(email = viewModel.email) && viewModel.password.isNotBlank()
+                enabled = viewModel.isValidEmail(email = viewModel.email) && viewModel.isValidPassword(password = viewModel.password)
             )
 
             Spacer(Modifier.height(20.dp))
