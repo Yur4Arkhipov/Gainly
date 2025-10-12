@@ -30,6 +30,8 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,12 +43,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
 
 @Composable
-fun FriendsScreen() {
+fun FriendsScreen(
+    viewModel: FriendsViewModel = hiltViewModel()
+) {
+    val friends by viewModel.friends.collectAsState()
 
-    val friends = listOf("Алиса", "Боб", "Вика", "Глеб", "Даша")
+    LaunchedEffect(Unit) {
+        viewModel.getUsers()
+    }
 
     Column(
         modifier = Modifier
@@ -70,7 +79,7 @@ fun FriendsScreen() {
                 modifier = Modifier.weight(1f).fillMaxSize()
             ) {
                 items(friends) { friend ->
-                    FriendInfoRow(name = friend)
+                    FriendInfoRow(name = friend.username)
                 }
             }
 //        }

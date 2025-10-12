@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.di
 
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
+import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.remote.service.HealthApiService
 import dagger.Module
 import dagger.Provides
@@ -30,5 +31,10 @@ object NetworkModule {
     @Provides
     fun provideHealthApiService(retrofit: Retrofit): HealthApiService {
         return retrofit.create(HealthApiService::class.java)
+    }
+
+    @Provides
+    fun provideFriendsApiService(retrofit: Retrofit): FriendsApiService {
+        return retrofit.create(FriendsApiService::class.java)
     }
 }
