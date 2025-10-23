@@ -57,7 +57,7 @@ fun TelegramLoginSheet(
                             override fun shouldOverrideUrlLoading(view: WebView?, url: String?) = false
                         }
 
-                        loadUrl("https://yuraarkhipov65.github.io")
+                        loadUrl("https://mini-app-gefee.netlify.app/tg-auth.html")
                     }
                 },
                 update = {}

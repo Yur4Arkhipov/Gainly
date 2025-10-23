@@ -85,10 +85,12 @@ class SignInViewModel @Inject constructor(
             when (val result = signInTelegramUseCase(data)) {
                 is Result.Success -> {
                     saveTokensUseCase(result.data)
+                    Log.d("TELEGRAM", "Result is not success: ${result.data}")
                     _uiState.value = UiState.Success(result.data)
                 }
                 is Result.Error -> {
                     val message = ErrorUiMapper.toMessage(result.error)
+                    Log.d("TELEGRAM", "Result is not success: ${message}")
                     _uiState.value = UiState.Error(message)
                 }
             }
