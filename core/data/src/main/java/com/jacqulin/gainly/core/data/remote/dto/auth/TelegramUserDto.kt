@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.core.data.remote.dto
+package com.jacqulin.gainly.core.data.remote.dto.auth
 
 import kotlinx.serialization.Serializable
 

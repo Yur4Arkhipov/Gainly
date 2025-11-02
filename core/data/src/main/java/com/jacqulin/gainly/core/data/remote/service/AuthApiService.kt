@@ -1,11 +1,11 @@
 package com.jacqulin.gainly.core.data.remote.service
 
-import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
-import com.jacqulin.gainly.core.data.remote.dto.TelegramRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.AuthRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.GoogleSignInRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.LogoutRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.OtpRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.RefreshTokenDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.TelegramUserDto
 import com.jacqulin.gainly.core.domain.model.AuthData
 import retrofit2.http.Body
 import retrofit2.http.HTTP
@@ -49,8 +49,8 @@ interface AuthApiService {
         @Body request: LogoutRequestDto
     )
 
-    @POST("api/auth/tglogin")
+    @POST("api/auth/tgloginByWidget")
     suspend fun loginTelegram(
-        @Body request: TelegramRequestDto
+        @Body request: TelegramUserDto
     ): AuthData
 }
