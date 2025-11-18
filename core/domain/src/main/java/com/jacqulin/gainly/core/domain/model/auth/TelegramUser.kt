@@ -1,9 +1,6 @@
-package com.jacqulin.gainly.core.data.remote.dto.auth
+package com.jacqulin.gainly.core.domain.model.auth
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class TelegramUserDto(
+data class TelegramUser(
     val id: Long,
     val firstName: String,
     val lastName: String? = null,

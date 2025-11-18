@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.model.AuthData
+import com.jacqulin.gainly.core.domain.model.auth.TelegramUser
 import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SaveTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInGoogleUseCase
@@ -79,7 +80,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signInWithTelegram(data: String) {
+    fun signInWithTelegram(data: TelegramUser) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             when (val result = signInTelegramUseCase(data)) {
@@ -90,7 +91,7 @@ class SignInViewModel @Inject constructor(
                 }
                 is Result.Error -> {
                     val message = ErrorUiMapper.toMessage(result.error)
-                    Log.d("TELEGRAM", "Result is not success: ${message}")
+                    Log.d("TELEGRAM", "Result is not success: $message")
                     _uiState.value = UiState.Error(message)
                 }
             }
