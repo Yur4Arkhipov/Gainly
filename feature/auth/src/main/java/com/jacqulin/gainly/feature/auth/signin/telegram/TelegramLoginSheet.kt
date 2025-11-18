@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.feature.auth.signin.telegram
 
 import android.annotation.SuppressLint
+import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -40,6 +41,16 @@ fun TelegramLoginSheet(
                 factory = { context ->
                     WebView(context).apply {
                         settings.javaScriptEnabled = true
+                        settings.domStorageEnabled = true
+
+                        settings.loadWithOverviewMode = true
+                        settings.useWideViewPort = true
+                        setInitialScale(1)
+
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
 
                         addJavascriptInterface(object {
                             @JavascriptInterface
@@ -54,10 +65,9 @@ fun TelegramLoginSheet(
                                 view: WebView?,
                                 request: WebResourceRequest?
                             ) = false
-                            override fun shouldOverrideUrlLoading(view: WebView?, url: String?) = false
                         }
 
-                        loadUrl("https://yuraarkhipov65.github.io")
+                        loadUrl("https://mini-app-gefee.netlify.app/tg-auth.html")
                     }
                 },
                 update = {}
