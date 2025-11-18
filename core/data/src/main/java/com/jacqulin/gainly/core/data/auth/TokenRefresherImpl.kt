@@ -1,6 +1,6 @@
 package com.jacqulin.gainly.core.data.auth
 
-import com.jacqulin.gainly.core.data.remote.dto.RefreshTokenDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.RefreshTokenDto
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.domain.auth.TokenRefresher
 import com.jacqulin.gainly.core.domain.model.AuthData

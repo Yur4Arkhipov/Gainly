@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.usecase.auth
 
 import com.jacqulin.gainly.core.domain.model.AuthData
+import com.jacqulin.gainly.core.domain.model.auth.TelegramUser
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.util.errors.AuthError
@@ -11,7 +12,7 @@ class SignInTelegramUseCaseImpl @Inject constructor(
     private val authRepository: AuthRepository
 ) : SignInTelegramUseCase {
 
-    override suspend fun invoke(data: String): Result<AuthData, AuthError> {
+    override suspend fun invoke(data: TelegramUser): Result<AuthData, AuthError> {
         return authRepository.signInTelegram(data)
     }
 }

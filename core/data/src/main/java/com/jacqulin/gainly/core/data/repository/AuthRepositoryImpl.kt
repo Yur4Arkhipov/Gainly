@@ -7,13 +7,14 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.jacqulin.gainly.core.data.remote.dto.AuthRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.GoogleSignInRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.LogoutRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.OtpRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.TelegramRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.AuthRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.GoogleSignInRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.LogoutRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.OtpRequestDto
+import com.jacqulin.gainly.core.data.remote.dto.auth.TelegramAuthRequestDto
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.domain.model.AuthData
+import com.jacqulin.gainly.core.domain.model.auth.TelegramUser
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.AuthError
@@ -120,9 +121,17 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signInTelegram(data: String): Result<AuthData, AuthError> {
+    override suspend fun signInTelegram(data: TelegramUser): Result<AuthData, AuthError> {
         return try {
-            val request = TelegramRequestDto(data)
+            val request = TelegramAuthRequestDto(
+                id = data.id,
+                firstName = data.firstName,
+                lastName = data.lastName,
+                username = data.username,
+                photoUrl = data.photoUrl,
+                authDate = data.authDate,
+                hash = data.hash,
+            )
             val response = api.loginTelegram(request = request)
             Result.Success(response)
         } catch (e: Throwable) {

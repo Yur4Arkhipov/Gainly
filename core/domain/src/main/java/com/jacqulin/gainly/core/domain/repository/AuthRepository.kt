@@ -2,6 +2,7 @@ package com.jacqulin.gainly.core.domain.repository
 
 import android.app.Activity
 import com.jacqulin.gainly.core.domain.model.AuthData
+import com.jacqulin.gainly.core.domain.model.auth.TelegramUser
 import com.jacqulin.gainly.core.util.errors.AuthError
 import com.jacqulin.gainly.core.util.Result
 
@@ -13,5 +14,5 @@ interface AuthRepository {
     suspend fun signInGoogle(googleIdToken: String): Result<AuthData, AuthError>
     suspend fun getGoogleIdToken(activity: Activity): Result<String, AuthError>
     suspend fun logout(refreshToken: String): Result<Unit, AuthError>
-    suspend fun signInTelegram(data: String): Result<AuthData, AuthError>
+    suspend fun signInTelegram(data: TelegramUser): Result<AuthData, AuthError>
 }
