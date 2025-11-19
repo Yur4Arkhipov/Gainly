@@ -8,6 +8,9 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+/**
+ * Server initialization and ping during the startup application
+ */
 class PingServerInitializer : Initializer<Unit> {
 
     @OptIn(DelicateCoroutinesApi::class)

@@ -11,7 +11,7 @@ class SignInTelegramUseCaseImpl @Inject constructor(
     private val authRepository: AuthRepository
 ) : SignInTelegramUseCase {
 
-    override suspend fun invoke(data: String): Result<AuthData, AuthError> {
-        return authRepository.signInTelegram(data)
+    override suspend fun invoke(json: String): Result<AuthData, AuthError> {
+        return authRepository.signInTelegram(json)
     }
 }

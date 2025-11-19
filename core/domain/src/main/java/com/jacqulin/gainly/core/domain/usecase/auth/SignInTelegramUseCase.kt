@@ -5,5 +5,5 @@ import com.jacqulin.gainly.core.util.errors.AuthError
 import com.jacqulin.gainly.core.util.Result
 
 interface SignInTelegramUseCase {
-    suspend operator fun invoke(data: String): Result<AuthData, AuthError>
+    suspend operator fun invoke(json: String): Result<AuthData, AuthError>
 }

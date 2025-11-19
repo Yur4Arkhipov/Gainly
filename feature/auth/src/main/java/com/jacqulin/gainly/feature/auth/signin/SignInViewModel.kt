@@ -79,16 +79,18 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signInWithTelegram(data: String) {
+    fun signInWithTelegram(json: String) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            when (val result = signInTelegramUseCase(data)) {
+            when (val result = signInTelegramUseCase(json)) {
                 is Result.Success -> {
                     saveTokensUseCase(result.data)
+                    Log.d("signInWithTelegram", "Result is not success: ${result.data}")
                     _uiState.value = UiState.Success(result.data)
                 }
                 is Result.Error -> {
                     val message = ErrorUiMapper.toMessage(result.error)
+                    Log.d("signInWithTelegram", "Result is not success: $message")
                     _uiState.value = UiState.Error(message)
                 }
             }
