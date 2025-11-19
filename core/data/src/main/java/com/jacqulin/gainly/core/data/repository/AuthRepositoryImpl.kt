@@ -14,12 +14,12 @@ import com.jacqulin.gainly.core.data.remote.dto.auth.OtpRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.auth.TelegramAuthRequestDto
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.domain.model.AuthData
-import com.jacqulin.gainly.core.domain.model.auth.TelegramUser
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.AuthError
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
 import jakarta.inject.Inject
+import kotlinx.serialization.json.Json
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
@@ -121,16 +121,19 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signInTelegram(data: TelegramUser): Result<AuthData, AuthError> {
+    override suspend fun signInTelegram(json: String): Result<AuthData, AuthError> {
         return try {
+            Log.d("signInWithTelegram", "json: $json")
+            val dto = Json.decodeFromString<TelegramAuthRequestDto>(json)
+            Log.d("signInWithTelegram", "dto: $dto")
             val request = TelegramAuthRequestDto(
-                id = data.id,
-                firstName = data.firstName,
-                lastName = data.lastName,
-                username = data.username,
-                photoUrl = data.photoUrl,
-                authDate = data.authDate,
-                hash = data.hash,
+                id = dto.id,
+                firstName = dto.firstName,
+                lastName = dto.lastName,
+                username = dto.username,
+                photoUrl = dto.photoUrl,
+                authDate = dto.authDate,
+                hash = dto.hash
             )
             val response = api.loginTelegram(request = request)
             Result.Success(response)

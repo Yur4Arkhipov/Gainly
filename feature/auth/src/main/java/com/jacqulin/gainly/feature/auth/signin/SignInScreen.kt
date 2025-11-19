@@ -1,6 +1,5 @@
 package com.jacqulin.gainly.feature.auth.signin
 
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -219,9 +218,8 @@ fun SignInScreen(
 
     if (showTgBottomSheet) {
         TelegramLoginSheet(
-            onAuthAccess = { data ->
-                Log.d("TelegramAuth", "data: $data")
-                viewModel.signInWithTelegram(data)
+            onAuthAccess = { json ->
+                viewModel.signInWithTelegram(json)
                 showTgBottomSheet = false
             },
             onDismissRequest = { showTgBottomSheet = false }
