@@ -8,21 +8,19 @@ import androidx.navigation.compose.navigation
 import com.jacqulin.gainly.feature.friends.FriendsScreen
 import kotlinx.serialization.Serializable
 
-@Serializable
-data object FriendsRoute
-
-@Serializable
-data object FriendsBaseRoute
+@Serializable data object FriendsRoute
+@Serializable data object FriendsBaseRoute
 
 fun NavController.navigateToFriends(navOptions: NavOptions) = navigate(route = FriendsRoute, navOptions)
 
 fun NavGraphBuilder.friendsSection(
-    friendDestinations: NavGraphBuilder.() -> Unit
+    onAddFriendsClick: () -> Unit,
+    addFriendsDestination: NavGraphBuilder.() -> Unit
 ) {
     navigation<FriendsBaseRoute>(startDestination = FriendsRoute) {
         composable<FriendsRoute>() {
-            FriendsScreen()
+            FriendsScreen(onAddFriendsClick = onAddFriendsClick)
         }
-        friendDestinations()
+        addFriendsDestination()
     }
 }

@@ -3,7 +3,9 @@ package com.jacqulin.gainly.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.jacqulin.gainly.feature.friends.navigation.addFriendsScreen
 import com.jacqulin.gainly.feature.friends.navigation.friendsSection
+import com.jacqulin.gainly.feature.friends.navigation.navigateToAddFriends
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.homeSection
 import com.jacqulin.gainly.mainapp.AppState
@@ -23,8 +25,13 @@ fun MainNavHost(
 
         }
 
-        friendsSection {
-
+        friendsSection(
+            onAddFriendsClick = navController::navigateToAddFriends
+        ) {
+            addFriendsScreen(
+                showBackButton = true,
+                onBackClick = navController::popBackStack,
+            )
         }
     }
 }
