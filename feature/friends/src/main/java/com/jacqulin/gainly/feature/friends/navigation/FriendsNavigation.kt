@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.jacqulin.gainly.feature.friends.FriendsScreen
+import com.jacqulin.gainly.feature.friends.ui.FriendsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable data object FriendsRoute
