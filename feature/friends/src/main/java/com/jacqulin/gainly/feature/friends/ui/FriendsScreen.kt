@@ -72,6 +72,9 @@ fun FriendsScreen(
             searchQuery = viewModel.searchQuery,
             searchResults = searchResults,
             onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
+            onSendFriendshipRequestClick = { nickname ->
+                viewModel.sendFriendRequest(nickname)
+            }
         )
 
         if (!searchExpanded) {

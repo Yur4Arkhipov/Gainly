@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -89,6 +90,32 @@ class FriendsViewModel @Inject constructor(
             _searchResults.value = result.users
         } catch (e: Exception) {
             Log.e("SEARCH", "Error: $e")
+        }
+    }
+
+    fun sendFriendRequest(nickname: String) {
+        viewModelScope.launch {
+            val authData = tokenStorage.tokens.firstOrNull()
+            val token = authData?.accessToken
+
+            if (token == null) {
+                Log.d("TOKEN_FRIENDS", "Access token not found")
+                return@launch
+            }
+
+            try {
+                val result = repository.sendFriendship(token, nickname)
+                Log.d("FRIENDS", "Friend request sent to $nickname")
+                _searchResults.update { list ->
+                    list.map { user ->
+                        if (user.username == nickname) user.copy(isRequestSent = true)
+                        else user
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("FRIENDS", "Error sending friend request: $e")
+            }
         }
     }
 }

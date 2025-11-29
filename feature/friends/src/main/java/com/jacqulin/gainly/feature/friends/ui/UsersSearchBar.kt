@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
@@ -48,6 +51,7 @@ fun UsersSearchBar(
     searchQuery: String,
     searchResults: List<UserData>,
     onSearchQueryChange: (String) -> Unit,
+    onSendFriendshipRequestClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -103,7 +107,11 @@ fun UsersSearchBar(
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(searchResults) { user ->
-                        UsersSearchInfoRow(user.username)
+                        UsersSearchInfoRow(
+                            name = user.username,
+                            onAddClick = { onSendFriendshipRequestClick(user.username) },
+                            requestSent = user.isRequestSent
+                        )
                     }
                 }
             }
@@ -114,26 +122,40 @@ fun UsersSearchBar(
 @Composable
 fun UsersSearchInfoRow(
     name: String,
+    onAddClick: () -> Unit,
+    requestSent: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            imageVector = Icons.Default.Person,
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color.LightGray)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text = name)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(text = name)
+        }
+
+        IconButton(onClick = onAddClick) {
+            Icon(
+                imageVector = if (requestSent) Icons.Default.Check else Icons.Default.Add,
+                contentDescription = "Добавить в друзья",
+                tint = if (requestSent) Color.Green else Color.Black
+            )
+        }
     }
 }
-
 
 @Composable
 fun UsersSearchListEmptyState(

@@ -4,4 +4,5 @@ data class UserData(
     val userId: String,
     val username: String,
     val registrationDate: String,
+    val isRequestSent: Boolean = false
 )

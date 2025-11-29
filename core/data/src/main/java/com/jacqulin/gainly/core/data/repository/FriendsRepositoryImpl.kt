@@ -23,4 +23,11 @@ class FriendsRepositoryImpl(
         )
         return response.toUsersData()
     }
+
+    override suspend fun sendFriendship(accessToken: String, nickname: String) {
+        val response = api.sendFriendshipRequest(
+            accessToken = "Bearer $accessToken",
+            nickname = nickname
+        )
+    }
 }
