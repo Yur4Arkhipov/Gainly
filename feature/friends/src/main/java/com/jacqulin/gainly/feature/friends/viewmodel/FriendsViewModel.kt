@@ -9,15 +9,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
+import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +29,12 @@ class FriendsViewModel @Inject constructor(
 
     private val _friends = MutableStateFlow<List<FriendData>>(emptyList())
     val friends: StateFlow<List<FriendData>> = _friends
+
+    var searchQuery by mutableStateOf("")
+        private set
+
+    private val _searchResults = MutableStateFlow<List<UserData>>(emptyList())
+    val searchResults: StateFlow<List<UserData>> = _searchResults
 
     fun getUsers() {
         viewModelScope.launch {
@@ -42,59 +48,47 @@ class FriendsViewModel @Inject constructor(
 
             val result = repository.getFriends(token)
             _friends.value = result.friends
-            Log.d("FRIENDS", "Friend1: ${result.friends}")
+            Log.d("FRIENDS", "Friend: ${result.friends}")
         }
     }
-
-    var searchQuery by mutableStateOf("")
-        private set
-
-
-    private val moviesFlow = flowOf(
-        listOf(
-            Movie(
-                id = 1,
-                name = "Inception",
-                rating = 8.8
-            ),
-            Movie(
-                id = 2,
-                name = "The Prestige",
-                rating = 8.5
-            ),
-            Movie(
-                id = 3,
-                name = "Interstellar",
-                rating = 8.7
-            )
-        )
-    )
-
-
-
-    val searchResults: StateFlow<List<Movie>> =
-        snapshotFlow { searchQuery }
-            .combine(moviesFlow) { searchQuery, movies ->
-                when {
-                    searchQuery.isNotEmpty() -> movies.filter { movie ->
-                        movie.name.contains(searchQuery, ignoreCase = true)
-                    }
-                    else -> movies
-                }
-            }.stateIn(
-                scope = viewModelScope,
-                initialValue = emptyList(),
-                started = SharingStarted.WhileSubscribed(5_000)
-            )
 
     fun onSearchQueryChange(newQuery: String) {
         searchQuery = newQuery
     }
 
-}
+    init {
+        observeSearchQuery()
+    }
 
-data class Movie(
-    val id: Long,
-    val name: String,
-    val rating: Double
-)
+    @OptIn(FlowPreview::class)
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            snapshotFlow { searchQuery }
+                .debounce(500)
+                .distinctUntilChanged()
+                .collect { query ->
+                    if (query.isBlank()) {
+                        _searchResults.value = emptyList()
+                        return@collect
+                    }
+                    if (query.length < 2) {
+                        _searchResults.value = emptyList()
+                        return@collect
+                    }
+                    searchUsers(query)
+                }
+        }
+    }
+
+    private suspend fun searchUsers(query: String) {
+        val authData = tokenStorage.tokens.firstOrNull()
+        val token = authData?.accessToken ?: return
+
+        try {
+            val result = repository.getUsers(token, query)
+            _searchResults.value = result.users
+        } catch (e: Exception) {
+            Log.e("SEARCH", "Error: $e")
+        }
+    }
+}

@@ -47,6 +47,7 @@ fun FriendsScreen(
 
     var searchExpanded by rememberSaveable { mutableStateOf(false) }
 
+    // изменить на запись в локальную бд
     LaunchedEffect(Unit) {
         viewModel.getUsers()
     }
@@ -67,7 +68,7 @@ fun FriendsScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        FriendsSearchBar(
+        UsersSearchBar(
             searchQuery = viewModel.searchQuery,
             searchResults = searchResults,
             onSearchQueryChange = { viewModel.onSearchQueryChange(it) },

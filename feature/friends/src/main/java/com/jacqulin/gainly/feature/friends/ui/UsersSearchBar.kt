@@ -40,13 +40,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.jacqulin.gainly.feature.friends.viewmodel.Movie
+import com.jacqulin.gainly.core.domain.model.friends.UserData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendsSearchBar(
+fun UsersSearchBar(
     searchQuery: String,
-    searchResults: List<Movie>,
+    searchResults: List<UserData>,
     onSearchQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -71,16 +71,15 @@ fun FriendsSearchBar(
                     onSearch = { expanded = true },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search friends") },
+                    placeholder = { Text("Найти друзей") },
                     leadingIcon = { Icon(Icons.Default.Search, null) },
                     trailingIcon = {
                         when {
                             searchQuery.isNotEmpty() -> {
                                 IconButton(onClick = { onSearchQueryChange("") }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                    Icon(Icons.Default.Close, null)
                                 }
                             }
-
                             expanded -> {
                                 IconButton(
                                     onClick = {
@@ -88,7 +87,7 @@ fun FriendsSearchBar(
                                         keyboardController?.hide()
                                     }
                                 ) {
-                                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Collapse search")
+                                    Icon(Icons.Default.KeyboardArrowUp, null)
                                 }
                             }
                         }
@@ -97,14 +96,14 @@ fun FriendsSearchBar(
             },
         ) {
             if (searchResults.isEmpty()) {
-                FriendsSearchListEmptyState()
+                UsersSearchListEmptyState()
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
-                    items(searchResults) { friend ->
-                        FriendSearchInfoRow(friend.name)
+                    items(searchResults) { user ->
+                        UsersSearchInfoRow(user.username)
                     }
                 }
             }
@@ -113,7 +112,7 @@ fun FriendsSearchBar(
 }
 
 @Composable
-fun FriendSearchInfoRow(
+fun UsersSearchInfoRow(
     name: String,
     modifier: Modifier = Modifier
 ) {
@@ -130,16 +129,14 @@ fun FriendSearchInfoRow(
                 .clip(CircleShape)
                 .background(Color.LightGray)
         )
-
         Spacer(modifier = Modifier.width(12.dp))
-
         Text(text = name)
     }
 }
 
 
 @Composable
-fun FriendsSearchListEmptyState(
+fun UsersSearchListEmptyState(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -147,11 +144,6 @@ fun FriendsSearchListEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Text(
-            text = "No friends found",
-        )
-        Text(
-            text = "Try adjusting your search",
-        )
+        Text(text = "Найдите друзей")
     }
 }
