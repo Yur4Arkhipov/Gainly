@@ -66,8 +66,6 @@ fun FriendsScreen(
             onBackClick = { },
         )
 
-        Spacer(Modifier.height(10.dp))
-
         UsersSearchBar(
             searchQuery = viewModel.searchQuery,
             searchResults = searchResults,
