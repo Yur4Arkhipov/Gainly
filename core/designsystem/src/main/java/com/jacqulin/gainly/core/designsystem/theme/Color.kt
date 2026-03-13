@@ -2,14 +2,6 @@ package com.jacqulin.gainly.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-
 val md_theme_light_primary = Color(0xFF505b92)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFdde1ff)
@@ -99,6 +91,7 @@ val GrayBorder = Color(0xFFE5E3E3)
 val GrayBackgroundSelectedText = Color(0xFFCCCBCB)
 val GrayHandleSelectedText = Color(0xFFB2B1B1)
 val White = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
 val LightGray = Color(0xFFEDEDED)
 val UrlTextColor = Color(0xFFF192F8)
 val GrayBackgroundOutlinedFieldLabel = Color(0xFFFDFCFC)
@@ -123,3 +116,26 @@ val PasswordInputHintColor = Color(0xFFFC8888)
 
 val LightAuthButtonTextColor = Color(0xFFFFFFFF)
 //val DarkAuthButtonTextColor = Color(0xFFFFFFFF)
+
+val BottomSheetContainerColor = Color(0xFFF3F2F8)
+
+val WorkoutColors = listOf(
+    Color(0xFFA287F9),
+    Color(0xFFC37BFE),
+    Color(0xFFF3A8FF),
+    Color(0xFFFDA5D7),
+    Color(0xFFFFA3AE),
+    Color(0xFFFF6567),
+    Color(0xFFFEBB00),
+    Color(0xFFFFB86A),
+    Color(0xFFFFE01B),
+    Color(0xFF9BE700),
+    Color(0xFF01D6BE),
+    Color(0xFF9ABBFF),
+)
+
+val SaveWorkoutButtonContainerColor = Color(0xFF99BBFE)
+val SelectedAddWorkoutItem = Color(0xFF99BBFE)
+val UnselectedAddWorkoutItem = Color(0xFFE5E5EA)
+
+val UncheckedSwitchTrackColor = Color(0xFFD3D3D3)

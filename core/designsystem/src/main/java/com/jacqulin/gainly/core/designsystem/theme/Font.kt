@@ -10,3 +10,9 @@ val GainlyFontFamily = FontFamily(
     Font(R.font.roboto_regular, FontWeight.W400),
     Font(R.font.roboto_semibold, FontWeight.W600)
 )
+
+val GoogleSansFontFamily = FontFamily(
+    Font(R.font.googlesans_regular, FontWeight.W400),
+    Font(R.font.googlesans_bold, FontWeight.W700)
+)
+
