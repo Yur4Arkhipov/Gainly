@@ -17,10 +17,18 @@ data class WorkoutState(
     val date: String = "",
     val isColorPickerVisible: Boolean = false,
     val isTypePickerVisible: Boolean = false,
-    val isSetsPickerVisible: Boolean = false,
+    val isExerciseDetailVisible: Boolean = false,
+    val isExercisesListVisible: Boolean = false,
     val isDatePickerVisible: Boolean = false,
-    val isBodyWeight: Boolean = false,
-    val workoutSets: List<WorkoutSet> = emptyList()
+    val exercises: List<Exercise> = emptyList(),
+    val editingExerciseId: String? = null
+)
+
+data class Exercise(
+    val id: String,
+    val name: String = "",
+    val sets: List<WorkoutSet> = emptyList(),
+    val isBodyWeight: Boolean = false
 )
 
 data class WorkoutSet(
@@ -74,12 +82,119 @@ class AddWorkoutViewModel @Inject constructor(
         _uiState.update { it.copy(isTypePickerVisible = false) }
     }
 
-    fun showSetsPicker() {
-        _uiState.update { it.copy(isSetsPickerVisible = true) }
+    fun showExercisesList() {
+        _uiState.update { it.copy(isExercisesListVisible = true) }
     }
 
-    fun hideSetsPicker() {
-        _uiState.update { it.copy(isSetsPickerVisible = false) }
+    fun hideExercisesList() {
+        _uiState.update { it.copy(isExercisesListVisible = false) }
+    }
+
+    fun addExercise() {
+        val newExerciseId = java.util.UUID.randomUUID().toString()
+        val newExercise = Exercise(id = newExerciseId, name = "Упражнение ${_uiState.value.exercises.size + 1}")
+        _uiState.update {
+            it.copy(
+                exercises = it.exercises + newExercise,
+                editingExerciseId = newExerciseId,
+                isExerciseDetailVisible = true
+            )
+        }
+    }
+
+    fun editExercise(exerciseId: String) {
+        _uiState.update {
+            it.copy(
+                editingExerciseId = exerciseId,
+                isExerciseDetailVisible = true
+            )
+        }
+    }
+
+    fun hideExerciseDetail() {
+        _uiState.update {
+            it.copy(
+                isExerciseDetailVisible = false,
+                editingExerciseId = null
+            )
+        }
+    }
+
+    fun updateCurrentExerciseName(name: String) {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    exercise.copy(name = name)
+                } else {
+                    exercise
+                }
+            }
+            state.copy(exercises = updatedExercises)
+        }
+    }
+
+    fun toggleCurrentExerciseBodyWeight(isBodyWeight: Boolean) {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    exercise.copy(isBodyWeight = isBodyWeight)
+                } else {
+                    exercise
+                }
+            }
+            state.copy(exercises = updatedExercises)
+        }
+    }
+
+    fun addSetToCurrentExercise() {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    val newSetNumber = exercise.sets.size + 1
+                    exercise.copy(sets = exercise.sets + WorkoutSet(newSetNumber))
+                } else {
+                    exercise
+                }
+            }
+            state.copy(exercises = updatedExercises)
+        }
+    }
+
+    fun updateSetRepsInCurrentExercise(setIndex: Int, reps: Int) {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    val updatedSets = exercise.sets.toMutableList().apply {
+                        this[setIndex] = this[setIndex].copy(reps = reps)
+                    }
+                    exercise.copy(sets = updatedSets)
+                } else {
+                    exercise
+                }
+            }
+            state.copy(exercises = updatedExercises)
+        }
+    }
+
+    fun updateSetWeightInCurrentExercise(setIndex: Int, weight: Int) {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    val updatedSets = exercise.sets.toMutableList().apply {
+                        this[setIndex] = this[setIndex].copy(weight = weight)
+                    }
+                    exercise.copy(sets = updatedSets)
+                } else {
+                    exercise
+                }
+            }
+            state.copy(exercises = updatedExercises)
+        }
     }
 
     fun showDatePicker() {
@@ -88,35 +203,6 @@ class AddWorkoutViewModel @Inject constructor(
 
     fun hideDatePicker() {
         _uiState.update { it.copy(isDatePickerVisible = false) }
-    }
-
-    fun toggleBodyWeight(isBodyWeight: Boolean) {
-        _uiState.update { it.copy(isBodyWeight = isBodyWeight) }
-    }
-
-    fun addSet() {
-        _uiState.update { currentState ->
-            val newSetNumber = currentState.workoutSets.size + 1
-            currentState.copy(workoutSets = currentState.workoutSets + WorkoutSet(newSetNumber))
-        }
-    }
-
-    fun updateSetReps(index: Int, reps: Int) {
-        _uiState.update { currentState ->
-            val updatedSets = currentState.workoutSets.toMutableList().apply {
-                this[index] = this[index].copy(reps = reps)
-            }
-            currentState.copy(workoutSets = updatedSets)
-        }
-    }
-
-    fun updateSetWeight(index: Int, weight: Int) {
-        _uiState.update { currentState ->
-            val updatedSets = currentState.workoutSets.toMutableList().apply {
-                this[index] = this[index].copy(weight = weight)
-            }
-            currentState.copy(workoutSets = updatedSets)
-        }
     }
 
     fun updateDate(newDigits: String) {

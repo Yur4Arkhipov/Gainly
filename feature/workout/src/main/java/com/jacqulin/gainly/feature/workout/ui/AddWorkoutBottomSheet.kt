@@ -8,17 +8,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,30 +48,9 @@ import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.ui.components.SaveButton
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.rememberDatePickerState
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,18 +79,30 @@ fun AddWorkoutBottomSheet(
         )
     }
 
-    if (uiState.isSetsPickerVisible) {
-        SetsBottomSheet(
-            selectedColor = uiState.selectedColor,
-            initialSets = uiState.workoutSets,
-            isBodyWeight = uiState.isBodyWeight,
-            onBodyWeightChanged = viewModel::toggleBodyWeight,
-            onAddSet = viewModel::addSet,
-            onUpdateSetReps = viewModel::updateSetReps,
-            onUpdateSetWeight = viewModel::updateSetWeight,
-            onSave = viewModel::hideSetsPicker,
-            onDismiss = viewModel::hideSetsPicker
+    if (uiState.isExercisesListVisible) {
+        ExercisesListBottomSheet(
+            exercises = uiState.exercises,
+            onAddExercise = viewModel::addExercise,
+            onEditExercise = viewModel::editExercise,
+            onDismiss = viewModel::hideExercisesList
         )
+    }
+
+    if (uiState.isExerciseDetailVisible) {
+        val currentExercise = uiState.exercises.find { it.id == uiState.editingExerciseId }
+        if (currentExercise != null) {
+            ExerciseDetailBottomSheet(
+                exercise = currentExercise,
+                selectedColor = uiState.selectedColor,
+                onNameChanged = viewModel::updateCurrentExerciseName,
+                onBodyWeightChanged = viewModel::toggleCurrentExerciseBodyWeight,
+                onAddSet = viewModel::addSetToCurrentExercise,
+                onUpdateSetReps = { index, reps -> viewModel.updateSetRepsInCurrentExercise(index, reps) },
+                onUpdateSetWeight = { index, weight -> viewModel.updateSetWeightInCurrentExercise(index, weight) },
+                onSave = viewModel::hideExerciseDetail,
+                onDismiss = viewModel::hideExerciseDetail
+            )
+        }
     }
 
     if (uiState.isDatePickerVisible) {
@@ -116,7 +114,7 @@ fun AddWorkoutBottomSheet(
                     val day = calendar.get(Calendar.DAY_OF_MONTH)
                     val month = calendar.get(Calendar.MONTH) + 1
                     val year = calendar.get(Calendar.YEAR)
-                    val formattedDate = String.format("%02d%02d%04d", day, month, year)
+                    val formattedDate = String.format(Locale.US, "%02d%02d%04d", day, month, year)
                     viewModel.updateDate(formattedDate)
                 }
             },
@@ -133,15 +131,9 @@ fun AddWorkoutBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                }
+                .fillMaxHeight()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp)
-                .imePadding()
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -154,69 +146,42 @@ fun AddWorkoutBottomSheet(
                     lineHeight = 23.sp,
                     letterSpacing = 0.sp,
                     textAlign = TextAlign.Center
-                )
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-//            val titleFocusRequester = remember { FocusRequester() }
-//            var isTitleFocused by remember { mutableStateOf(false) }
-//
-//            if (isTitleFocused) {
-//                BasicTextField(
-//                    value = uiState.title,
-//                    onValueChange = viewModel::updateTitle,
-//                    textStyle = TextStyle(
-//                        fontFamily = GoogleSansFontFamily,
-//                        fontWeight = FontWeight.Bold,
-//                        fontSize = 42.sp,
-//                        lineHeight = 40.sp,
-//                        letterSpacing = 0.sp,
-//                        color = uiState.selectedColor
-//                    ),
-//                    keyboardOptions = KeyboardOptions(
-//                        imeAction = ImeAction.Done
-//                    ),
-//                    keyboardActions = KeyboardActions(
-//                        onDone = {
-//                            isTitleFocused = false
-//                            focusManager.clearFocus()
-//                        }
-//                    ),
-//                    singleLine = false,
-//                    maxLines = 2,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .focusRequester(titleFocusRequester)
-//                        .onFocusChanged { state ->
-//                            if (!state.isFocused) {
-//                                isTitleFocused = false
-//                            }
-//                        }
-//                )
-//                LaunchedEffect(Unit) {
-//                    titleFocusRequester.requestFocus()
-//                }
-//            } else {
-//                Text(
-//                    text = uiState.title.ifEmpty { "Название упражнения" },
-//                    style = TextStyle(
-//                        fontFamily = GoogleSansFontFamily,
-//                        fontWeight = FontWeight.Bold,
-//                        fontSize = 42.sp,
-//                        lineHeight = 40.sp,
-//                        letterSpacing = 0.sp,
-//                        color = uiState.selectedColor
-//                    ),
-//                    maxLines = 2,
-//                    overflow = TextOverflow.Ellipsis,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .clickable { isTitleFocused = true }
-//                )
-//            }
-
-            Spacer(modifier = Modifier.height(10.dp))
+            WorkoutFormItem(
+                label = "Дата",
+                onClick = {
+                    focusManager.clearFocus()
+                    viewModel.showDatePicker()
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .widthIn(min = 120.dp)
+                        .clip(RoundedCornerShape(32.dp))
+                        .background(UnselectedAddWorkoutItem),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (uiState.date.isNotEmpty()) formatDate(uiState.date)
+                        else "Выбрать дату",
+                        style = TextStyle(
+                            fontFamily = GoogleSansFontFamily,
+                            fontSize = 16.sp,
+                            lineHeight = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            letterSpacing = 0.sp,
+                            color = Black,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+            }
 
             WorkoutFormItem(
                 label = "Цвет",
@@ -257,22 +222,22 @@ fun AddWorkoutBottomSheet(
             }
 
             WorkoutFormItem(
-                label = "Сеты",
+                label = "Упражнения",
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.showSetsPicker()
+                    viewModel.showExercisesList()
                 }
             ) {
                 Box(
                     modifier = Modifier
                         .height(40.dp)
-                        .widthIn(min = 120.dp)
+                        .widthIn(min = 80.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(UnselectedAddWorkoutItem),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (uiState.workoutSets.isEmpty()) "0" else "${uiState.workoutSets.size}",
+                        text = "${uiState.exercises.size}",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
                             fontSize = 16.sp,
@@ -280,47 +245,17 @@ fun AddWorkoutBottomSheet(
                             fontWeight = FontWeight.Normal,
                             letterSpacing = 0.sp,
                             color = Black
-                        )
-                    )
-                }
-            }
-
-            WorkoutFormItem(
-                label = "Дата",
-                onClick = {
-                    focusManager.clearFocus()
-                    viewModel.showDatePicker()
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .widthIn(min = 120.dp)
-                        .clip(RoundedCornerShape(32.dp))
-                        .background(UnselectedAddWorkoutItem),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (uiState.date.isNotEmpty()) formatDate(uiState.date)
-                        else "Выбрать дату",
-                        style = TextStyle(
-                            fontFamily = GoogleSansFontFamily,
-                            fontSize = 16.sp,
-                            lineHeight = 16.sp,
-                            fontWeight = FontWeight.Normal,
-                            letterSpacing = 0.sp,
-                            color = Black,
-                            textAlign = TextAlign.Center
-                        )
+                        ),
+                        modifier = Modifier.padding(horizontal = 12.dp)
                     )
                 }
             }
 
             SaveButton(
-                text = "Добавить запись",
+                text = "Сохранить тренировку",
                 onClick = {
                     focusManager.clearFocus()
-                    /* TODO: Save action */
+                    /* TODO: Save entire workout action */
                 }
             )
         }
