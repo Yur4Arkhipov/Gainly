@@ -57,4 +57,7 @@ dependencies {
     implementation(libs.googleid)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Okhttp
+    implementation(libs.okhttp.logging.interceptor)
 }

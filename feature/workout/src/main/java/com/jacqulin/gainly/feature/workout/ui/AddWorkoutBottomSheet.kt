@@ -2,13 +2,13 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -37,12 +37,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,23 +68,23 @@ fun AddWorkoutBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val uiState by viewModel.uiState.collectAsState()
-    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
-//    if (uiState.isColorPickerVisible) {
-//        ColorPickerBottomSheet(
-//            initialColor = uiState.selectedColor,
-//            onColorSelected = viewModel::updateColor,
-//            onDismiss = viewModel::hideColorPicker
-//        )
-//    }
-//
-//    if (uiState.isTypePickerVisible) {
-//        WorkoutTypeBottomSheet(
-//            initialType = uiState.workoutType,
-//            onTypeSelected = viewModel::updateWorkoutType,
-//            onDismiss = viewModel::hideTypePicker
-//        )
-//    }
+    if (uiState.isColorPickerVisible) {
+        ColorPickerBottomSheet(
+            initialColor = uiState.selectedColor,
+            onColorSelected = viewModel::updateColor,
+            onDismiss = viewModel::hideColorPicker
+        )
+    }
+
+    if (uiState.isTypePickerVisible) {
+        WorkoutTypeBottomSheet(
+            initialType = uiState.workoutType,
+            onTypeSelected = viewModel::updateWorkoutType,
+            onDismiss = viewModel::hideTypePicker
+        )
+    }
 
     if (uiState.isExercisesListVisible) {
         ExercisesListBottomSheet(
@@ -112,22 +114,22 @@ fun AddWorkoutBottomSheet(
         }
     }
 
-//    if (uiState.isDatePickerVisible) {
-//        DatePickerModal(
-//            onDateSelected = { dateMillis ->
-//                dateMillis?.let {
-//                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//                    calendar.timeInMillis = it
-//                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-//                    val month = calendar.get(Calendar.MONTH) + 1
-//                    val year = calendar.get(Calendar.YEAR)
-//                    val formattedDate = String.format(Locale.US, "%02d%02d%04d", day, month, year)
-//                    viewModel.updateDate(formattedDate)
-//                }
-//            },
-//            onDismiss = viewModel::hideDatePicker
-//        )
-//    }
+    if (uiState.isDatePickerVisible) {
+        DatePickerModal(
+            onDateSelected = { dateMillis ->
+                dateMillis?.let {
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    calendar.timeInMillis = it
+                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+                    val month = calendar.get(Calendar.MONTH) + 1
+                    val year = calendar.get(Calendar.YEAR)
+                    val formattedDate = String.format(Locale.US, "%02d%02d%04d", day, month, year)
+                    viewModel.updateDate(formattedDate)
+                }
+            },
+            onDismiss = viewModel::hideDatePicker
+        )
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -141,12 +143,22 @@ fun AddWorkoutBottomSheet(
                 .wrapContentHeight()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp)
+                .focusRequester(focusRequester)
+                .focusable()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { focusRequester.requestFocus() }
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             BasicTextField(
                 value = uiState.title,
-                onValueChange = viewModel::updateTitle,
+                onValueChange = { newText ->
+                    if (newText.length <= 30) {
+                        (viewModel::updateTitle)(newText)
+                    }
+                },
                 textStyle = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -156,13 +168,16 @@ fun AddWorkoutBottomSheet(
                     color = uiState.selectedColor,
                     textAlign = TextAlign.Center
                 ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        focusManager.clearFocus(true)
+                        focusRequester.requestFocus()
                     }
                 ),
-                singleLine = true,
+                maxLines = 2,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -171,8 +186,8 @@ fun AddWorkoutBottomSheet(
             WorkoutFormItem(
                 label = "Дата",
                 onClick = {
-                    focusManager.clearFocus()
-//                    viewModel.showDatePicker()
+                    focusRequester.requestFocus()
+                    viewModel.showDatePicker()
                 }
             ) {
                 Box(
@@ -202,8 +217,8 @@ fun AddWorkoutBottomSheet(
             WorkoutFormItem(
                 label = "Цвет",
                 onClick = {
-                    focusManager.clearFocus()
-//                    viewModel.showColorPicker()
+                    focusRequester.requestFocus()
+                    viewModel.showColorPicker()
                 }
             ) {
                 Box(
@@ -217,8 +232,8 @@ fun AddWorkoutBottomSheet(
             WorkoutFormItem(
                 label = "Вид тренировки",
                 onClick = {
-                    focusManager.clearFocus()
-//                    viewModel.showTypePicker()
+                    focusRequester.requestFocus()
+                    viewModel.showTypePicker()
                 }
             ) {
                 Box(
@@ -240,7 +255,7 @@ fun AddWorkoutBottomSheet(
             WorkoutFormItem(
                 label = "Упражнения",
                 onClick = {
-                    focusManager.clearFocus()
+                    focusRequester.requestFocus()
                     viewModel.showExercisesList()
                 }
             ) {
@@ -271,7 +286,7 @@ fun AddWorkoutBottomSheet(
             SaveButton(
                 text = "Сохранить тренировку",
                 onClick = {
-                    focusManager.clearFocus()
+                    focusRequester.requestFocus()
                     viewModel.saveWorkout()
                     onDismiss()
                 }

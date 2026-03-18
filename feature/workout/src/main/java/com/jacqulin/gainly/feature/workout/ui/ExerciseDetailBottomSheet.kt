@@ -2,6 +2,8 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,11 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,7 +70,7 @@ fun ExerciseDetailBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -77,10 +83,12 @@ fun ExerciseDetailBottomSheet(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp)
+                .focusRequester(focusRequester)
+                .focusable()
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) { focusManager.clearFocus() },
+                ) { focusRequester.requestFocus() },
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
@@ -89,7 +97,11 @@ fun ExerciseDetailBottomSheet(
             ) {
                 BasicTextField(
                     value = exercise.name,
-                    onValueChange = onNameChanged,
+                    onValueChange = { newText ->
+                        if (newText.length <= 24) {
+                            onNameChanged(newText)
+                        }
+                    },
                     textStyle = TextStyle(
                         fontFamily = GoogleSansFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -99,9 +111,16 @@ fun ExerciseDetailBottomSheet(
                         color = selectedColor
                     ),
                     modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+                    maxLines = 2,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusRequester.requestFocus()
+                        }
+                    )
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -225,6 +244,8 @@ fun ExerciseSetRow(
     onWeightChanged: (Int) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val repsFocusRequester = remember { FocusRequester() }
+    val weightFocusRequester = remember { FocusRequester() }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -256,7 +277,8 @@ fun ExerciseSetRow(
                 .weight(1f)
                 .height(56.dp)
                 .clip(RoundedCornerShape(32.dp))
-                .background(White),
+                .background(White)
+                .focusRequester(repsFocusRequester),
             contentAlignment = Alignment.Center
         ) {
             BasicTextField(
@@ -279,8 +301,12 @@ fun ExerciseSetRow(
                     imeAction = if (isBodyWeight) ImeAction.Done else ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Next) },
-                    onDone = { focusManager.clearFocus() }
+                    onNext = {
+                        weightFocusRequester.requestFocus()
+                    },
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
                 ),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -293,7 +319,8 @@ fun ExerciseSetRow(
                     .weight(1f)
                     .height(56.dp)
                     .clip(RoundedCornerShape(32.dp))
-                    .background(White),
+                    .background(White)
+                    .focusRequester(weightFocusRequester),
                 contentAlignment = Alignment.Center
             ) {
                 BasicTextField(

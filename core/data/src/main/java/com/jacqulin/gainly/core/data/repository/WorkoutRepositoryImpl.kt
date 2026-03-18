@@ -6,6 +6,7 @@ import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutSetDto
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class WorkoutRepositoryImpl @Inject constructor(
     private val workoutApiService: WorkoutApiService
 ) : WorkoutRepository {
-    override suspend fun createWorkout(workout: WorkoutData): Result<Unit, WorkoutError> {
+    override suspend fun createWorkout(accessToken: String, workout: WorkoutData): Result<WorkoutId, WorkoutError> {
         return try {
             val request = WorkoutRequestDto(
                 title = workout.title,
@@ -33,7 +34,8 @@ class WorkoutRepositoryImpl @Inject constructor(
                 }
             )
             Log.d("Workout", "Workout: $request")
-            val response = workoutApiService.createWorkout(request)
+            val response = workoutApiService.createWorkout(accessToken, request)
+            Log.d("Workout", "Response: $response")
             Result.Success(response)
         } catch (e: Throwable) {
             Result.Error(ErrorHandler.mapWorkoutError(e))
