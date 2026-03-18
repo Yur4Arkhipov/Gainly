@@ -3,6 +3,8 @@ package com.jacqulin.gainly.navigation
 import com.jacqulin.gainly.core.designsystem.icon.AppIcons
 import com.jacqulin.gainly.feature.friends.navigation.FriendsBaseRoute
 import com.jacqulin.gainly.feature.friends.navigation.FriendsRoute
+import com.jacqulin.gainly.feature.history.navigation.HistoryBaseRoute
+import com.jacqulin.gainly.feature.history.navigation.HistoryRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeRoute
 import kotlin.reflect.KClass
@@ -35,8 +37,8 @@ enum class TopLevelDestination(
             titleTextId = "History",
 //        route = HistoryRoute::class,
 //        baseRoute = HistoryBaseRoute::class
-            route = FriendsRoute::class,
-            baseRoute = FriendsBaseRoute::class
+            route = HistoryRoute::class,
+            baseRoute = HistoryBaseRoute::class
     ),
     PROFILE(
         icon = AppIcons.Profile,

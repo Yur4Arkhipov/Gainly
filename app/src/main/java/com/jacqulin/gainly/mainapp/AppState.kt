@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.jacqulin.gainly.feature.friends.navigation.navigateToFriends
+import com.jacqulin.gainly.feature.history.navigation.navigateToHistory
 import com.jacqulin.gainly.feature.home.navigation.navigateToHome
 import com.jacqulin.gainly.navigation.TopLevelDestination
 import kotlinx.coroutines.CoroutineScope
@@ -101,7 +102,7 @@ class AppState(
             when (topLevelDestination) {
                 TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
                 TopLevelDestination.FRIENDS -> navController.navigateToFriends(topLevelNavOptions)
-                TopLevelDestination.HISTORY -> navController.navigateToFriends(topLevelNavOptions)
+                TopLevelDestination.HISTORY -> navController.navigateToHistory(topLevelNavOptions)
                 TopLevelDestination.PROFILE -> navController.navigateToFriends(topLevelNavOptions)
             }
         }
