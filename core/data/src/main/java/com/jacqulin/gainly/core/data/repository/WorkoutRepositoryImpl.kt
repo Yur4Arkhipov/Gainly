@@ -30,9 +30,9 @@ class WorkoutRepositoryImpl @Inject constructor(
         )
 
         Log.d("Workout", "Workout: $request")
-//        val response = workoutApiService.createWorkout(request)
-//        if (!response.isSuccessful) {
-//            throw Exception("Failed to create workout: ${response.code()}")
-//        }
+        val response = workoutApiService.createWorkout(request)
+        if (!response.isSuccessful) {
+            throw Exception("Failed to create workout: ${response.code()}")
+        }
     }
 }

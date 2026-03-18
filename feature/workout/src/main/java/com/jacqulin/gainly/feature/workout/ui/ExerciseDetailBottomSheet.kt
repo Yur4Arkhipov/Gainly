@@ -2,7 +2,6 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -39,9 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -54,6 +46,7 @@ import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.UncheckedSwitchTrackColor
 import com.jacqulin.gainly.core.designsystem.theme.White
+import com.jacqulin.gainly.feature.workout.ui.components.AddButton
 import com.jacqulin.gainly.feature.workout.ui.components.SaveButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -191,7 +184,9 @@ fun ExerciseDetailBottomSheet(
             }
 
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 itemsIndexed(exercise.sets) { index, set ->
@@ -204,32 +199,12 @@ fun ExerciseDetailBottomSheet(
                 }
 
                 item {
-                    Button(
-                        onClick = onAddSet,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(32.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = White,
-                            contentColor = Black
-                        )
-                    ) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Добавить сет",
-                            style = TextStyle(
-                                fontFamily = GoogleSansFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
+                    AddButton(
+                        text = "Добавить сет",
+                        onClick = onAddSet
+                    )
                 }
             }
-
-            Spacer(Modifier.height(2.dp))
 
             SaveButton(
                 onClick = {

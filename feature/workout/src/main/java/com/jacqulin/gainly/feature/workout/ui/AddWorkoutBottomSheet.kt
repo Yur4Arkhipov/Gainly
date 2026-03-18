@@ -2,7 +2,6 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -38,9 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -89,8 +87,10 @@ fun AddWorkoutBottomSheet(
     if (uiState.isExercisesListVisible) {
         ExercisesListBottomSheet(
             exercises = uiState.exercises,
+            selectedColor = uiState.selectedColor,
             onAddExercise = viewModel::addExercise,
             onEditExercise = viewModel::editExercise,
+            onSave = viewModel::hideExercisesList,
             onDismiss = viewModel::hideExercisesList
         )
     }
@@ -138,7 +138,7 @@ fun AddWorkoutBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp)
                 .navigationBarsPadding(),
@@ -188,7 +188,7 @@ fun AddWorkoutBottomSheet(
                         else "Выбрать дату",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
-                            fontSize = 16.sp,
+                            fontSize = 12.sp,
                             lineHeight = 16.sp,
                             fontWeight = FontWeight.Normal,
                             letterSpacing = 0.sp,
@@ -253,10 +253,11 @@ fun AddWorkoutBottomSheet(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${uiState.exercises.size}",
+                        text = if (uiState.exercises.isEmpty()) "Добавить упражнения"
+                                else "${uiState.exercises.size}",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
-                            fontSize = 16.sp,
+                            fontSize = 12.sp,
                             lineHeight = 16.sp,
                             fontWeight = FontWeight.Normal,
                             letterSpacing = 0.sp,
