@@ -2,8 +2,8 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -22,23 +23,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -47,9 +51,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveBlue
+import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
+import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveWhite
 import com.jacqulin.gainly.core.designsystem.theme.UncheckedSwitchTrackColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.ui.components.AddButton
@@ -60,20 +68,31 @@ import com.jacqulin.gainly.feature.workout.ui.components.SaveButton
 fun ExerciseDetailBottomSheet(
     exercise: Exercise,
     selectedColor: Color,
+    selectedSetIndices: Set<Int>,
     onNameChanged: (String) -> Unit,
     onBodyWeightChanged: (Boolean) -> Unit,
     onAddSet: () -> Unit,
     onUpdateSetReps: (Int, Int) -> Unit,
     onUpdateSetWeight: (Int, Int) -> Unit,
+    onToggleSetSelect: (Int) -> Unit,
+    onClearSetSelection: () -> Unit,
+    onDeleteSelectedSets: () -> Unit,
     onSave: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val focusRequester = remember { FocusRequester() }
+    val isSelectionMode = selectedSetIndices.isNotEmpty()
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onClearSetSelection()
+        }
+    }
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onDismiss() },
         sheetState = sheetState,
         containerColor = BottomSheetContainerColor,
         modifier = modifier
@@ -92,65 +111,105 @@ fun ExerciseDetailBottomSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                BasicTextField(
-                    value = exercise.name,
-                    onValueChange = { newText ->
-                        if (newText.length <= 24) {
-                            onNameChanged(newText)
-                        }
-                    },
-                    textStyle = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 28.sp,
-                        lineHeight = 28.sp,
-                        letterSpacing = 0.sp,
-                        color = selectedColor
-                    ),
-                    modifier = Modifier.weight(1f),
-                    maxLines = 2,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusRequester.requestFocus()
-                        }
-                    )
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                if (isSelectionMode) {
                     Text(
-                        text = "Свой вес",
+                        text = "Выбрано: ${selectedSetIndices.size}",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 12.sp,
-                            lineHeight = 12.sp,
-                            letterSpacing = 0.sp
-                        ),
-                        color = Black
-                    )
-                    Switch(
-                        checked = exercise.isBodyWeight,
-                        onCheckedChange = onBodyWeightChanged,
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = White,
-                            checkedTrackColor = selectedColor,
-                            uncheckedThumbColor = White,
-                            uncheckedTrackColor = UncheckedSwitchTrackColor,
-                            uncheckedBorderColor = Color.Transparent
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 28.sp,
+                            lineHeight = 28.sp,
+                            letterSpacing = 0.sp,
+                            color = selectedColor,
+                            textAlign = TextAlign.Center
                         )
                     )
+                    Box(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .widthIn(min = 80.dp)
+                            .clip(RoundedCornerShape(32.dp))
+                            .background(SelectedToRemoveLightRed)
+                            .clickable(onClick = onDeleteSelectedSets),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Удалить",
+                                tint = White,
+                                modifier = Modifier.height(16.dp)
+                            )
+                        }
+                    }
+                } else {
+                    BasicTextField(
+                        value = exercise.name,
+                        onValueChange = { newText ->
+                            if (newText.length <= 24) {
+                                onNameChanged(newText)
+                            }
+                        },
+                        textStyle = TextStyle(
+                            fontFamily = GoogleSansFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 28.sp,
+                            lineHeight = 28.sp,
+                            letterSpacing = 0.sp,
+                            color = selectedColor
+                        ),
+                        modifier = Modifier.weight(1f),
+                        maxLines = 2,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusRequester.requestFocus()
+                            }
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Свой вес",
+                            style = TextStyle(
+                                fontFamily = GoogleSansFontFamily,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 12.sp,
+                                lineHeight = 12.sp,
+                                letterSpacing = 0.sp
+                            ),
+                            color = Black
+                        )
+                        Switch(
+                            checked = exercise.isBodyWeight,
+                            onCheckedChange = onBodyWeightChanged,
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = White,
+                                checkedTrackColor = selectedColor,
+                                uncheckedThumbColor = White,
+                                uncheckedTrackColor = UncheckedSwitchTrackColor,
+                                uncheckedBorderColor = Color.Transparent
+                            )
+                        )
+                    }
                 }
             }
 
@@ -208,30 +267,37 @@ fun ExerciseDetailBottomSheet(
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                itemsIndexed(exercise.sets) { index, set ->
+                itemsIndexed(exercise.sets, key = { index, _ -> index }) { index, set ->
                     ExerciseSetRow(
                         set = set,
+                        isSelected = selectedSetIndices.contains(index),
+                        selectionMode = isSelectionMode,
                         isBodyWeight = exercise.isBodyWeight,
                         onRepsChanged = { onUpdateSetReps(index, it) },
-                        onWeightChanged = { onUpdateSetWeight(index, it) }
+                        onWeightChanged = { onUpdateSetWeight(index, it) },
+                        onToggleSelect = { onToggleSetSelect(index) }
                     )
                 }
 
-                item {
-                    AddButton(
-                        text = "Добавить сет",
-                        onClick = onAddSet
-                    )
+                if (!isSelectionMode) {
+                    item {
+                        AddButton(
+                            text = "Добавить сет",
+                            onClick = onAddSet
+                        )
+                    }
                 }
             }
 
-            SaveButton(
-                onClick = {
-                    onSave()
-                    onDismiss()
-                },
-                text = "Сохранить"
-            )
+            if (!isSelectionMode) {
+                SaveButton(
+                    onClick = {
+                        onSave()
+                        onDismiss()
+                    },
+                    text = "Сохранить"
+                )
+            }
         }
     }
 }
@@ -239,16 +305,33 @@ fun ExerciseDetailBottomSheet(
 @Composable
 fun ExerciseSetRow(
     set: WorkoutSet,
+    isSelected: Boolean,
+    selectionMode: Boolean,
     isBodyWeight: Boolean,
     onRepsChanged: (Int) -> Unit,
-    onWeightChanged: (Int) -> Unit
+    onWeightChanged: (Int) -> Unit,
+    onToggleSelect: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val repsFocusRequester = remember { FocusRequester() }
     val weightFocusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = {
+                    if (selectionMode) {
+                        onToggleSelect()
+                    }
+                },
+                onLongClick = {
+                    onToggleSelect()
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -256,20 +339,31 @@ fun ExerciseSetRow(
             modifier = Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(White),
+                .background(
+                    if (isSelected) SelectedToRemoveBlue else White
+                ),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = set.number.toString(),
-                style = TextStyle(
-                    fontFamily = GoogleSansFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    lineHeight = 16.sp,
-                    letterSpacing = 0.sp,
-                    color = Black
+            if (isSelected && selectionMode) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_checkmark),
+                    contentDescription = "Selected",
+                    tint = White,
+                    modifier = Modifier.size(16.dp)
                 )
-            )
+            } else {
+                Text(
+                    text = set.number.toString(),
+                    style = TextStyle(
+                        fontFamily = GoogleSansFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 18.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.sp,
+                        color = if (isSelected) White else Black
+                    )
+                )
+            }
         }
 
         Box(
@@ -277,7 +371,9 @@ fun ExerciseSetRow(
                 .weight(1f)
                 .height(56.dp)
                 .clip(RoundedCornerShape(32.dp))
-                .background(White)
+                .background(
+                    if (isSelected) SelectedToRemoveWhite else White
+                )
                 .focusRequester(repsFocusRequester),
             contentAlignment = Alignment.Center
         ) {
@@ -287,6 +383,7 @@ fun ExerciseSetRow(
                     val newValue = it.filter { char -> char.isDigit() }
                     onRepsChanged(newValue.toIntOrNull() ?: 0)
                 },
+                enabled = !isSelected && !selectionMode,
                 textStyle = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Normal,
@@ -319,7 +416,9 @@ fun ExerciseSetRow(
                     .weight(1f)
                     .height(56.dp)
                     .clip(RoundedCornerShape(32.dp))
-                    .background(White)
+                    .background(
+                        if (isSelected) SelectedToRemoveWhite else White
+                    )
                     .focusRequester(weightFocusRequester),
                 contentAlignment = Alignment.Center
             ) {
@@ -329,6 +428,7 @@ fun ExerciseSetRow(
                        val newValue = it.filter { char -> char.isDigit() }
                        onWeightChanged(newValue.toIntOrNull() ?: 0)
                     },
+                    enabled = !isSelected && !selectionMode,
                     textStyle = TextStyle(
                         fontFamily = GoogleSansFontFamily,
                         fontWeight = FontWeight.Normal,

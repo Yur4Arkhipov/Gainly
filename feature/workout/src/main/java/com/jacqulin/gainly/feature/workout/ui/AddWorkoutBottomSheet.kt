@@ -90,8 +90,12 @@ fun AddWorkoutBottomSheet(
         ExercisesListBottomSheet(
             exercises = uiState.exercises,
             selectedColor = uiState.selectedColor,
+            selectedExerciseIds = uiState.selectedExerciseIds,
             onAddExercise = viewModel::addExercise,
             onEditExercise = viewModel::editExercise,
+            onToggleSelect = viewModel::toggleExerciseSelection,
+            onClearSelection = viewModel::clearExerciseSelection,
+            onDeleteSelected = viewModel::deleteSelectedExercises,
             onSave = viewModel::hideExercisesList,
             onDismiss = viewModel::hideExercisesList
         )
@@ -103,11 +107,15 @@ fun AddWorkoutBottomSheet(
             ExerciseDetailBottomSheet(
                 exercise = currentExercise,
                 selectedColor = uiState.selectedColor,
+                selectedSetIndices = uiState.selectedSetIndices,
                 onNameChanged = viewModel::updateCurrentExerciseName,
                 onBodyWeightChanged = viewModel::toggleCurrentExerciseBodyWeight,
                 onAddSet = viewModel::addSetToCurrentExercise,
                 onUpdateSetReps = { index, reps -> viewModel.updateSetRepsInCurrentExercise(index, reps) },
                 onUpdateSetWeight = { index, weight -> viewModel.updateSetWeightInCurrentExercise(index, weight) },
+                onToggleSetSelect = viewModel::toggleSetSelection,
+                onClearSetSelection = viewModel::clearSetSelection,
+                onDeleteSelectedSets = viewModel::deleteSelectedSets,
                 onSave = viewModel::hideExerciseDetail,
                 onDismiss = viewModel::hideExerciseDetail
             )

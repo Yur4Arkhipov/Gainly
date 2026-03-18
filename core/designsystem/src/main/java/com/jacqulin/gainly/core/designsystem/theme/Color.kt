@@ -139,3 +139,8 @@ val SelectedAddWorkoutItem = Color(0xFF99BBFE)
 val UnselectedAddWorkoutItem = Color(0xFFE5E5EA)
 
 val UncheckedSwitchTrackColor = Color(0xFFD3D3D3)
+
+val SelectedToRemoveLightRed = Color(0xFFEF5350)
+val SelectedToRemoveWhite = Color(0xFFEBF4FF)
+
+val SelectedToRemoveBlue = Color(0xFF2196F3)

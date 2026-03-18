@@ -32,7 +32,9 @@ data class WorkoutState(
     val isExercisesListVisible: Boolean = false,
     val isDatePickerVisible: Boolean = false,
     val exercises: List<Exercise> = emptyList(),
-    val editingExerciseId: String? = null
+    val editingExerciseId: String? = null,
+    val selectedExerciseIds: Set<String> = emptySet(),
+    val selectedSetIndices: Set<Int> = emptySet()
 )
 
 data class Exercise(
@@ -254,12 +256,78 @@ class AddWorkoutViewModel @Inject constructor(
                 is Result.Success -> {
                     Log.d("Workout","Id: $result")
                     println("Workout created successfully")
+                    resetWorkoutState()
                 }
                 is Result.Error -> {
                     val message = ErrorUiMapper.toMessage(result.error)
 //                    _uiState.value = UiState.Error(message)
                 }
             }
+        }
+    }
+
+    fun resetWorkoutState() {
+        _uiState.value = WorkoutState()
+    }
+
+    fun toggleExerciseSelection(exerciseId: String) {
+        _uiState.update { state ->
+            val newSelected = state.selectedExerciseIds.toMutableSet()
+            if (newSelected.contains(exerciseId)) {
+                newSelected.remove(exerciseId)
+            } else {
+                newSelected.add(exerciseId)
+            }
+            state.copy(selectedExerciseIds = newSelected)
+        }
+    }
+
+    fun clearExerciseSelection() {
+        _uiState.update { it.copy(selectedExerciseIds = emptySet()) }
+    }
+
+    fun deleteSelectedExercises() {
+        _uiState.update { state ->
+            state.copy(
+                exercises = state.exercises.filter { !state.selectedExerciseIds.contains(it.id) },
+                selectedExerciseIds = emptySet(),
+                editingExerciseId = null
+            )
+        }
+    }
+
+    fun toggleSetSelection(setIndex: Int) {
+        _uiState.update { state ->
+            val newSelected = state.selectedSetIndices.toMutableSet()
+            if (newSelected.contains(setIndex)) {
+                newSelected.remove(setIndex)
+            } else {
+                newSelected.add(setIndex)
+            }
+            state.copy(selectedSetIndices = newSelected)
+        }
+    }
+
+    fun clearSetSelection() {
+        _uiState.update { it.copy(selectedSetIndices = emptySet()) }
+    }
+
+    fun deleteSelectedSets() {
+        val exerciseId = _uiState.value.editingExerciseId ?: return
+        _uiState.update { state ->
+            val updatedExercises = state.exercises.map { exercise ->
+                if (exercise.id == exerciseId) {
+                    val updatedSets = exercise.sets.filterIndexed { index, _ -> !state.selectedSetIndices.contains(index) }
+                        .mapIndexed { index, set -> set.copy(number = index + 1) }
+                    exercise.copy(sets = updatedSets)
+                } else {
+                    exercise
+                }
+            }
+            state.copy(
+                exercises = updatedExercises,
+                selectedSetIndices = emptySet()
+            )
         }
     }
 }
