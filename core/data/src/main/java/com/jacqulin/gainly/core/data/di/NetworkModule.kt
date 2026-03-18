@@ -3,6 +3,7 @@ package com.jacqulin.gainly.core.data.di
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.remote.service.HealthApiService
+import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +18,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-//            .baseUrl("https://fitness-app-api-gateway.fly.dev/auth/")
-            .baseUrl("https://gainly.site/auth/")
+            .baseUrl("https://gainly.site/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -36,5 +36,10 @@ object NetworkModule {
     @Provides
     fun provideFriendsApiService(retrofit: Retrofit): FriendsApiService {
         return retrofit.create(FriendsApiService::class.java)
+    }
+
+    @Provides
+    fun provideWorkoutApiService(retrofit: Retrofit): WorkoutApiService {
+        return retrofit.create(WorkoutApiService::class.java)
     }
 }

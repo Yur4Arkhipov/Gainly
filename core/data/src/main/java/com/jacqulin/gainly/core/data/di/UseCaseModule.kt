@@ -11,8 +11,10 @@ import com.jacqulin.gainly.core.data.usecase.auth.SignInTelegramUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.workout.CreateWorkoutUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
+import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.domain.usecase.auth.ClearTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
@@ -24,6 +26,7 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
+import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +35,11 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
+
+    @Provides
+    fun provideCreateWorkoutUseCase(repository: WorkoutRepository): CreateWorkoutUseCase {
+        return CreateWorkoutUseCaseImpl(repository)
+    }
 
     @Provides
     fun provideSignInUseCase(repository: AuthRepository) : SignInUseCase {

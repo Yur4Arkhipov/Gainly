@@ -2,6 +2,7 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,10 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,21 +70,21 @@ fun AddWorkoutBottomSheet(
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
-    if (uiState.isColorPickerVisible) {
-        ColorPickerBottomSheet(
-            initialColor = uiState.selectedColor,
-            onColorSelected = viewModel::updateColor,
-            onDismiss = viewModel::hideColorPicker
-        )
-    }
-
-    if (uiState.isTypePickerVisible) {
-        WorkoutTypeBottomSheet(
-            initialType = uiState.workoutType,
-            onTypeSelected = viewModel::updateWorkoutType,
-            onDismiss = viewModel::hideTypePicker
-        )
-    }
+//    if (uiState.isColorPickerVisible) {
+//        ColorPickerBottomSheet(
+//            initialColor = uiState.selectedColor,
+//            onColorSelected = viewModel::updateColor,
+//            onDismiss = viewModel::hideColorPicker
+//        )
+//    }
+//
+//    if (uiState.isTypePickerVisible) {
+//        WorkoutTypeBottomSheet(
+//            initialType = uiState.workoutType,
+//            onTypeSelected = viewModel::updateWorkoutType,
+//            onDismiss = viewModel::hideTypePicker
+//        )
+//    }
 
     if (uiState.isExercisesListVisible) {
         ExercisesListBottomSheet(
@@ -105,22 +112,22 @@ fun AddWorkoutBottomSheet(
         }
     }
 
-    if (uiState.isDatePickerVisible) {
-        DatePickerModal(
-            onDateSelected = { dateMillis ->
-                dateMillis?.let {
-                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    calendar.timeInMillis = it
-                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-                    val month = calendar.get(Calendar.MONTH) + 1
-                    val year = calendar.get(Calendar.YEAR)
-                    val formattedDate = String.format(Locale.US, "%02d%02d%04d", day, month, year)
-                    viewModel.updateDate(formattedDate)
-                }
-            },
-            onDismiss = viewModel::hideDatePicker
-        )
-    }
+//    if (uiState.isDatePickerVisible) {
+//        DatePickerModal(
+//            onDateSelected = { dateMillis ->
+//                dateMillis?.let {
+//                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+//                    calendar.timeInMillis = it
+//                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+//                    val month = calendar.get(Calendar.MONTH) + 1
+//                    val year = calendar.get(Calendar.YEAR)
+//                    val formattedDate = String.format(Locale.US, "%02d%02d%04d", day, month, year)
+//                    viewModel.updateDate(formattedDate)
+//                }
+//            },
+//            onDismiss = viewModel::hideDatePicker
+//        )
+//    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -137,16 +144,25 @@ fun AddWorkoutBottomSheet(
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = "Новая тренировка",
-                style = TextStyle(
+            BasicTextField(
+                value = uiState.title,
+                onValueChange = viewModel::updateTitle,
+                textStyle = TextStyle(
                     fontFamily = GoogleSansFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    lineHeight = 23.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                    lineHeight = 28.sp,
                     letterSpacing = 0.sp,
+                    color = uiState.selectedColor,
                     textAlign = TextAlign.Center
                 ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus(true)
+                    }
+                ),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -156,7 +172,7 @@ fun AddWorkoutBottomSheet(
                 label = "Дата",
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.showDatePicker()
+//                    viewModel.showDatePicker()
                 }
             ) {
                 Box(
@@ -187,7 +203,7 @@ fun AddWorkoutBottomSheet(
                 label = "Цвет",
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.showColorPicker()
+//                    viewModel.showColorPicker()
                 }
             ) {
                 Box(
@@ -202,7 +218,7 @@ fun AddWorkoutBottomSheet(
                 label = "Вид тренировки",
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.showTypePicker()
+//                    viewModel.showTypePicker()
                 }
             ) {
                 Box(
@@ -255,7 +271,8 @@ fun AddWorkoutBottomSheet(
                 text = "Сохранить тренировку",
                 onClick = {
                     focusManager.clearFocus()
-                    /* TODO: Save entire workout action */
+                    viewModel.saveWorkout()
+                    onDismiss()
                 }
             )
         }

@@ -2,16 +2,22 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
+import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class WorkoutState(
-    val title: String = "Название упражнения",
+    val title: String = "Название тренировки",
     val selectedColor: Color = Color(0xFF505b92),
     val workoutType: WorkoutType = WorkoutType.Cardio,
     val date: String = "",
@@ -48,39 +54,39 @@ sealed class WorkoutType(val label: String, val iconRes: Int) {
 
 @HiltViewModel
 class AddWorkoutViewModel @Inject constructor(
-
+    private val createWorkoutUseCase: CreateWorkoutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WorkoutState())
     val uiState: StateFlow<WorkoutState> = _uiState.asStateFlow()
 
-    fun updateColor(color: Color) {
-        _uiState.update { it.copy(selectedColor = color, isColorPickerVisible = false) }
-    }
+//    fun updateColor(color: Color) {
+//        _uiState.update { it.copy(selectedColor = color, isColorPickerVisible = false) }
+//    }
 
     fun updateTitle(title: String) {
         _uiState.update { it.copy(title = title) }
     }
 
-    fun updateWorkoutType(type: WorkoutType) {
-        _uiState.update { it.copy(workoutType = type, isTypePickerVisible = false) }
-    }
+//    fun updateWorkoutType(type: WorkoutType) {
+//        _uiState.update { it.copy(workoutType = type, isTypePickerVisible = false) }
+//    }
 
-    fun showColorPicker() {
-        _uiState.update { it.copy(isColorPickerVisible = true) }
-    }
+//    fun showColorPicker() {
+//        _uiState.update { it.copy(isColorPickerVisible = true) }
+//    }
 
-    fun hideColorPicker() {
-        _uiState.update { it.copy(isColorPickerVisible = false) }
-    }
+//    fun hideColorPicker() {
+//        _uiState.update { it.copy(isColorPickerVisible = false) }
+//    }
 
-    fun showTypePicker() {
-        _uiState.update { it.copy(isTypePickerVisible = true) }
-    }
+//    fun showTypePicker() {
+//        _uiState.update { it.copy(isTypePickerVisible = true) }
+//    }
 
-    fun hideTypePicker() {
-        _uiState.update { it.copy(isTypePickerVisible = false) }
-    }
+//    fun hideTypePicker() {
+//        _uiState.update { it.copy(isTypePickerVisible = false) }
+//    }
 
     fun showExercisesList() {
         _uiState.update { it.copy(isExercisesListVisible = true) }
@@ -197,17 +203,47 @@ class AddWorkoutViewModel @Inject constructor(
         }
     }
 
-    fun showDatePicker() {
-        _uiState.update { it.copy(isDatePickerVisible = true) }
-    }
+//    fun showDatePicker() {
+//        _uiState.update { it.copy(isDatePickerVisible = true) }
+//    }
 
-    fun hideDatePicker() {
-        _uiState.update { it.copy(isDatePickerVisible = false) }
-    }
+//    fun hideDatePicker() {
+//        _uiState.update { it.copy(isDatePickerVisible = false) }
+//    }
 
-    fun updateDate(newDigits: String) {
-        if (newDigits.length <= 8) {
-            _uiState.update { it.copy(date = newDigits) }
+//    fun updateDate(newDigits: String) {
+//        if (newDigits.length <= 8) {
+//            _uiState.update { it.copy(date = newDigits) }
+//        }
+//    }
+
+    fun saveWorkout() {
+        val state = _uiState.value
+        val workoutData = WorkoutData(
+            title = state.title,
+            exercises = state.exercises.map { exercise ->
+                ExerciseData(
+                    name = exercise.name,
+                    sets = exercise.sets.map { set ->
+                        WorkoutSetData(
+                            reps = set.reps,
+                            weight = set.weight,
+                            isOwnWeight = exercise.isBodyWeight
+                        )
+                    }
+                )
+            }
+        )
+
+        viewModelScope.launch {
+            try {
+                createWorkoutUseCase(workoutData)
+//                 TODO: Handle success (e.g., navigate back, show success message)
+                println("Workout created successfully")
+            } catch (e: Exception) {
+                // TODO: Handle error
+                println("Error creating workout: ${e.message}")
+            }
         }
     }
 }

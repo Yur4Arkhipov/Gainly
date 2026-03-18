@@ -2,6 +2,7 @@ package com.jacqulin.gainly.feature.workout.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -283,7 +286,10 @@ fun ExerciseSetRow(
         ) {
             BasicTextField(
                 value = if (set.reps <= 0) "" else set.reps.toString(),
-                onValueChange = { onRepsChanged(it.toIntOrNull() ?: 0) },
+                onValueChange = {
+                    val newValue = it.filter { char -> char.isDigit() }
+                    onRepsChanged(newValue.toIntOrNull() ?: 0)
+                },
                 textStyle = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Normal,
@@ -317,11 +323,16 @@ fun ExerciseSetRow(
             ) {
                 BasicTextField(
                     value = if (set.weight <= 0) "" else set.weight.toString(),
-                    onValueChange = { onWeightChanged(it.toIntOrNull() ?: 0) },
+                    onValueChange = {
+                       val newValue = it.filter { char -> char.isDigit() }
+                       onWeightChanged(newValue.toIntOrNull() ?: 0)
+                    },
                     textStyle = TextStyle(
                         fontFamily = GoogleSansFontFamily,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
-                        lineHeight = 24.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.sp,
                         color = Black,
                         textAlign = TextAlign.Center
                     ),

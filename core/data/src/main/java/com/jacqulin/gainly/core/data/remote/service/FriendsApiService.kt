@@ -10,19 +10,19 @@ import retrofit2.http.Query
 
 interface FriendsApiService {
 
-    @GET("api/friends/list")
+    @GET("auth/api/friends/list")
     suspend fun getFriends(
         @Header("Authorization") accessToken: String
     ): FriendsResponseDto
 
-    @GET("api/friends/get-users")
+    @GET("auth/api/friends/get-users")
     suspend fun getUsers(
         @Header("Authorization") accessToken: String,
         @Query("nickname") nickname: String
     ): UsersResponseDto
 
 
-    @POST("api/friends/send-request-by-username/{friendUsername}")
+    @POST("auth/api/friends/send-request-by-username/{friendUsername}")
     suspend fun sendFriendshipRequest(
         @Header("Authorization") accessToken: String,
         @Path("friendUsername") nickname: String
