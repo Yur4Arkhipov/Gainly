@@ -19,8 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +48,8 @@ import com.jacqulin.gainly.core.designsystem.theme.GrayText
 import com.jacqulin.gainly.core.designsystem.theme.GreenCheckmark
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.designsystem.theme.White
+import com.jacqulin.gainly.feature.friends.component.FriendRow
+import com.jacqulin.gainly.feature.friends.component.FriendsTopBar
 import com.jacqulin.gainly.feature.friends.viewmodel.AddFriendsViewModel
 
 @Composable
@@ -98,7 +98,7 @@ fun AddFriendsScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(searchResults) { user ->
-                        UserSearchResultRow(
+                        FriendRow(
                             name = user.username,
                             isRequestSent = user.isRequestSent,
                             onAddClick = {
@@ -129,84 +129,3 @@ fun AddFriendsScreen(
     }
 }
 
-@Composable
-fun UserSearchResultRow(
-    name: String,
-    isRequestSent: Boolean,
-    onAddClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .background(
-                color = White,
-                shape = RoundedCornerShape(32.dp)
-            )
-            .padding(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
-        ) {
-            Image(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(Color.LightGray)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(
-
-            ) {
-                Text(
-                    text = name,
-                    style = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontWeight = FontWeight.W500,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        letterSpacing = 0.sp
-                    )
-                )
-                Text(
-                    text = "@ilusha",
-                    style = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 21.sp,
-                        letterSpacing = 0.sp,
-                        color = GrayText
-                    )
-                )
-            }
-        }
-
-        IconButton(
-            onClick = onAddClick,
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = GrayBackgroundMain,
-                contentColor = GrayIconColor
-            ),
-            modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
-        ) {
-            Icon(
-                painter = if (isRequestSent) painterResource(R.drawable.ic_checkmark)
-                    else painterResource(R.drawable.ic_add_friends),
-                contentDescription = "Добавить в друзья",
-                tint = if (isRequestSent) GreenCheckmark
-                    else GrayIconColor
-            )
-        }
-    }
-}

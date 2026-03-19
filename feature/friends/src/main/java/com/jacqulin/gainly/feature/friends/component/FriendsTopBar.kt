@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.ui
+package com.jacqulin.gainly.feature.friends.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
