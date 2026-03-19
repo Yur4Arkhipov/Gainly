@@ -33,4 +33,11 @@ interface FriendsApiService {
     suspend fun getPendingUsers(
         @Header("Authorization") accessToken: String
     ): PendingUsersResponseDto
+
+    @POST("auth/api/friends/respond/{friendshipId}")
+    suspend fun respondForPendingUser(
+        @Header("Authorization") accessToken: String,
+        @Path("friendshipId") friendshipId: String,
+        @Query("accept") accept: Boolean
+    )
 }

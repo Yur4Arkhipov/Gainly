@@ -92,13 +92,44 @@ class AddFriendsViewModel @Inject constructor(
                         userId = pendingUser.fromUserId,
                         username = pendingUser.fromUsername,
                         registrationDate = "",
-                        isRequestSent = false
+                        isRequestSent = false,
+                        friendshipId = pendingUser.friendshipId
                     )
                 }
                 _pendingUsers.value = userDataList
                 Log.d("PENDING_REQUESTS", "Loaded pending requests: ${userDataList.size}")
             } catch (e: Exception) {
                 Log.e("PENDING_REQUESTS", "Error loading pending requests: $e")
+            }
+        }
+    }
+
+    fun acceptPendingUser(username: String, friendshipId: String) {
+        viewModelScope.launch {
+            val authData = tokenStorage.tokens.firstOrNull()
+            val token = authData?.accessToken ?: return@launch
+
+            try {
+                repository.respondForPendingUser(token, friendshipId, accept = true)
+                _pendingUsers.value = _pendingUsers.value.filter { it.username != username }
+                Log.d("PENDING_REQUESTS", "Accepted friend request from $username")
+            } catch (e: Exception) {
+                Log.e("PENDING_REQUESTS", "Error accepting friend request: $e")
+            }
+        }
+    }
+
+    fun rejectPendingUser(username: String, friendshipId: String) {
+        viewModelScope.launch {
+            val authData = tokenStorage.tokens.firstOrNull()
+            val token = authData?.accessToken ?: return@launch
+
+            try {
+                repository.respondForPendingUser(token, friendshipId, accept = false)
+                _pendingUsers.value = _pendingUsers.value.filter { it.username != username }
+                Log.d("PENDING_REQUESTS", "Rejected friend request from $username")
+            } catch (e: Exception) {
+                Log.e("PENDING_REQUESTS", "Error rejecting friend request: $e")
             }
         }
     }

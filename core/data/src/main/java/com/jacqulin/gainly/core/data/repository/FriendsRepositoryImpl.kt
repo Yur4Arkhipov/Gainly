@@ -41,6 +41,25 @@ class FriendsRepositoryImpl(
         )
     }
 
+    override suspend fun getPendingUsers(accessToken: String): PendingUsersData {
+        val response = api.getPendingUsers("Bearer $accessToken")
+        return PendingUsersData(
+            pendingUsers = response.map { it.toDomain() }
+        )
+    }
+
+    override suspend fun respondForPendingUser(
+        accessToken: String,
+        friendshipId: String,
+        accept: Boolean
+    ) {
+        api.respondForPendingUser(
+            accessToken = "Bearer $accessToken",
+            friendshipId = friendshipId,
+            accept = accept
+        )
+    }
+
     override fun searchFriendsLocal(query: String): Flow<List<FriendData>> {
         return friendDao.searchFriends(query).map { list ->
             list.map { it.toDomain() }
@@ -86,12 +105,5 @@ class FriendsRepositoryImpl(
         if (toDeleteIds.isNotEmpty()) {
             friendDao.deleteFriendsByIds(toDeleteIds)
         }
-    }
-
-    override suspend fun getPendingUsers(accessToken: String): PendingUsersData {
-        val response = api.getPendingUsers("Bearer $accessToken")
-        return PendingUsersData(
-            pendingUsers = response.map { it.toDomain() }
-        )
     }
 }

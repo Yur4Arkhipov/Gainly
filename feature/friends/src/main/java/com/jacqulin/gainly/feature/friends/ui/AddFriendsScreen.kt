@@ -117,9 +117,11 @@ fun AddFriendsScreen(
                                 isAddFriendsScreen = false,
                                 isPendingUser = true,
                                 onAcceptClick = {
+                                    viewModel.acceptPendingUser(user.username, user.friendshipId)
                                     Log.d("Friends", "Accepted: ${user.username}")
                                 },
                                 onRejectClick = {
+                                    viewModel.rejectPendingUser(user.username, user.friendshipId)
                                     Log.d("Friends", "Rejected: ${user.username}")
                                 }
                             )

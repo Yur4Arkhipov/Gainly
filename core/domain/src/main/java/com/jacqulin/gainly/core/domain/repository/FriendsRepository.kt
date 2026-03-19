@@ -15,4 +15,9 @@ interface FriendsRepository {
     fun observeFriendsLocal(): Flow<List<FriendData>>
     suspend fun syncFriends(remote: List<FriendData>)
     suspend fun getPendingUsers(accessToken: String): PendingUsersData
+    suspend fun respondForPendingUser(
+        accessToken: String,
+        friendshipId: String,
+        accept: Boolean
+    )
 }
