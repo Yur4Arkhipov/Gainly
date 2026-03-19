@@ -44,9 +44,8 @@ fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
     onAddFriendsClick: () -> Unit
 ) {
-//    val friends by viewModel.filteredFriends.collectAsState()
-//    val searchQuery by viewModel.searchQuery.collectAsState()
-    val friends by viewModel.friends.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val friends by viewModel.filteredFriends.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.syncFriends()
@@ -57,24 +56,24 @@ fun FriendsScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-//        FriendsTopBar(
-//            text = "Список друзей",
-//            textStyle = TextStyle(
-//                fontFamily = GainlyFontFamily,
-//                fontWeight = FontWeight.Normal,
-//                fontSize = 16.sp,
-//                textAlign = TextAlign.Center,
-//                lineHeight = 23.sp,
-//                letterSpacing = 0.sp,
-//                color = TextBlackColor
-//            ),
-//            showBackButton = false,
-//            showAddFriendsButton = true,
-//            searchQuery = searchQuery,
-//            onSearchQueryChange = viewModel::onSearchQueryChange,
-//            onAddFriendsClick = onAddFriendsClick,
-//            onBackClick = { },
-//        )
+        FriendsTopBar(
+            text = "Список друзей",
+            textStyle = TextStyle(
+                fontFamily = GainlyFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 23.sp,
+                letterSpacing = 0.sp,
+                color = TextBlackColor
+            ),
+            showBackButton = false,
+            showAddFriendsButton = true,
+            searchQuery = searchQuery,
+            onSearchQueryChange = viewModel::onSearchQueryChange,
+            onAddFriendsClick = onAddFriendsClick,
+            onBackClick = { },
+        )
 
         Spacer(Modifier.height(20.dp))
 
@@ -85,13 +84,13 @@ fun FriendsScreen(
                 .padding(horizontal = 16.dp)
         ) {
             if (friends.isEmpty()) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Друзей нет")
-                }
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text("Друзей нет")
+//                }
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),

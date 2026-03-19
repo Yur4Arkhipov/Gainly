@@ -45,3 +45,11 @@ fun FriendEntity.toDomain(): FriendData {
         registrationDate = this.registrationDate
     )
 }
+
+fun FriendData.toEntity(): FriendEntity {
+    return FriendEntity(
+        userId = this.userId,
+        username = this.username,
+        registrationDate = this.registrationDate
+    )
+}
