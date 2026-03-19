@@ -42,6 +42,7 @@ class AuthManager @Inject constructor(
                 }
                 tokenValidator.isAccessTokenValid(tokens.accessToken) -> {
                     Log.d("AuthManager", "Access token valid -> Authorized")
+                    Log.d("AuthManager", "Access token ${tokens.accessToken}")
                     AuthState.Authorized
                 }
                 else -> {

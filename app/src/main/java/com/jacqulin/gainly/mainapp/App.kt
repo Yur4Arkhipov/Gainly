@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +21,7 @@ import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBar
 import com.jacqulin.gainly.feature.workout.ui.AddWorkoutBottomSheet
 import com.jacqulin.gainly.navigation.MainNavHost
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun App(
     appState: AppState,
@@ -34,7 +38,15 @@ internal fun App(
         )
     }
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = currentTopLevel?.titleText ?: "Ошибка") },
+                modifier = Modifier,
+
+            )
+        }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

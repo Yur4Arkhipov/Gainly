@@ -13,28 +13,28 @@ enum class TopLevelDestination(
     val icon: Int,
     val iconTextId: String,
 //    @StringRes val titleTextId: Int,
-    val titleTextId: String,
+    val titleText: String,
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
     HOME(
         icon = AppIcons.Home,
         iconTextId = "Home",
-        titleTextId = "Home",
+        titleText = "Home",
         route = HomeRoute::class,
         baseRoute = HomeBaseRoute::class
     ),
     FRIENDS(
         icon = AppIcons.Friends,
         iconTextId = "Friends",
-        titleTextId = "Friends",
+        titleText = "Friends",
         route = FriendsRoute::class,
         baseRoute = FriendsBaseRoute::class
     ),
     HISTORY(
         icon = AppIcons.History,
             iconTextId = "History",
-            titleTextId = "History",
+            titleText = "History",
 //        route = HistoryRoute::class,
 //        baseRoute = HistoryBaseRoute::class
             route = HistoryRoute::class,
@@ -43,7 +43,7 @@ enum class TopLevelDestination(
     PROFILE(
         icon = AppIcons.Profile,
         iconTextId = "Profile",
-        titleTextId = "Profile",
+        titleText = "Profile",
 //        route = ProfileRoute::class,
 //        baseRoute = ProfileBaseRoute::class
         route = FriendsRoute::class,

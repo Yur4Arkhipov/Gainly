@@ -7,6 +7,7 @@ import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutSetDto
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
@@ -37,6 +38,36 @@ class WorkoutRepositoryImpl @Inject constructor(
             val response = workoutApiService.createWorkout(accessToken, request)
             Log.d("Workout", "Response: $response")
             Result.Success(response)
+        } catch (e: Throwable) {
+            Result.Error(ErrorHandler.mapWorkoutError(e))
+        }
+    }
+
+    override suspend fun getWorkoutHistory(
+        accessToken: String,
+        from: String,
+        to: String,
+        last: Int
+    ): Result<List<WorkoutListItem>, WorkoutError> {
+        return try {
+            val response = workoutApiService.getWorkoutHistory(
+                accessToken = accessToken,
+                from = from,
+                to = to,
+                last = last
+            )
+            // response это уже List<WorkoutItemDto>, конвертируем в domain модель
+            val items = response.map { dto ->
+                WorkoutListItem(
+                    workoutId = dto.id,
+                    userId = dto.userId,
+                    title = dto.title,
+                    date = dto.date,
+                    exerciseCount = dto.exercises?.size ?: 0,
+                    duration = null
+                )
+            }
+            Result.Success(items)
         } catch (e: Throwable) {
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }

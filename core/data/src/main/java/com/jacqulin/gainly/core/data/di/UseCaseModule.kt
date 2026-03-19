@@ -12,6 +12,7 @@ import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.workout.CreateWorkoutUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.workout.GetWorkoutHistoryUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
@@ -27,6 +28,7 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
+import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutHistoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -97,5 +99,13 @@ object UseCaseModule {
     @Provides
     fun provideSignInTelegramUseCase(repository: AuthRepository) : SignInTelegramUseCase {
         return SignInTelegramUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideGetWorkoutHistoryUseCase(
+        workoutRepository: WorkoutRepository,
+        tokenStorage: TokenStorage
+    ): GetWorkoutHistoryUseCase {
+        return GetWorkoutHistoryUseCaseImpl(workoutRepository, tokenStorage)
     }
 }
