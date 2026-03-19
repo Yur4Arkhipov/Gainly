@@ -3,10 +3,13 @@ package com.jacqulin.gainly.core.data.mappers
 import com.jacqulin.gainly.core.data.local.entity.FriendEntity
 import com.jacqulin.gainly.core.data.remote.dto.friends.FriendDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.FriendsResponseDto
+import com.jacqulin.gainly.core.data.remote.dto.friends.PendingUserDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.UserDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.UsersResponseDto
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.core.domain.model.friends.FriendsData
+import com.jacqulin.gainly.core.domain.model.friends.PendingUserData
+import com.jacqulin.gainly.core.domain.model.friends.PendingUsersData
 import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.model.friends.UsersData
 
@@ -51,5 +54,13 @@ fun FriendData.toEntity(): FriendEntity {
         userId = this.userId,
         username = this.username,
         registrationDate = this.registrationDate
+    )
+}
+
+fun PendingUserDto.toDomain(): PendingUserData {
+    return PendingUserData(
+        friendshipId = this.friendshipId,
+        fromUsername = this.fromUsername,
+        fromUserId = this.fromUserId
     )
 }

@@ -36,6 +36,9 @@ class AddFriendsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _pendingUsers = MutableStateFlow<List<UserData>>(emptyList())
+    val pendingUsers: StateFlow<List<UserData>> = _pendingUsers.asStateFlow()
+
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchResults: StateFlow<List<UserData>> =
         _searchQuery
@@ -73,6 +76,29 @@ class AddFriendsViewModel @Inject constructor(
                 Log.d("FRIEND_REQUEST", "Friend request sent to $username")
             } catch (e: Exception) {
                 Log.e("FRIEND_REQUEST", "Error sending friend request: $e")
+            }
+        }
+    }
+
+    fun loadPendingRequests() {
+        viewModelScope.launch {
+            val authData = tokenStorage.tokens.firstOrNull()
+            val token = authData?.accessToken ?: return@launch
+
+            try {
+                val result = repository.getPendingUsers(token)
+                val userDataList = result.pendingUsers.map { pendingUser ->
+                    UserData(
+                        userId = pendingUser.fromUserId,
+                        username = pendingUser.fromUsername,
+                        registrationDate = "",
+                        isRequestSent = false
+                    )
+                }
+                _pendingUsers.value = userDataList
+                Log.d("PENDING_REQUESTS", "Loaded pending requests: ${userDataList.size}")
+            } catch (e: Exception) {
+                Log.e("PENDING_REQUESTS", "Error loading pending requests: $e")
             }
         }
     }

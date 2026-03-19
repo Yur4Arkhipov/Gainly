@@ -9,10 +9,12 @@ import com.jacqulin.gainly.core.data.mappers.toEntity
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.core.domain.model.friends.FriendsData
+import com.jacqulin.gainly.core.domain.model.friends.PendingUsersData
 import com.jacqulin.gainly.core.domain.model.friends.UsersData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.collections.map
 
 class FriendsRepositoryImpl(
     private val api: FriendsApiService,
@@ -84,5 +86,12 @@ class FriendsRepositoryImpl(
         if (toDeleteIds.isNotEmpty()) {
             friendDao.deleteFriendsByIds(toDeleteIds)
         }
+    }
+
+    override suspend fun getPendingUsers(accessToken: String): PendingUsersData {
+        val response = api.getPendingUsers("Bearer $accessToken")
+        return PendingUsersData(
+            pendingUsers = response.map { it.toDomain() }
+        )
     }
 }

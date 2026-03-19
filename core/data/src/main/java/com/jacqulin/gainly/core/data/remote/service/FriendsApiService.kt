@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.remote.service
 
 import com.jacqulin.gainly.core.data.remote.dto.friends.FriendsResponseDto
+import com.jacqulin.gainly.core.data.remote.dto.friends.PendingUsersResponseDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.UsersResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -27,4 +28,9 @@ interface FriendsApiService {
         @Header("Authorization") accessToken: String,
         @Path("friendUsername") nickname: String
     )
+
+    @GET("auth/api/friends/pending")
+    suspend fun getPendingUsers(
+        @Header("Authorization") accessToken: String
+    ): PendingUsersResponseDto
 }
