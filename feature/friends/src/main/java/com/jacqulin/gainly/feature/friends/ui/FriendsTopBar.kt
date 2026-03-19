@@ -47,7 +47,7 @@ fun FriendsTopBar(
                     bottomEnd = 40.dp
                 )
             )
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = 8.dp)
     ) {
         Box(
             modifier = Modifier
@@ -90,7 +90,7 @@ fun FriendsTopBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding()
+                .padding(horizontal = 8.dp)
         ) {
 
             CustomOutlinedTextField(

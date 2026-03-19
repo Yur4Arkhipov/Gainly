@@ -1,6 +1,9 @@
 package com.jacqulin.gainly.feature.friends.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,166 +11,202 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.jacqulin.gainly.feature.friends.viewmodel.AddFriendsUiState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
+import com.jacqulin.gainly.core.designsystem.theme.GrayText
+import com.jacqulin.gainly.core.designsystem.theme.GreenCheckmark
+import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
+import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.friends.viewmodel.AddFriendsViewModel
-import com.jacqulin.gainly.feature.friends.viewmodel.FriendRequestUiModel
 
 @Composable
 fun AddFriendsScreen(
-    showBackButton: Boolean,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: AddFriendsViewModel = hiltViewModel()
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .statusBarsPadding()
+            .background(GrayBackgroundMain)
     ) {
         FriendsTopBar(
-            text = "Добавление друзей",
-            showBackButton = showBackButton,
+            text = "Найти друга",
+            textStyle = TextStyle(
+                fontFamily = GainlyFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 23.sp,
+                letterSpacing = 0.sp,
+                color = TextBlackColor
+            ),
+            showBackButton = true,
             showAddFriendsButton = false,
-            onAddFriends = { },
-            onBackClick = onBackClick
+            searchQuery = searchQuery,
+            onSearchQueryChange = viewModel::onSearchQueryChange,
+            searchResults = searchResults,
+            onAddFriendsClick = { },
+            onBackClick = onBackClick,
+            onSendFriendshipRequestClick = { nickname ->
+                viewModel.sendFriendRequest(nickname)
+            }
         )
 
-        PendingRequestsBlock(
-            state = uiState,
-            onToggleExpansion = { viewModel.toggleExpansion() }
-        )
+        Spacer(Modifier.height(12.dp))
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize()
+                .padding(horizontal = 12.dp)
+        ) {
+            if (searchQuery.isNotEmpty() && searchResults.isNotEmpty()) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(searchResults) { user ->
+                        UserSearchResultRow(
+                            name = user.username,
+                            isRequestSent = user.isRequestSent,
+                            onAddClick = { viewModel.sendFriendRequest(user.username) }
+                        )
+                    }
+                }
+            } else if (searchQuery.isNotEmpty() && searchResults.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Пользователей не найдено")
+                }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Введите имя пользователя для поиска")
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun PendingRequestsBlock(
-    state: AddFriendsUiState,
-    onToggleExpansion: () -> Unit,
+fun UserSearchResultRow(
+    name: String,
+    isRequestSent: Boolean,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pending = state.pendingRequests
-    if (pending.isEmpty()) {
-        Text(
-            text = "Экран добавления друзей",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = modifier.fillMaxWidth(),
-            fontWeight = FontWeight.Medium
-        )
-        return
-    }
-
-    val visibleItems = if (state.isExpanded) pending else pending.take(AddFriendsViewModel.PREVIEW_LIMIT)
-
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.fillMaxWidth()
-    ) {
-        items(visibleItems, key = { it.id }) { request ->
-            FriendRequestCard(request)
-        }
-    }
-
-    if (pending.size > AddFriendsViewModel.PREVIEW_LIMIT) {
-        Spacer(Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(
-                onClick = onToggleExpansion
-            ) {
-                Text(
-                    text = if (state.isExpanded) "Свернуть" else "Показать ещё ${pending.size - visibleItems.size}",
-                )
-            }
-        }
-    }
-
-    if (!state.isExpanded) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Экран добавления друзей",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .background(
+                color = White,
+                shape = RoundedCornerShape(32.dp)
             )
-        }
-    }
-}
-
-@Composable
-private fun FriendRequestCard(
-    request: FriendRequestUiModel,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            Column{
-                Text(text = request.username, style = MaterialTheme.typography.titleMedium)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f)
+        ) {
+            Image(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(
+
+            ) {
                 Text(
-                    text = "Общие друзья: ${request.mutualFriends}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = name,
+                    style = TextStyle(
+                        fontFamily = GoogleSansFontFamily,
+                        fontWeight = FontWeight.W500,
+                        fontStyle = FontStyle.Normal,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        letterSpacing = 0.sp
+                    )
+                )
+                Text(
+                    text = "@ilusha",
+                    style = TextStyle(
+                        fontFamily = GoogleSansFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontStyle = FontStyle.Normal,
+                        fontSize = 14.sp,
+                        lineHeight = 21.sp,
+                        letterSpacing = 0.sp,
+                        color = GrayText
+                    )
                 )
             }
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
-                    onClick = { /* TODO: Handle accept friend request */ },
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = "Accept",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                IconButton(
-                    onClick = { /* TODO: Handle decline friend request */ }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = "Decline",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
+        IconButton(
+            onClick = onAddClick,
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = GrayBackgroundMain,
+                contentColor = GrayIconColor
+            ),
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape)
+        ) {
+            Icon(
+                painter = if (isRequestSent) painterResource(R.drawable.ic_checkmark)
+                    else painterResource(R.drawable.ic_add_friends),
+                contentDescription = "Добавить в друзья",
+                tint = if (isRequestSent) GreenCheckmark
+                    else GrayIconColor
+            )
         }
     }
 }

@@ -16,13 +16,11 @@ fun NavController.navigateToAddFriends(navOptions: NavOptionsBuilder.() -> Unit 
 }
 
 fun NavGraphBuilder.addFriendsScreen(
-    showBackButton: Boolean,
     onBackClick: () -> Unit,
 ) {
     composable<AddFriendsRoute> {
         AddFriendsScreen(
-            showBackButton = showBackButton,
-            onBackClick = onBackClick,
+            onBackClick = onBackClick
         )
     }
 }

@@ -148,5 +148,7 @@ val SelectedToRemoveBlue = Color(0xFF2196F3)
 val TextBlackColor = Color(0xFF1C1C0D)
 
 val BadgeColor = Color(0xFFE85451)
-val SearchFieldBackground = Color(0xFFF3F2F8)
+val GrayBackgroundMain = Color(0xFFF3F2F8)
+val GrayIconColor = Color(0xFF717171)
 val SearchFieldTextColor = Color(0x87000000)
+val GreenCheckmark = Color(0xFF34C759)

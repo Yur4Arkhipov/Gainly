@@ -1,58 +1,79 @@
 package com.jacqulin.gainly.feature.friends.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jacqulin.gainly.core.domain.auth.TokenStorage
+import com.jacqulin.gainly.core.domain.model.friends.FriendData
+import com.jacqulin.gainly.core.domain.model.friends.UserData
+import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AddFriendsViewModel @Inject constructor(
-
+    private val repository: FriendsRepository,
+    private val tokenStorage: TokenStorage,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddFriendsUiState())
-    val uiState: StateFlow<AddFriendsUiState> = _uiState.asStateFlow()
+    private val _friends = MutableStateFlow<List<FriendData>>(emptyList())
+    val friends: StateFlow<List<FriendData>> = _friends
 
-    init {
-        loadPendingRequests()
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val searchResults: StateFlow<List<UserData>> =
+        _searchQuery
+            .debounce(500)
+            .distinctUntilChanged()
+            .flatMapLatest { query ->
+                if (query.isBlank() || query.length < 2) {
+                    flowOf(emptyList())
+                } else {
+                    flow {
+                        val authData = tokenStorage.tokens.firstOrNull()
+                        val token = authData?.accessToken ?: return@flow
+                        val result = repository.getUsers(token, query)
+                        emit(result.users)
+                    }
+                }
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                emptyList()
+            )
+
+    fun onSearchQueryChange(newQuery: String) {
+        _searchQuery.value = newQuery
     }
 
-    fun toggleExpansion() {
-        _uiState.update { current ->
-            current.copy(isExpanded = !current.isExpanded)
+    fun sendFriendRequest(username: String) {
+        viewModelScope.launch {
+            val authData = tokenStorage.tokens.firstOrNull()
+            val token = authData?.accessToken ?: return@launch
+
+            try {
+                repository.sendFriendship(token, username)
+                Log.d("FRIEND_REQUEST", "Friend request sent to $username")
+            } catch (e: Exception) {
+                Log.e("FRIEND_REQUEST", "Error sending friend request: $e")
+            }
         }
-    }
-
-    private fun loadPendingRequests() {
-        // Temporary stub data until repository integration is ready.
-        val fakeRequests = listOf(
-            FriendRequestUiModel(id = "1", username = "Софья К.", mutualFriends = 3),
-            FriendRequestUiModel(id = "2", username = "Алиса П.", mutualFriends = 1),
-            FriendRequestUiModel(id = "3", username = "Марина Т.", mutualFriends = 0),
-            FriendRequestUiModel(id = "4", username = "Ярослав Ф.", mutualFriends = 2),
-            FriendRequestUiModel(id = "5", username = "Иван Н.", mutualFriends = 4),
-        )
-
-        _uiState.update { current ->
-            current.copy(pendingRequests = fakeRequests)
-        }
-    }
-
-    companion object {
-        const val PREVIEW_LIMIT = 3
     }
 }
-
-data class AddFriendsUiState(
-    val pendingRequests: List<FriendRequestUiModel> = emptyList(),
-    val isExpanded: Boolean = false,
-)
-
-data class FriendRequestUiModel(
-    val id: String,
-    val username: String,
-    val mutualFriends: Int,
-)
