@@ -60,4 +60,9 @@ dependencies {
 
     // Okhttp
     implementation(libs.okhttp.logging.interceptor)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 }

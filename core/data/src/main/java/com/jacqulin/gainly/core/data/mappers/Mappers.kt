@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.data.mappers
 
+import com.jacqulin.gainly.core.data.local.entity.FriendEntity
 import com.jacqulin.gainly.core.data.remote.dto.friends.FriendDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.FriendsResponseDto
 import com.jacqulin.gainly.core.data.remote.dto.friends.UserDto
@@ -32,6 +33,14 @@ fun UsersResponseDto.toUsersData(): UsersData {
 private fun UserDto.toDomain(): UserData {
     return UserData(
         userId = this.id,
+        username = this.username,
+        registrationDate = this.registrationDate
+    )
+}
+
+fun FriendEntity.toDomain(): FriendData {
+    return FriendData(
+        userId = this.userId,
         username = this.username,
         registrationDate = this.registrationDate
     )

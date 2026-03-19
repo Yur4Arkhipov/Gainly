@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
+import com.jacqulin.gainly.core.data.local.dao.FriendDao
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.data.repository.AuthRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.FriendsRepositoryImpl
@@ -41,8 +42,9 @@ object RepositoryModule {
     @Singleton
     fun provideFriendsRepository(
         api: FriendsApiService,
+        friendDao: FriendDao,
     ): FriendsRepository {
-        return FriendsRepositoryImpl(api)
+        return FriendsRepositoryImpl(api, friendDao)
     }
 
     @Provides

@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,38 +44,37 @@ fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
     onAddFriendsClick: () -> Unit
 ) {
-    val friends by viewModel.friends.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
+//    val friends by viewModel.filteredFriends.collectAsState()
+//    val searchQuery by viewModel.searchQuery.collectAsState()
+    val friends by viewModel.friends.collectAsStateWithLifecycle()
 
-    // изменить на запись в локальную бд
-//    LaunchedEffect(Unit) {
-//        viewModel.getUsers()
-//    }
+    LaunchedEffect(Unit) {
+        viewModel.syncFriends()
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(Color.White)
     ) {
-        FriendsTopBar(
-            text = "Список друзей",
-            textStyle = TextStyle(
-                fontFamily = GainlyFontFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 23.sp,
-                letterSpacing = 0.sp,
-                color = TextBlackColor
-            ),
-            showBackButton = false,
-            showAddFriendsButton = true,
-            searchQuery = searchQuery,
-            onSearchQueryChange = viewModel::onSearchQueryChange,
-            onAddFriendsClick = onAddFriendsClick,
-            onBackClick = { },
-        )
+//        FriendsTopBar(
+//            text = "Список друзей",
+//            textStyle = TextStyle(
+//                fontFamily = GainlyFontFamily,
+//                fontWeight = FontWeight.Normal,
+//                fontSize = 16.sp,
+//                textAlign = TextAlign.Center,
+//                lineHeight = 23.sp,
+//                letterSpacing = 0.sp,
+//                color = TextBlackColor
+//            ),
+//            showBackButton = false,
+//            showAddFriendsButton = true,
+//            searchQuery = searchQuery,
+//            onSearchQueryChange = viewModel::onSearchQueryChange,
+//            onAddFriendsClick = onAddFriendsClick,
+//            onBackClick = { },
+//        )
 
         Spacer(Modifier.height(20.dp))
 
@@ -80,12 +82,23 @@ fun FriendsScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(friends) { friend ->
-                    FriendInfoRow(name = friend.username)
+            if (friends.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Друзей нет")
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(friends) { friend ->
+                        FriendInfoRow(name = friend.username)
+                    }
                 }
             }
         }
@@ -100,7 +113,12 @@ fun FriendInfoRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(50.dp),
+            .height(50.dp)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
