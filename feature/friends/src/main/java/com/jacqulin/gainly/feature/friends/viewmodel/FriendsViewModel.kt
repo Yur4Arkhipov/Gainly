@@ -12,13 +12,19 @@ import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,11 +37,31 @@ class FriendsViewModel @Inject constructor(
     private val _friends = MutableStateFlow<List<FriendData>>(emptyList())
     val friends: StateFlow<List<FriendData>> = _friends
 
-    var searchQuery by mutableStateOf("")
-        private set
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
 
-    private val _searchResults = MutableStateFlow<List<UserData>>(emptyList())
-    val searchResults: StateFlow<List<UserData>> = _searchResults
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val searchResults: StateFlow<List<UserData>> =
+        _searchQuery
+            .debounce(500)
+            .distinctUntilChanged()
+            .flatMapLatest { query ->
+                if (query.isBlank() || query.length < 2) {
+                    flowOf(emptyList())
+                } else {
+                    flow {
+                        val authData = tokenStorage.tokens.firstOrNull()
+                        val token = authData?.accessToken ?: return@flow
+                        val result = repository.getUsers(token, query)
+                        emit(result.users)
+                    }
+                }
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                emptyList()
+            )
 
     fun getUsers() {
         viewModelScope.launch {
@@ -54,68 +80,6 @@ class FriendsViewModel @Inject constructor(
     }
 
     fun onSearchQueryChange(newQuery: String) {
-        searchQuery = newQuery
-    }
-
-    init {
-        observeSearchQuery()
-    }
-
-    @OptIn(FlowPreview::class)
-    private fun observeSearchQuery() {
-        viewModelScope.launch {
-            snapshotFlow { searchQuery }
-                .debounce(500)
-                .distinctUntilChanged()
-                .collect { query ->
-                    if (query.isBlank()) {
-                        _searchResults.value = emptyList()
-                        return@collect
-                    }
-                    if (query.length < 2) {
-                        _searchResults.value = emptyList()
-                        return@collect
-                    }
-                    searchUsers(query)
-                }
-        }
-    }
-
-    private suspend fun searchUsers(query: String) {
-        val authData = tokenStorage.tokens.firstOrNull()
-        val token = authData?.accessToken ?: return
-
-        try {
-            val result = repository.getUsers(token, query)
-            _searchResults.value = result.users
-        } catch (e: Exception) {
-            Log.e("SEARCH", "Error: $e")
-        }
-    }
-
-    fun sendFriendRequest(nickname: String) {
-        viewModelScope.launch {
-            val authData = tokenStorage.tokens.firstOrNull()
-            val token = authData?.accessToken
-
-            if (token == null) {
-                Log.d("TOKEN_FRIENDS", "Access token not found")
-                return@launch
-            }
-
-            try {
-                val result = repository.sendFriendship(token, nickname)
-                Log.d("FRIENDS", "Friend request sent to $nickname")
-                _searchResults.update { list ->
-                    list.map { user ->
-                        if (user.username == nickname) user.copy(isRequestSent = true)
-                        else user
-                    }
-                }
-
-            } catch (e: Exception) {
-                Log.e("FRIENDS", "Error sending friend request: $e")
-            }
-        }
+        _searchQuery.value = newQuery
     }
 }

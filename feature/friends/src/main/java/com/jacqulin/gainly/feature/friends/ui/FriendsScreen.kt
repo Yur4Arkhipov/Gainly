@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,20 +19,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
 
 @Composable
@@ -43,53 +42,52 @@ fun FriendsScreen(
     onAddFriendsClick: () -> Unit
 ) {
     val friends by viewModel.friends.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
 
-    var searchExpanded by rememberSaveable { mutableStateOf(false) }
-
     // изменить на запись в локальную бд
-    LaunchedEffect(Unit) {
-        viewModel.getUsers()
-    }
+//    LaunchedEffect(Unit) {
+//        viewModel.getUsers()
+//    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .statusBarsPadding()
+            .background(Color.Gray)
     ) {
         FriendsTopBar(
             text = "Список друзей",
+            textStyle = TextStyle(
+                fontFamily = GainlyFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 23.sp,
+                letterSpacing = 0.sp,
+                color = TextBlackColor
+            ),
             showBackButton = false,
             showAddFriendsButton = true,
-            onAddFriends = onAddFriendsClick,
-            onBackClick = { },
-        )
-
-        UsersSearchBar(
-            searchQuery = viewModel.searchQuery,
+            searchQuery = searchQuery,
+            onSearchQueryChange = viewModel::onSearchQueryChange,
             searchResults = searchResults,
-            onSearchQueryChange = { viewModel.onSearchQueryChange(it) },
-            onSendFriendshipRequestClick = { nickname ->
-                viewModel.sendFriendRequest(nickname)
-            }
+            onAddFriendsClick = onAddFriendsClick,
+            onBackClick = { },
+            onSendFriendshipRequestClick = {  }
         )
 
-        if (!searchExpanded) {
+        Spacer(Modifier.height(20.dp))
 
-            Spacer(Modifier.height(20.dp))
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(friends) { friend ->
-                        FriendInfoRow(name = friend.username)
-                    }
+                items(friends) { friend ->
+                    FriendInfoRow(name = friend.username)
                 }
             }
         }
@@ -102,7 +100,9 @@ fun FriendInfoRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -119,24 +119,4 @@ fun FriendInfoRow(
 
         Text(text = name)
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TopFriendsBarPreview() {
-    FriendsTopBar(
-        text = "Список друзей",
-        showBackButton = false,
-        showAddFriendsButton = true,
-        onAddFriends = { },
-        onBackClick = { }
-    )
-}
-
-@Preview(
-    showSystemUi = true
-)
-@Composable
-fun FriendsScreenPreview() {
-    FriendsScreen(onAddFriendsClick = {})
 }
