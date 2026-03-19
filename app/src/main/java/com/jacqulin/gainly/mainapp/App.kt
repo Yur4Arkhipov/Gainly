@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,23 +36,15 @@ internal fun App(
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = currentTopLevel?.titleText ?: "Ошибка") },
-                modifier = Modifier,
-
-            )
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
                     top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding(),
-                    start = paddingValues.calculateStartPadding(LocalLayoutDirection.current) + 12.dp,
-                    end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) + 12.dp
+                    start = paddingValues.calculateStartPadding(LocalLayoutDirection.current)/* + 12.dp*/,
+                    end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) /*+ 12.dp*/
                 )
         ) {
             MainNavHost(appState = appState)

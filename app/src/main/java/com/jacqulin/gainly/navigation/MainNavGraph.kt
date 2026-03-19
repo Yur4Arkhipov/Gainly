@@ -30,8 +30,7 @@ fun MainNavHost(
             onAddFriendsClick = navController::navigateToAddFriends
         ) {
             addFriendsScreen(
-                showBackButton = true,
-                onBackClick = navController::popBackStack,
+                onBackClick = navController::popBackStack
             )
         }
 

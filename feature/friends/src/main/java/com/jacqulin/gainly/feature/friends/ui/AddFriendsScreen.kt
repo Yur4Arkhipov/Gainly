@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.feature.friends.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -79,12 +80,8 @@ fun AddFriendsScreen(
             showAddFriendsButton = false,
             searchQuery = searchQuery,
             onSearchQueryChange = viewModel::onSearchQueryChange,
-            searchResults = searchResults,
             onAddFriendsClick = { },
             onBackClick = onBackClick,
-            onSendFriendshipRequestClick = { nickname ->
-                viewModel.sendFriendRequest(nickname)
-            }
         )
 
         Spacer(Modifier.height(12.dp))
@@ -104,7 +101,10 @@ fun AddFriendsScreen(
                         UserSearchResultRow(
                             name = user.username,
                             isRequestSent = user.isRequestSent,
-                            onAddClick = { viewModel.sendFriendRequest(user.username) }
+                            onAddClick = {
+                                viewModel.sendFriendRequest(user.username)
+                                Log.d("Friends", user.username)
+                            }
                         )
                     }
                 }

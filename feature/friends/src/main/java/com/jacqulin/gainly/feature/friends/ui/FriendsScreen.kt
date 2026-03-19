@@ -70,10 +70,8 @@ fun FriendsScreen(
             showAddFriendsButton = true,
             searchQuery = searchQuery,
             onSearchQueryChange = viewModel::onSearchQueryChange,
-            searchResults = searchResults,
             onAddFriendsClick = onAddFriendsClick,
             onBackClick = { },
-            onSendFriendshipRequestClick = {  }
         )
 
         Spacer(Modifier.height(20.dp))

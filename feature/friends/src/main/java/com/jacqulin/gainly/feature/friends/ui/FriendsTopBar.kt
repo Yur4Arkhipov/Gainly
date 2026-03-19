@@ -20,7 +20,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.util.auth.components.CustomOutlinedTextField
 
 @Composable
@@ -28,9 +27,7 @@ fun FriendsTopBar(
     text: String,
     textStyle: TextStyle,
     searchQuery: String,
-    searchResults: List<UserData>,
     onSearchQueryChange: (String) -> Unit,
-    onSendFriendshipRequestClick: (String) -> Unit,
     showBackButton: Boolean,
     showAddFriendsButton: Boolean,
     onAddFriendsClick: () -> Unit,
