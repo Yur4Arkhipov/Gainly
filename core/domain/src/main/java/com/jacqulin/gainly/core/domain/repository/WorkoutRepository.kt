@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.domain.repository
 
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
@@ -18,4 +19,9 @@ interface WorkoutRepository {
         to: String,
         last: Int
     ): Result<List<WorkoutListItem>, WorkoutError>
+
+    suspend fun getWorkoutById(
+        accessToken: String,
+        workoutId: String
+    ): Result<WorkoutById, WorkoutError>
 }

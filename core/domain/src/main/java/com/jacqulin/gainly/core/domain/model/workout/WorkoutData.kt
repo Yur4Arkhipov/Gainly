@@ -5,6 +5,12 @@ data class WorkoutData(
     val exercises: List<ExerciseData>
 )
 
+data class WorkoutById(
+    val id: String,
+    val date: String,
+    val exercises: List<ExerciseData>
+)
+
 data class ExerciseData(
     val name: String,
     val sets: List<WorkoutSetData>

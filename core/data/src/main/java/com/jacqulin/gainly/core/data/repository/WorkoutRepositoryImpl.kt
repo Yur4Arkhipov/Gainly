@@ -5,9 +5,12 @@ import com.jacqulin.gainly.core.data.remote.dto.workout.ExerciseDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutSetDto
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
+import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
@@ -56,7 +59,6 @@ class WorkoutRepositoryImpl @Inject constructor(
                 to = to,
                 last = last
             )
-            // response это уже List<WorkoutItemDto>, конвертируем в domain модель
             val items = response.map { dto ->
                 WorkoutListItem(
                     workoutId = dto.id,
@@ -68,6 +70,38 @@ class WorkoutRepositoryImpl @Inject constructor(
                 )
             }
             Result.Success(items)
+        } catch (e: Throwable) {
+            Result.Error(ErrorHandler.mapWorkoutError(e))
+        }
+    }
+
+    override suspend fun getWorkoutById(
+        accessToken: String,
+        workoutId: String
+    ): Result<WorkoutById, WorkoutError> {
+        return try {
+            val response = workoutApiService.getWorkoutById(
+                accessToken = accessToken,
+                workoutId = workoutId
+            )
+            val result = WorkoutById(
+                id = response.id,
+                date = response.date,
+                exercises = response.exercises.map { exercise ->
+                    ExerciseData(
+                        name = exercise.name,
+                        sets = exercise.sets.map { set ->
+                            WorkoutSetData(
+                                reps = set.reps,
+                                weight = set.weight,
+                                isOwnWeight = set.isOwnWeight
+                            )
+                        }
+                    )
+                }
+            )
+            Result.Success(result)
+
         } catch (e: Throwable) {
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
