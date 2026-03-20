@@ -5,6 +5,7 @@ import androidx.credentials.CredentialManager
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.local.dao.FriendDao
+import com.jacqulin.gainly.core.data.local.dao.WorkoutDao
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.data.repository.AuthRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.FriendsRepositoryImpl
@@ -51,7 +52,8 @@ object RepositoryModule {
     @Singleton
     fun provideWorkoutRepository(
         api: WorkoutApiService,
+        workoutDao: WorkoutDao,
     ): WorkoutRepository {
-        return WorkoutRepositoryImpl(api)
+        return WorkoutRepositoryImpl(api, workoutDao)
     }
 }

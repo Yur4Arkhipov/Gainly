@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.repository
 
 import android.util.Log
+import com.jacqulin.gainly.core.data.local.dao.WorkoutDao
 import com.jacqulin.gainly.core.data.remote.dto.workout.ExerciseDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutSetDto
@@ -18,7 +19,8 @@ import com.jacqulin.gainly.core.util.errors.WorkoutError
 import javax.inject.Inject
 
 class WorkoutRepositoryImpl @Inject constructor(
-    private val workoutApiService: WorkoutApiService
+    private val workoutApiService: WorkoutApiService,
+    private val workoutDao: WorkoutDao
 ) : WorkoutRepository {
     override suspend fun createWorkout(accessToken: String, workout: WorkoutData): Result<WorkoutId, WorkoutError> {
         return try {
@@ -69,6 +71,10 @@ class WorkoutRepositoryImpl @Inject constructor(
                     duration = null
                 )
             }
+//
+//            // Синхронизация с локальной БД
+//            syncWorkoutsToDatabase(response)
+
             Result.Success(items)
         } catch (e: Throwable) {
             Result.Error(ErrorHandler.mapWorkoutError(e))
@@ -100,10 +106,58 @@ class WorkoutRepositoryImpl @Inject constructor(
                     )
                 }
             )
+//            // Сохраняем в локальную БД
+//            syncSingleWorkoutToDatabase(response)
+//
+//            val result = response.toWorkoutById()
             Result.Success(result)
 
         } catch (e: Throwable) {
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
+//
+//    private suspend fun syncWorkoutsToDatabase(workouts: List<com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutItemDto>) {
+//        workouts.forEach { dto ->
+//            val workoutEntity = com.jacqulin.gainly.core.data.local.entity.WorkoutEntity(
+//                id = dto.id,
+//                date = dto.date
+//            )
+//            workoutDao.insertWorkout(workoutEntity)
+//
+//            // Сохраняем упражнения если они есть
+//            dto.exercises?.let { exercises ->
+//                val exerciseDtos = exercises.filterIsInstance<ExerciseDto>()
+//                val exerciseEntities = exerciseDtos.mapIndexed { index, exercise ->
+//                    exercise.toEntity(dto.id, index)
+//                }
+//                workoutDao.insertExercises(exerciseEntities)
+//
+//                // Сохраняем подходы
+//                exerciseEntities.forEachIndexed { index, exerciseEntity ->
+//                    val setEntities = exerciseDtos.getOrNull(index)?.sets?.map {
+//                        it.toEntity(exerciseEntity.id)
+//                    } ?: emptyList()
+//                    workoutDao.insertSets(setEntities)
+//                }
+//            }
+//        }
+//    }
+
+//    private suspend fun syncSingleWorkoutToDatabase(response: com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutResponseDto) {
+//        val workoutEntity = response.toEntity()
+//        workoutDao.insertWorkout(workoutEntity)
+//
+//        val exerciseEntities = response.exercises.mapIndexed { index, exercise ->
+//            exercise.toEntity(response.id, index)
+//        }
+//        workoutDao.insertExercises(exerciseEntities)
+//
+//        exerciseEntities.forEachIndexed { index, exerciseEntity ->
+//            val setEntities = response.exercises.getOrNull(index)?.sets?.map {
+//                it.toEntity(exerciseEntity.id)
+//            } ?: emptyList()
+//            workoutDao.insertSets(setEntities)
+//        }
+//    }
 }

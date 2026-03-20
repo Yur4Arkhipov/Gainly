@@ -9,7 +9,6 @@ import com.jacqulin.gainly.core.data.remote.dto.friends.UsersResponseDto
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.core.domain.model.friends.FriendsData
 import com.jacqulin.gainly.core.domain.model.friends.PendingUserData
-import com.jacqulin.gainly.core.domain.model.friends.PendingUsersData
 import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.model.friends.UsersData
 
