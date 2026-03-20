@@ -32,7 +32,8 @@ import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
 @Composable
 fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
-    onAddFriendsClick: () -> Unit
+    onAddFriendsClick: () -> Unit,
+    onFriendClick: (friendId: String, friendName: String) -> Unit = { _, _ -> }
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val friends by viewModel.filteredFriends.collectAsStateWithLifecycle()
@@ -89,7 +90,8 @@ fun FriendsScreen(
                     items(friends) { friend ->
                         FriendRow(
                             name = friend.username,
-                            isAddFriendsScreen = false
+                            isAddFriendsScreen = false,
+                            onFriendClick = { onFriendClick(friend.userId, friend.username) }
                         )
                     }
                 }

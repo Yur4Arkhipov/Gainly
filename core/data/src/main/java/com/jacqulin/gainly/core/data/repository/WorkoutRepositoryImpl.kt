@@ -81,6 +81,41 @@ class WorkoutRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFriendWorkoutHistory(
+        accessToken: String,
+        friendsname: String,
+        from: String,
+        to: String,
+        last: Int
+    ): Result<List<WorkoutListItem>, WorkoutError> {
+        return try {
+            val response = workoutApiService.getFriendWorkoutHistory(
+                accessToken = accessToken,
+                friendsname = friendsname,
+                from = from,
+                to = to,
+                last = last
+            )
+            val items = response.map { dto ->
+                WorkoutListItem(
+                    workoutId = dto.id,
+                    userId = dto.userId,
+                    title = dto.title,
+                    date = dto.date,
+                    exerciseCount = dto.exercises?.size ?: 0,
+                    duration = null
+                )
+            }
+//
+//            // Синхронизация с локальной БД
+//            syncWorkoutsToDatabase(response)
+
+            Result.Success(items)
+        } catch (e: Throwable) {
+            Result.Error(ErrorHandler.mapWorkoutError(e))
+        }
+    }
+
     override suspend fun getWorkoutById(
         accessToken: String,
         workoutId: String

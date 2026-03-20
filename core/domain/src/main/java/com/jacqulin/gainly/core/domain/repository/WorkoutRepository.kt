@@ -20,6 +20,14 @@ interface WorkoutRepository {
         last: Int
     ): Result<List<WorkoutListItem>, WorkoutError>
 
+    suspend fun getFriendWorkoutHistory(
+        accessToken: String,
+        friendsname: String,
+        from: String,
+        to: String,
+        last: Int
+    ): Result<List<WorkoutListItem>, WorkoutError>
+
     suspend fun getWorkoutById(
         accessToken: String,
         workoutId: String

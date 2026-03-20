@@ -15,11 +15,15 @@ fun NavController.navigateToFriends(navOptions: NavOptions) = navigate(route = F
 
 fun NavGraphBuilder.friendsSection(
     onAddFriendsClick: () -> Unit,
+    onFriendClick: (friendId: String, friendName: String) -> Unit,
     addFriendsDestination: NavGraphBuilder.() -> Unit
 ) {
     navigation<FriendsBaseRoute>(startDestination = FriendsRoute) {
         composable<FriendsRoute>() {
-            FriendsScreen(onAddFriendsClick = onAddFriendsClick)
+            FriendsScreen(
+                onAddFriendsClick = onAddFriendsClick,
+                onFriendClick = onFriendClick
+            )
         }
         addFriendsDestination()
     }

@@ -1,4 +1,6 @@
-package com.jacqulin.gainly.feature.history.ui
+@file:Suppress("NewApi")
+
+package com.jacqulin.gainly.feature.friends.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,24 +18,26 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,23 +58,26 @@ import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.feature.history.viewmodel.HistoryViewModel
+import com.jacqulin.gainly.feature.friends.viewmodel.FriendWorkoutsViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HistoryScreen(
-    viewModel: HistoryViewModel = hiltViewModel()
+fun FriendWorkoutsScreen(
+    friendId: String,
+    friendName: String,
+    viewModel: FriendWorkoutsViewModel = hiltViewModel(),
+    onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val workoutsState by viewModel.uiState.collectAsState()
     val expandedWorkoutId by viewModel.expandedWorkoutId.collectAsState()
     val workoutDetailsState by viewModel.workoutDetailsState.collectAsState()
 
     var startDate by remember { mutableStateOf(LocalDate.now().minusMonths(1)) }
     var endDate by remember { mutableStateOf(LocalDate.now()) }
 
-    LaunchedEffect(startDate, endDate) {
-        viewModel.loadWorkoutHistoryByDateRange(startDate, endDate)
+    LaunchedEffect(friendName) {
+        viewModel.loadFriendWorkouts(friendName, startDate, endDate)
     }
 
     Box(
@@ -85,14 +92,14 @@ fun HistoryScreen(
             item {
                 Text(
                     text = buildAnnotatedString {
-                        append("История ")
+                        append("История тренировок ")
 
                         withStyle(
                             style = SpanStyle(
                                 fontWeight = FontWeight.Bold,
                             )
                         ) {
-                            append("тренировок")
+                            append(friendName)
                         }
                     },
                     style = TextStyle(
@@ -117,7 +124,7 @@ fun HistoryScreen(
                 )
             }
 
-            when (uiState) {
+            when (workoutsState) {
                 is UiState.Loading -> {
                     item {
                         Box(
@@ -130,7 +137,7 @@ fun HistoryScreen(
                 }
 
                 is UiState.Success -> {
-                    val workouts = (uiState as UiState.Success<List<WorkoutListItem>>).data
+                    val workouts = (workoutsState as UiState.Success<List<WorkoutListItem>>).data
 
                     if (workouts.isEmpty()) {
                         item {
@@ -164,7 +171,11 @@ fun HistoryScreen(
                                         ExpandableWorkoutCard(
                                             workout = workout,
                                             isExpanded = expandedWorkoutId == workout.workoutId,
-                                            onToggleExpand = { viewModel.toggleWorkoutExpanded(workout.workoutId) },
+                                            onToggleExpand = {
+                                                viewModel.toggleWorkoutExpanded(
+                                                    workout.workoutId
+                                                )
+                                            },
                                             workoutDetails = workoutDetailsState,
                                             modifier = Modifier.fillMaxWidth()
                                         )
@@ -186,227 +197,14 @@ fun HistoryScreen(
                                 )
                                 .padding(16.dp)
                         ) {
-                            ErrorView(message = (uiState as UiState.Error).message)
+                            ErrorView(message = (workoutsState as UiState.Error).message)
                         }
                     }
                 }
 
-                is UiState.Idle -> { }
+                is UiState.Idle -> {}
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun DateRangeFilter(
-    startDate: LocalDate,
-    endDate: LocalDate,
-    onStartDateChange: (LocalDate) -> Unit,
-    onEndDateChange: (LocalDate) -> Unit
-) {
-    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
-    var selectedPeriod by remember { mutableStateOf("Месяц") }
-
-    if (showStartDatePicker) {
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = startDate.toEpochDay() * 86400000
-        )
-        DatePickerDialog(
-            onDismissRequest = { showStartDatePicker = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        val newDate = java.time.Instant.ofEpochMilli(millis)
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDate()
-                        onStartDateChange(newDate)
-                    }
-                    showStartDatePicker = false
-                }) {
-                    Text("ОК")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showStartDatePicker = false }) {
-                    Text("Отмена")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
-    }
-
-    if (showEndDatePicker) {
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = endDate.toEpochDay() * 86400000
-        )
-        DatePickerDialog(
-            onDismissRequest = { showEndDatePicker = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        val newDate = java.time.Instant.ofEpochMilli(millis)
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDate()
-                        onEndDateChange(newDate)
-                    }
-                    showEndDatePicker = false
-                }) {
-                    Text("ОК")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showEndDatePicker = false }) {
-                    Text("Отмена")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = Color.Transparent,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = "Период",
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable { showStartDatePicker = true }
-                    .padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = "С ${startDate.format(formatter)}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Black
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(40.dp)
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable { showEndDatePicker = true }
-                    .padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = "По ${endDate.format(formatter)}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Black
-                    )
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterButton(
-                text = "Неделя",
-                isSelected = selectedPeriod == "Неделя",
-                onClick = {
-                    selectedPeriod = "Неделя"
-                    val now = LocalDate.now()
-                    onStartDateChange(now.minusWeeks(1))
-                    onEndDateChange(now)
-                },
-                modifier = Modifier.weight(1f)
-            )
-
-            FilterButton(
-                text = "Месяц",
-                isSelected = selectedPeriod == "Месяц",
-                onClick = {
-                    selectedPeriod = "Месяц"
-                    val now = LocalDate.now()
-                    onStartDateChange(now.minusMonths(1))
-                    onEndDateChange(now)
-                },
-                modifier = Modifier.weight(1f)
-            )
-
-            FilterButton(
-                text = "3 месяца",
-                isSelected = selectedPeriod == "3 месяца",
-                onClick = {
-                    selectedPeriod = "3 месяца"
-                    val now = LocalDate.now()
-                    onStartDateChange(now.minusMonths(3))
-                    onEndDateChange(now)
-                },
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun FilterButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(32.dp),
-        shape = RoundedCornerShape(6.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color(0xFF1E88E5) else Color.White,
-            contentColor = if (isSelected) Color.White else Color.Black
-        )
-    ) {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium
-            )
-        )
     }
 }
 
@@ -482,9 +280,10 @@ private fun ExpandableWorkoutCard(
             }
         }
 
+        // Раскрывающаяся часть с деталями
         if (isExpanded) {
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             when (workoutDetails) {
                 is UiState.Loading -> {
                     Box(
@@ -745,5 +544,221 @@ private fun ErrorView(message: String) {
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateRangeFilter(
+    startDate: LocalDate,
+    endDate: LocalDate,
+    onStartDateChange: (LocalDate) -> Unit,
+    onEndDateChange: (LocalDate) -> Unit
+) {
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    var showStartDatePicker by remember { mutableStateOf(false) }
+    var showEndDatePicker by remember { mutableStateOf(false) }
+    var selectedPeriod by remember { mutableStateOf("Месяц") }
+
+    if (showStartDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = startDate.toEpochDay() * 86400000
+        )
+        DatePickerDialog(
+            onDismissRequest = { showStartDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val newDate = java.time.Instant.ofEpochMilli(millis)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate()
+                        onStartDateChange(newDate)
+                    }
+                    showStartDatePicker = false
+                }) {
+                    Text("ОК")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showStartDatePicker = false }) {
+                    Text("Отмена")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    if (showEndDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = endDate.toEpochDay() * 86400000
+        )
+        DatePickerDialog(
+            onDismissRequest = { showEndDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val newDate = java.time.Instant.ofEpochMilli(millis)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate()
+                        onEndDateChange(newDate)
+                    }
+                    showEndDatePicker = false
+                }) {
+                    Text("ОК")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEndDatePicker = false }) {
+                    Text("Отмена")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color.Transparent,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Период",
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Start date field
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable { showStartDatePicker = true }
+                    .padding(horizontal = 12.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "С ${startDate.format(formatter)}",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            // End date field
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable { showEndDatePicker = true }
+                    .padding(horizontal = 12.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "По ${endDate.format(formatter)}",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+                )
+            }
+        }
+
+        // Quick filter buttons
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterButton(
+                text = "Неделя",
+                isSelected = selectedPeriod == "Неделя",
+                onClick = {
+                    selectedPeriod = "Неделя"
+                    val now = LocalDate.now()
+                    onStartDateChange(now.minusWeeks(1))
+                    onEndDateChange(now)
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            FilterButton(
+                text = "Месяц",
+                isSelected = selectedPeriod == "Месяц",
+                onClick = {
+                    selectedPeriod = "Месяц"
+                    val now = LocalDate.now()
+                    onStartDateChange(now.minusMonths(1))
+                    onEndDateChange(now)
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            FilterButton(
+                text = "3 месяца",
+                isSelected = selectedPeriod == "3 месяца",
+                onClick = {
+                    selectedPeriod = "3 месяца"
+                    val now = LocalDate.now()
+                    onStartDateChange(now.minusMonths(3))
+                    onEndDateChange(now)
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilterButton(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(32.dp),
+        shape = RoundedCornerShape(6.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) Color(0xFF1E88E5) else Color.White,
+            contentColor = if (isSelected) Color.White else Color.Black
+        )
+    ) {
+        Text(
+            text = text,
+            style = TextStyle(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium
+            )
+        )
     }
 }

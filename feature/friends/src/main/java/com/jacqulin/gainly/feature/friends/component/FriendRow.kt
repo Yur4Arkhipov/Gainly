@@ -2,6 +2,7 @@ package com.jacqulin.gainly.feature.friends.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ fun FriendRow(
     onAddClick: () -> Unit = { },
     onAcceptClick: () -> Unit = { },
     onRejectClick: () -> Unit = { },
+    onFriendClick: () -> Unit = { },
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -58,7 +60,7 @@ fun FriendRow(
                 color = White,
                 shape = RoundedCornerShape(32.dp)
             )
-            .padding(horizontal = 8.dp),
+            .clickable { onFriendClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -27,6 +27,15 @@ interface WorkoutApiService {
         @Query("Last") last: Int
     ): WorkoutListResponseDto
 
+    @GET("workout/api/Workout/workouList/{friendsname}")
+    suspend fun getFriendWorkoutHistory(
+        @Header("Authorization") accessToken: String,
+        @Path("friendsname") friendsname: String,
+        @Query("From") from: String,
+        @Query("To") to: String,
+        @Query("Last") last: Int
+    ): WorkoutListResponseDto
+
     @GET("workout/api/Workout/{workoutId}")
     suspend fun getWorkoutById(
         @Header("Authorization") accessToken: String,
