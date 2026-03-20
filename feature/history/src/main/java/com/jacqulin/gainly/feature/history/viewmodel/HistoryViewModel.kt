@@ -15,8 +15,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
@@ -33,16 +37,28 @@ class HistoryViewModel @Inject constructor(
     private val _expandedWorkoutId = MutableStateFlow<String?>(null)
     val expandedWorkoutId: StateFlow<String?> = _expandedWorkoutId
 
+    @OptIn(ExperimentalTime::class)
     fun loadWorkoutHistoryByDateRange(startDate: LocalDate, endDate: LocalDate) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                val formatter = DateTimeFormatter.ISO_DATE
+                val formatter = DateTimeFormatter.ISO_INSTANT
+
+                val from = startDate
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toInstant()
+                    .let { formatter.format(it) }
+
+                val to = endDate
+                    .atTime(23, 59, 59)
+                    .atOffset(ZoneOffset.UTC)
+                    .toInstant()
+                    .let { formatter.format(it) }
 
                 val result = getWorkoutHistoryUseCase(
-                    from = startDate.format(formatter),
-                    to = endDate.format(formatter),
-                    last = 10
+                    from = from,
+                    to = to,
+                    last = 20
                 )
 
                 _uiState.value = when (result) {

@@ -91,18 +91,18 @@ fun FriendRow(
                         letterSpacing = 0.sp
                     )
                 )
-                Text(
-                    text = "@ilusha",
-                    style = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 14.sp,
-                        lineHeight = 21.sp,
-                        letterSpacing = 0.sp,
-                        color = GrayText
-                    )
-                )
+//                Text(
+//                    text = "@ilusha",
+//                    style = TextStyle(
+//                        fontFamily = GoogleSansFontFamily,
+//                        fontWeight = FontWeight.Normal,
+//                        fontStyle = FontStyle.Normal,
+//                        fontSize = 14.sp,
+//                        lineHeight = 21.sp,
+//                        letterSpacing = 0.sp,
+//                        color = GrayText
+//                    )
+//                )
             }
         }
 

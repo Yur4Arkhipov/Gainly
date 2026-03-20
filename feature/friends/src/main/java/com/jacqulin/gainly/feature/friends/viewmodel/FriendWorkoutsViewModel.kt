@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -41,13 +42,26 @@ class FriendWorkoutsViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             try {
                 val token = tokenStorage.tokens.firstOrNull()?.accessToken ?: return@launch
-                val formatter = DateTimeFormatter.ISO_DATE
+
+                val formatter = DateTimeFormatter.ISO_INSTANT
+
+                val from = startDate
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toInstant()
+                    .let { formatter.format(it) }
+
+                val to = endDate
+                    .atTime(23, 59, 59)
+                    .atOffset(ZoneOffset.UTC)
+                    .toInstant()
+                    .let { formatter.format(it) }
+
                 val result = workoutRepository.getFriendWorkoutHistory(
                     accessToken = token,
                     friendsname = friendsname,
-                    from = startDate.format(formatter),
-                    to = endDate.format(formatter),
-                    last = 10
+                    from = from,
+                    to = to,
+                    last = 20
                 )
 
                 _uiState.value = when (result) {
