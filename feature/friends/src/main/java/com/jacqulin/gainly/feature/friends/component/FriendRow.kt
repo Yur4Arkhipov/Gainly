@@ -35,13 +35,13 @@ import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
-import com.jacqulin.gainly.core.designsystem.theme.GrayText
 import com.jacqulin.gainly.core.designsystem.theme.GreenCheckmark
 import com.jacqulin.gainly.core.designsystem.theme.RedCheckmark
 import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
 fun FriendRow(
+    modifier: Modifier = Modifier,
     name: String,
     isRequestSent: Boolean = false,
     isAddFriendsScreen: Boolean = true,
@@ -49,8 +49,7 @@ fun FriendRow(
     onAddClick: () -> Unit = { },
     onAcceptClick: () -> Unit = { },
     onRejectClick: () -> Unit = { },
-    onFriendClick: () -> Unit = { },
-    modifier: Modifier = Modifier
+    onFriendClick: () -> Unit = { }
 ) {
     Row(
         modifier = modifier
@@ -64,33 +63,34 @@ fun FriendRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
-        ) {
-            Image(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(Color.LightGray)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(
-
+        Row(modifier = Modifier.padding(horizontal = 5.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
             ) {
-                Text(
-                    text = name,
-                    style = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontWeight = FontWeight.W500,
-                        fontStyle = FontStyle.Normal,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        letterSpacing = 0.sp
-                    )
+                Image(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray)
                 )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(
+
+                ) {
+                    Text(
+                        text = name,
+                        style = TextStyle(
+                            fontFamily = GoogleSansFontFamily,
+                            fontWeight = FontWeight.W500,
+                            fontStyle = FontStyle.Normal,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            letterSpacing = 0.sp
+                        )
+                    )
 //                Text(
 //                    text = "@ilusha",
 //                    style = TextStyle(
@@ -103,86 +103,85 @@ fun FriendRow(
 //                        color = GrayText
 //                    )
 //                )
+                }
             }
-        }
 
-        if (isAddFriendsScreen && !isPendingUser) {
-            IconButton(
-                onClick = onAddClick,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = GrayBackgroundMain,
-                    contentColor = GrayIconColor
-                ),
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            ) {
-                Icon(
-                    painter = if (isRequestSent) painterResource(R.drawable.ic_checkmark)
-                    else painterResource(R.drawable.ic_add_friends),
-                    contentDescription = "Добавить в друзья",
-                    tint = if (isRequestSent) GreenCheckmark
-                    else GrayIconColor
-                )
-            }
-        }
-        else if (isPendingUser) {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
+            if (isAddFriendsScreen && !isPendingUser) {
                 IconButton(
-                    onClick = onRejectClick,
+                    onClick = onAddClick,
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = GrayBackgroundMain,
-                        contentColor = RedCheckmark
+                        contentColor = GrayIconColor
                     ),
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(50.dp)
                         .clip(CircleShape)
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_reject),
-                        contentDescription = "Отклонить",
-                        tint = RedCheckmark
+                        painter = if (isRequestSent) painterResource(R.drawable.ic_checkmark)
+                        else painterResource(R.drawable.ic_add_friends),
+                        contentDescription = "Добавить в друзья",
+                        tint = if (isRequestSent) GreenCheckmark
+                        else GrayIconColor
                     )
                 }
+            } else if (isPendingUser) {
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    IconButton(
+                        onClick = onRejectClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = GrayBackgroundMain,
+                            contentColor = RedCheckmark
+                        ),
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_reject),
+                            contentDescription = "Отклонить",
+                            tint = RedCheckmark
+                        )
+                    }
 
+                    IconButton(
+                        onClick = onAcceptClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = GrayBackgroundMain,
+                            contentColor = GreenCheckmark
+                        ),
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_confirm),
+                            contentDescription = "Принять",
+                            tint = GreenCheckmark
+                        )
+                    }
+                }
+            } else {
                 IconButton(
-                    onClick = onAcceptClick,
+                    onClick = { },
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = GrayBackgroundMain,
-                        contentColor = GreenCheckmark
+                        contentColor = GrayIconColor
                     ),
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(50.dp)
                         .clip(CircleShape)
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_confirm),
-                        contentDescription = "Принять",
-                        tint = GreenCheckmark
+                        painter = painterResource(R.drawable.ic_message),
+                        contentDescription = "Сообщение",
+                        tint = GrayIconColor
                     )
                 }
-            }
-        }
-        else {
-            IconButton(
-                onClick = { },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = GrayBackgroundMain,
-                    contentColor = GrayIconColor
-                ),
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_message),
-                    contentDescription = "Сообщение",
-                    tint = GrayIconColor
-                )
             }
         }
     }
