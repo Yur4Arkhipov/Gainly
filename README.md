@@ -139,14 +139,4 @@ The project includes dependencies for:
 
 ## Screenshots
 
-```markdown
-<p align="center">
-  <img src="docs/screenshots/signin.jpg" width="250" alt="Sign In Screen">
-  <img src="docs/screenshots/signup.jpg.png" width="250" alt="Sign Up Screen">
-  <img src="docs/screenshots/addworkout.jpg" width="250" alt="Add Workout Screen">
-  <img src="docs/screenshots/addworkout1.jpg" width="250" alt="Add Workout Screen 1">
-  <img src="docs/screenshots/removeworkout.jpg" width="250" alt="Remove Workout Screen">
-  <img src="docs/screenshots/friendslist.jpg" width="250" alt="Friends List Screen">
-  <img src="docs/screenshots/searchusers.jpg" width="250" alt="Search Users Screen">
-</p>
-```
+You can see the screenshots of the application in the `screenshots` folder.
