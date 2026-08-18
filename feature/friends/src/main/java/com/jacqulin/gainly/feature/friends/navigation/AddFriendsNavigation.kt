@@ -1,0 +1,26 @@
+package com.jacqulin.gainly.feature.friends.navigation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.compose.composable
+import com.jacqulin.gainly.feature.friends.ui.AddFriendsScreen
+import kotlinx.serialization.Serializable
+
+@Serializable data object AddFriendsRoute
+
+fun NavController.navigateToAddFriends(navOptions: NavOptionsBuilder.() -> Unit = {}) {
+    navigate(route = AddFriendsRoute) {
+        navOptions()
+    }
+}
+
+fun NavGraphBuilder.addFriendsScreen(
+    onBackClick: () -> Unit,
+) {
+    composable<AddFriendsRoute> {
+        AddFriendsScreen(
+            onBackClick = onBackClick
+        )
+    }
+}

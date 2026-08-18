@@ -57,4 +57,12 @@ dependencies {
     implementation(libs.googleid)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Okhttp
+    implementation(libs.okhttp.logging.interceptor)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 }

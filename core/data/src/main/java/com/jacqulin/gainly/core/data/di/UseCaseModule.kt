@@ -11,8 +11,12 @@ import com.jacqulin.gainly.core.data.usecase.auth.SignInTelegramUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignInUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.workout.CreateWorkoutUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.workout.GetWorkoutByIdUseCaseImpl
+import com.jacqulin.gainly.core.data.usecase.workout.GetWorkoutHistoryUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
+import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.domain.usecase.auth.ClearTokensUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SendCodeToEmailUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.GetGoogleIdTokenUseCase
@@ -24,6 +28,9 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SignInTelegramUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignInUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
+import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
+import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutByIdUseCase
+import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutHistoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +40,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
 
+    // Auth Use Cases
     @Provides
     fun provideSignInUseCase(repository: AuthRepository) : SignInUseCase {
         return SignInUseCaseImpl(repository)
@@ -69,14 +77,6 @@ object UseCaseModule {
     }
 
     @Provides
-    fun provideLogoutUseCase(
-        repository: AuthRepository,
-        getRefreshTokensUseCase: GetRefreshTokenUseCase
-    ) : LogoutUseCase {
-        return LogoutUseCaseImpl(repository, getRefreshTokensUseCase)
-    }
-
-    @Provides
     fun provideClearTokensUseCase(tokenStorage: TokenStorage) : ClearTokensUseCase {
         return ClearTokensUseCaseImpl(tokenStorage)
     }
@@ -89,5 +89,37 @@ object UseCaseModule {
     @Provides
     fun provideSignInTelegramUseCase(repository: AuthRepository) : SignInTelegramUseCase {
         return SignInTelegramUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideLogoutUseCase(
+        repository: AuthRepository,
+        getRefreshTokensUseCase: GetRefreshTokenUseCase
+    ) : LogoutUseCase {
+        return LogoutUseCaseImpl(repository, getRefreshTokensUseCase)
+    }
+
+    // Workout Use Cases
+    @Provides
+    fun provideCreateWorkoutUseCase(
+        repository: WorkoutRepository
+    ): CreateWorkoutUseCase {
+        return CreateWorkoutUseCaseImpl(repository)
+    }
+
+    @Provides
+    fun provideGetWorkoutHistoryUseCase(
+        repository: WorkoutRepository,
+        tokenStorage: TokenStorage
+    ): GetWorkoutHistoryUseCase {
+        return GetWorkoutHistoryUseCaseImpl(repository, tokenStorage)
+    }
+
+    @Provides
+    fun provideGetWorkoutByIdUseCase(
+        repository: WorkoutRepository,
+        tokenStorage: TokenStorage
+    ): GetWorkoutByIdUseCase {
+        return GetWorkoutByIdUseCaseImpl(repository, tokenStorage)
     }
 }

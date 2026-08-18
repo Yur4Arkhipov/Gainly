@@ -14,42 +14,42 @@ import retrofit2.http.Path
 
 interface AuthApiService {
 
-    @POST("api/auth/login")
+    @POST("auth/api/auth/login")
     suspend fun login(
         @Body request: AuthRequestDto
     ): AuthData
 
-    @POST("api/auth/register")
+    @POST("auth/api/auth/register")
     suspend fun register(
         @Body request: AuthRequestDto
     ): AuthData
 
-    @POST("api/auth/refresh")
+    @POST("auth/api/auth/refresh")
     suspend fun refresh(
         @Body request: RefreshTokenDto
     ): AuthData
 
-    @POST("api/auth/email_code/{email}")
+    @POST("auth/api/auth/email_code/{email}")
     suspend fun sendCodeToEmail(
         @Path("email") email: String
     )
 
-    @POST("api/auth/email_code/verify")
+    @POST("auth/api/auth/email_code/verify")
     suspend fun verifyCode(
         @Body request: OtpRequestDto
     )
 
-    @POST("api/auth/google")
+    @POST("auth/api/auth/google")
     suspend fun loginGoogle(
         @Body request: GoogleSignInRequestDto
     ): AuthData
 
-    @HTTP(method = "DELETE", path = "api/auth/logout", hasBody = true)
+    @HTTP(method = "DELETE", path = "auth/api/auth/logout", hasBody = true)
     suspend fun logout(
         @Body request: LogoutRequestDto
     )
 
-    @POST("api/auth/tgloginByWidget")
+    @POST("auth/api/auth/tgloginByWidget")
     suspend fun loginTelegram(
         @Body request: TelegramAuthRequestDto
     ): AuthData

@@ -58,4 +58,54 @@ object ErrorHandler {
             else -> AuthError.Unknown
         }
     }
+
+    fun mapWorkoutError(e: Throwable): WorkoutError {
+        return when (e) {
+            // ---> HTTP / Network errors <---
+            is HttpException ->  {
+                val type = when (e.code())  {
+                    400 -> WorkoutError.Http.BAD_REQUEST
+                    401 -> WorkoutError.Http.UNAUTHORIZED
+                    402 -> WorkoutError.Http.PAYMENT_REQUIRED
+                    403 -> WorkoutError.Http.FORBIDDEN
+                    404 -> WorkoutError.Http.NOT_FOUND
+                    405 -> WorkoutError.Http.METHOD_NOT_ALLOWED
+                    406 -> WorkoutError.Http.NOT_ACCEPTABLE
+                    407 -> WorkoutError.Http.PROXY_AUTHENTICATION_REQUIRED
+                    408 -> WorkoutError.Http.REQUEST_TIMEOUT
+                    409 -> WorkoutError.Http.CONFLICT
+                    410 -> WorkoutError.Http.GONE
+                    411 -> WorkoutError.Http.LENGTH_REQUIRED
+                    412 -> WorkoutError.Http.PRECONDITION_FAILED
+                    413 -> WorkoutError.Http.PAYMENT_REQUIRED
+                    414 -> WorkoutError.Http.PAYLOAD_TOO_LARGE
+                    415 -> WorkoutError.Http.URI_TOO_LONG
+                    416 -> WorkoutError.Http.UNSUPPORTED_MEDIA_TYPE
+                    417 -> WorkoutError.Http.RANGE_NOT_SATISFIABLE
+                    418 -> WorkoutError.Http.EXPECTATION_FAILED
+                    419 -> WorkoutError.Http.I_AM_TEAPOT
+                    423 -> WorkoutError.Http.LOCKED
+                    429 -> WorkoutError.Http.TOO_MANY_REQUESTS
+                    in 500..511 -> WorkoutError.Http.SERVER_ERROR
+                    else -> WorkoutError.Http.UNKNOWN
+                }
+                WorkoutError.HttpError(type)
+            }
+            is IOException -> when (e) {
+                is UnknownHostException -> WorkoutError.LocalInternetError(WorkoutError.LocalInternet.NO_INTERNET)
+                is SocketTimeoutException -> WorkoutError.LocalInternetError(WorkoutError.LocalInternet.LOCAL_REQUEST_TIMEOUT)
+                else -> WorkoutError.Unknown // check this if unknown error will appear
+            }
+            is SerializationException -> WorkoutError.Serialization
+
+            // ---> Local workout errors <---
+
+            // ---> Google Sign-In errors <---
+            is GetCredentialCancellationException -> {
+                WorkoutError.GoogleError(WorkoutError.Google.GOOGLE_TOKEN_ERROR)
+            }
+
+            else -> WorkoutError.Unknown
+        }
+    }
 }

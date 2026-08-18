@@ -1,45 +1,52 @@
 package com.jacqulin.gainly.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.jacqulin.gainly.core.designsystem.icon.AppIcons
 import com.jacqulin.gainly.feature.friends.navigation.FriendsBaseRoute
 import com.jacqulin.gainly.feature.friends.navigation.FriendsRoute
+import com.jacqulin.gainly.feature.history.navigation.HistoryBaseRoute
+import com.jacqulin.gainly.feature.history.navigation.HistoryRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeRoute
 import kotlin.reflect.KClass
 
 enum class TopLevelDestination(
-    val selectedIcon: ImageVector,
-    val unselectedIcon: ImageVector,
-//    @StringRes val iconTextId: Int,
+    val icon: Int,
     val iconTextId: String,
 //    @StringRes val titleTextId: Int,
-    val titleTextId: String,
+    val titleText: String,
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
     HOME(
-        selectedIcon = AppIcons.HomeSelected,
-        unselectedIcon = AppIcons.HomeUnselected,
+        icon = AppIcons.Home,
         iconTextId = "Home",
-        titleTextId = "Home",
+        titleText = "Home",
         route = HomeRoute::class,
         baseRoute = HomeBaseRoute::class
     ),
     FRIENDS(
-//        selectedIcon = painterResource(R.drawable.ic_friends_selected),
-//        unselectedIcon = painterResource(R.drawable.ic_friends_unselected),
-        selectedIcon = AppIcons.FriendsSelected,
-        unselectedIcon = AppIcons.FriendsUnselected,
+        icon = AppIcons.Friends,
         iconTextId = "Friends",
-        titleTextId = "Friends",
+        titleText = "Friends",
         route = FriendsRoute::class,
         baseRoute = FriendsBaseRoute::class
     ),
-//    CHALLENGES(
-//
-//    ),
-//    PROFILE(
-//
-//    )
+    HISTORY(
+        icon = AppIcons.History,
+            iconTextId = "History",
+            titleText = "History",
+//        route = HistoryRoute::class,
+//        baseRoute = HistoryBaseRoute::class
+            route = HistoryRoute::class,
+            baseRoute = HistoryBaseRoute::class
+    ),
+    PROFILE(
+        icon = AppIcons.Profile,
+        iconTextId = "Profile",
+        titleText = "Profile",
+//        route = ProfileRoute::class,
+//        baseRoute = ProfileBaseRoute::class
+        route = FriendsRoute::class,
+        baseRoute = FriendsBaseRoute::class
+    )
 }

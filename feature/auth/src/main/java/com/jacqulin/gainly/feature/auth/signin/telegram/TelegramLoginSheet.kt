@@ -69,7 +69,7 @@ fun TelegramLoginSheet(
                             ) = false
                         }
 
-                        loadUrl("https://mini-app-gefee.netlify.app/tg-auth.html")
+                        loadUrl("https://mini-app-eg-tmg.fly.dev/tg-auth")
                     }
                 },
                 update = {}
