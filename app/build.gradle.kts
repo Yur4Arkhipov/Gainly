@@ -52,6 +52,8 @@ dependencies {
     implementation(project(":feature:friends"))
     implementation(project(":feature:workout"))
     implementation(project(":feature:history"))
+    implementation(project(":feature:profile"))
+
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))

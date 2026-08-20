@@ -14,6 +14,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.jacquin.gainly.feature.profile.presentation.navigation.navigateToProfile
 import com.jacqulin.gainly.feature.friends.navigation.navigateToFriends
 import com.jacqulin.gainly.feature.history.navigation.navigateToHistory
 import com.jacqulin.gainly.feature.home.navigation.navigateToHome
@@ -103,7 +104,7 @@ class AppState(
                 TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
                 TopLevelDestination.FRIENDS -> navController.navigateToFriends(topLevelNavOptions)
                 TopLevelDestination.HISTORY -> navController.navigateToHistory(topLevelNavOptions)
-                TopLevelDestination.PROFILE -> navController.navigateToFriends(topLevelNavOptions)
+                TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
             }
         }
     }
