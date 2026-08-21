@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.components
+package com.jacqulin.gainly.feature.history.presentation.ui.training
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,7 @@ import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
 
 @Composable
 fun TrainingInfo(
@@ -66,7 +67,12 @@ fun TrainingInfoPreview() {
             title = "Подтягивания",
             isExpanded = true
         ) {
-            TrainingInfoExplain()
+            TrainingInfoExplain(
+                trainingInfo = TrainingInfo(
+                    title = "fdsf",
+                    text = "fsdf"
+                )
+            )
         }
     }
 }

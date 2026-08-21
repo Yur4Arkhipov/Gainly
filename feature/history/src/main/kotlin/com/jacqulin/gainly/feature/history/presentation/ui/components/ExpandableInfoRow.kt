@@ -40,6 +40,7 @@ import com.jacqulin.gainly.core.designsystem.theme.White
 @Composable
 fun ExpandableInfoRow(
     title: String,
+    hasDevelopingStatus: Boolean = false,
     content: @Composable () -> Unit
 ) {
     var isExpanded by rememberSaveable {
@@ -68,7 +69,11 @@ fun ExpandableInfoRow(
                     textAlign = TextAlign.Center,
                     lineHeight = 22.sp,
                     letterSpacing = 0.sp,
-                    color = TextBlackColor
+                    color = if (hasDevelopingStatus) {
+                        TextBlackColor.copy(alpha = 0.2f)
+                    } else {
+                        TextBlackColor
+                    }
                 ),
                 modifier = Modifier.padding(start = 10.dp)
             )
@@ -87,7 +92,7 @@ fun ExpandableInfoRow(
                 if (isExpanded) {
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_top),
-                        contentDescription = "Раскрыть меню",
+                        contentDescription = "Скрыть меню",
                         tint = GrayIconColor
                     )
                 } else {
@@ -111,7 +116,8 @@ fun ExpandableInfoRow(
 fun ExpandableInfoRowPreview() {
     GainlyTheme() {
         ExpandableInfoRow(
-            title = "Цели на сутки"
+            title = "Цели на сутки",
+            hasDevelopingStatus = false,
         ) {
 
         }

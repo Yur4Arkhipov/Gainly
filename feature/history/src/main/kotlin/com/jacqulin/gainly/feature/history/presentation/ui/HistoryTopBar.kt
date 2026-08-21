@@ -23,10 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
+import com.jacqulin.gainly.feature.history.presentation.ui.calendar.CalendarSection
+import java.time.LocalDate
 
 @Composable
 fun HistoryTopBar(
-    onCalendarClick: () -> Unit = {}
+    calendarDays: List<CalendarDay>,
+    selectedDate: LocalDate,
+    onCalendarClick: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -71,6 +77,10 @@ fun HistoryTopBar(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        CalendarSection()
+        CalendarSection(
+            days = calendarDays,
+            selectedDate = selectedDate,
+            onDateSelected = onDateSelected
+        )
     }
 }

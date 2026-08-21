@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.components
+package com.jacqulin.gainly.feature.history.presentation.ui.goals
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 
 @Composable
-fun TargetProgressBar(
+fun GoalProgressBar(
     currentValue: Int,
     targetValue: Int,
     progressColor: Color

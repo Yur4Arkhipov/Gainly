@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation.ui.training
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,16 +9,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.feature.history.presentation.model.TrainingCardModel
-import com.jacqulin.gainly.feature.history.presentation.ui.components.TrainingCard
 import kotlin.math.abs
 
 @Composable
 fun BalancedTrainingCards(
-    cards: List<TrainingCardModel>,
+    trainingCards: List<TrainingCardModel>,
     modifier: Modifier = Modifier
 ) {
-    val visibleCards = remember(cards) {
-        cards.takeLast(6)
+    val visibleCards = remember(trainingCards) {
+        trainingCards.takeLast(6)
     }
 
     val distribution = remember(visibleCards.map { it.id }) {
@@ -31,7 +30,6 @@ fun BalancedTrainingCards(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -39,7 +37,7 @@ fun BalancedTrainingCards(
             distribution.first.forEach { index ->
                 TrainingCard(
                     modifier = Modifier.fillMaxWidth(),
-                    trainingInfoList = visibleCards[index].trainingInfoList
+                    trainingInfoList = visibleCards[index].trainingInfoList,
                 )
             }
         }

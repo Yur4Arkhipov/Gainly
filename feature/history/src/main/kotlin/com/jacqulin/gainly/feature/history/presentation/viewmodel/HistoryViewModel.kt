@@ -1,31 +1,145 @@
 package com.jacqulin.gainly.feature.history.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.domain.auth.TokenRefresher
-import com.jacqulin.gainly.core.domain.auth.TokenStorage
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
-import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutByIdUseCase
-import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutHistoryUseCase
-import com.jacqulin.gainly.core.util.Result
-import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
-import com.jacqulin.gainly.core.util.errors.WorkoutError
+import com.jacqulin.gainly.feature.history.data.usecase.GenerateWeekDaysUseCase
+import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
+import com.jacqulin.gainly.feature.history.presentation.model.TrainingCardModel
+import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
-import java.time.Instant
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.time.ExperimentalTime
 
+@HiltViewModel
+class HistoryViewModel @Inject constructor(
+    generateWeekDaysUseCase: GenerateWeekDaysUseCase,
+//    private val getDayDataUseCase: GetDayDataUseCase
+) : ViewModel() {
+
+    private val initialDate = LocalDate.now()
+
+    private val _uiState = MutableStateFlow(
+        value = HistoryUiState(
+            selectedDate = initialDate,
+            calendarDays = generateWeekDaysUseCase(),
+            trainingCards = getMockTrainingCards(initialDate)
+        )
+    )
+    val uiState = _uiState.asStateFlow()
+
+    fun onDateSelected(date: LocalDate) {
+        _uiState.update {
+            it.copy(
+                selectedDate = date,
+                trainingCards = getMockTrainingCards(date)
+            )
+        }
+    }
+
+    private fun getMockTrainingCards(
+        date: LocalDate
+    ): List<TrainingCardModel> {
+        return when (date.dayOfWeek) {
+
+            DayOfWeek.MONDAY -> listOf(
+                TrainingCardModel(
+                    id = "1",
+                    trainingInfoList = listOf(
+                        TrainingInfo(
+                            title = "Подтягивания",
+                            text = "4 × 10"
+                        ),
+                        TrainingInfo(
+                            title = "Отжимания",
+                            text = "4 × 15"
+                        ),
+                        TrainingInfo(
+                            title = "Приседания",
+                            text = "smth"
+                        ),
+                        TrainingInfo(
+                            title = "Жим",
+                            text = "smth"
+                        )
+                    )
+                ),
+                TrainingCardModel(
+                    id = "2",
+                    trainingInfoList = listOf(
+                        TrainingInfo(
+                            title = "Приседания",
+                            text = "3 × 20"
+                        ),
+                        TrainingInfo(
+                            title = "Подтягивания",
+                            text = "smth"
+                        ),
+                        TrainingInfo(
+                            title = "Отжимания",
+                            text = "smth"
+                        ),
+                        TrainingInfo(
+                            title = "Тяга",
+                            text = "smth"
+                        )
+                    )
+                )
+            )
+
+            DayOfWeek.TUESDAY -> listOf(
+                TrainingCardModel(
+                    id = "3",
+                    trainingInfoList = listOf(
+                        TrainingInfo(
+                            title = "Бег",
+                            text = "5 км"
+                        ),
+                        TrainingInfo(
+                            title = "Подтягивания",
+                            text = "smth"
+                        )
+                    )
+                )
+            )
+            DayOfWeek.WEDNESDAY -> listOf(
+                TrainingCardModel(
+                    id = "4",
+                    trainingInfoList = listOf(
+                        TrainingInfo(
+                            title = "Жим лёжа",
+                            text = "4 × 8"
+                        ),
+                        TrainingInfo(
+                            title = "Тяга",
+                            text = "4 × 10"
+                        ),
+                        TrainingInfo(
+                            title = "Планка",
+                            text = "3 × 60 сек"
+                        ),
+                        TrainingInfo(
+                            title = "Бег",
+                            text = "smth"
+                        )
+                    )
+                )
+            )
+
+            else -> emptyList()
+        }
+    }
+}
+
+data class HistoryUiState(
+    val selectedDate: LocalDate,
+    val calendarDays: List<CalendarDay>,
+    val trainingCards: List<TrainingCardModel>,
+)
+
+/*
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val getWorkoutHistoryUseCase: GetWorkoutHistoryUseCase,
@@ -181,4 +295,4 @@ class HistoryViewModel @Inject constructor(
             false
         }
     }
-}
+}*/

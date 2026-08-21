@@ -22,13 +22,13 @@ import com.jacqulin.gainly.core.designsystem.theme.CaloriesProgressBarColor
 import com.jacqulin.gainly.core.designsystem.theme.StepsProgressBarColor
 import com.jacqulin.gainly.core.designsystem.theme.WaterProgressBarColor
 import com.jacqulin.gainly.feature.history.presentation.model.TrainingCardModel
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
-import com.jacqulin.gainly.feature.history.presentation.ui.components.DayTargetCard
+import com.jacqulin.gainly.feature.history.presentation.ui.goals.GoalCard
+import com.jacqulin.gainly.feature.history.presentation.ui.training.BalancedTrainingCards
 import com.jacqulin.gainly.feature.history.presentation.ui.components.ExpandableInfoRow
 
 @Composable
 fun DayInfoSection(
-
+    trainingCards: List<TrainingCardModel>,
 ) {
     Column(
         modifier = Modifier
@@ -52,7 +52,9 @@ fun DayInfoSection(
         ) {
             item {
                 ExpandableInfoRow(
-                    title = "Цели на сутки"
+//                    title = "Цели на сутки"
+                    title = "Скоро",
+                    hasDevelopingStatus = true
                 ) {
                     Spacer(Modifier.height(10.dp))
 
@@ -61,7 +63,7 @@ fun DayInfoSection(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item {
-                            DayTargetCard(
+                            GoalCard(
                                 title = "Калории",
                                 icon = painterResource(R.drawable.ic_fire),
                                 currentValue = 500,
@@ -71,7 +73,7 @@ fun DayInfoSection(
                             )
                         }
                         item {
-                            DayTargetCard(
+                            GoalCard(
                                 title = "Шаги",
                                 icon = painterResource(R.drawable.ic_steps),
                                 currentValue = 12000,
@@ -81,7 +83,7 @@ fun DayInfoSection(
                             )
                         }
                         item {
-                            DayTargetCard(
+                            GoalCard(
                                 title = "Вода",
                                 icon = painterResource(R.drawable.ic_water),
                                 currentValue = 200,
@@ -108,63 +110,8 @@ fun DayInfoSection(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val cards = listOf(
-                            TrainingCardModel(
-                                id = 1,
-                                trainingInfoList =
-                                    listOf(
-                                        TrainingInfo(
-                                            title = "Подтягивания",
-                                            text = "smth"
-                                        )
-                                    )
-                            ),
-                            TrainingCardModel(
-                                id = 2,
-                                trainingInfoList =
-                                    listOf(
-                                        com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                            title = "Подтягивания",
-                                            text = "smth"
-                                        ),
-                                        com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                            title = "Отжимания",
-                                            text = "smth"
-                                        )
-                                    )
-                            ),
-
-                            TrainingCardModel(
-                                id = 3,
-                                trainingInfoList = listOf(
-                                    com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                        title = "Бег",
-                                        text = "smth"
-                                    )
-                                )
-                            ),
-
-                            TrainingCardModel(
-                                id = 4,
-                                trainingInfoList = listOf(
-                                    com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                        title = "Приседания",
-                                        text = "smth"
-                                    ),
-                                    com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                        title = "Жим",
-                                        text = "smth"
-                                    ),
-                                    com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo(
-                                        title = "Тяга",
-                                        text = "smth"
-                                    )
-                                )
-                            )
-                        )
-
                         BalancedTrainingCards(
-                            cards = cards
+                            trainingCards = trainingCards
                         )
                     }
                 }

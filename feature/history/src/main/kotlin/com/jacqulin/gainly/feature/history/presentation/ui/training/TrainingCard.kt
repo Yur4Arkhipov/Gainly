@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.components
+package com.jacqulin.gainly.feature.history.presentation.ui.training
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
-import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
@@ -84,20 +83,12 @@ fun TrainingCard(
                     .size(40.dp)
                     .clip(CircleShape)
             ) {
-                Column {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = "60",
-                        style = TextStyle(
-                            color = Black,
-                            fontFamily = GoogleSansFontFamily,
-                            fontWeight = FontWeight.W500,
-                            fontStyle = FontStyle.Normal,
-                            fontSize = 14.sp,
-                            letterSpacing = 0.sp
-                        )
-                    )
-                    Text(
-                        text = "ккал",
+                        text = "Скоро",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
                             fontWeight = FontWeight.Normal,
@@ -106,6 +97,27 @@ fun TrainingCard(
                             letterSpacing = 0.sp
                         )
                     )
+//                    Text(
+//                        text = "60",
+//                        style = TextStyle(
+//                            color = Black,
+//                            fontFamily = GoogleSansFontFamily,
+//                            fontWeight = FontWeight.W500,
+//                            fontStyle = FontStyle.Normal,
+//                            fontSize = 14.sp,
+//                            letterSpacing = 0.sp
+//                        )
+//                    )
+//                    Text(
+//                        text = "ккал",
+//                        style = TextStyle(
+//                            fontFamily = GoogleSansFontFamily,
+//                            fontWeight = FontWeight.Normal,
+//                            fontStyle = FontStyle.Normal,
+//                            fontSize = 8.sp,
+//                            letterSpacing = 0.sp
+//                        )
+//                    )
                 }
             }
 
@@ -149,7 +161,9 @@ fun TrainingCard(
                     title = trainingInfo.title,
                     isExpanded = isExpanded
                 ) {
-                    TrainingInfoExplain()
+                    TrainingInfoExplain(
+                        trainingInfo = trainingInfo
+                    )
                 }
             }
         }

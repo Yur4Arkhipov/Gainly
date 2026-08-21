@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.components
+package com.jacqulin.gainly.feature.history.presentation.ui.training
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,9 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
 
 @Composable
-fun TrainingInfoExplain() {
+fun TrainingInfoExplain(
+    trainingInfo: TrainingInfo
+) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -34,7 +37,7 @@ fun TrainingInfoExplain() {
             )
             Spacer(Modifier.width(4.dp))
             Text(
-                text = "треня",
+                text = trainingInfo.title,
                 style = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Normal,
@@ -55,7 +58,7 @@ fun TrainingInfoExplain() {
             )
             Spacer(Modifier.width(4.dp))
             Text(
-                text = "Свой вес",
+                text = trainingInfo.text,
                 style = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Normal,

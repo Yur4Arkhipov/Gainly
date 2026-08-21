@@ -1,6 +1,8 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation.ui.calendar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,19 +23,14 @@ import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayText
 import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
+import java.time.LocalDate
 
 @Composable
-fun CalendarSection() {
-    val days = listOf(
-        CalendarDay("Пн", "18"),
-        CalendarDay("Вт", "19"),
-        CalendarDay("Ср", "20"),
-        CalendarDay("Чт", "21"),
-        CalendarDay("Пт", "22"),
-        CalendarDay("Сб", "23"),
-        CalendarDay("Вс", "24"),
-    )
-
+fun CalendarSection(
+    days: List<CalendarDay>,
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -40,7 +38,10 @@ fun CalendarSection() {
         days.forEach { day ->
             CalendarDayItem(
                 day = day,
-                isSelected = day.day == "20"
+                isSelected = day.date == selectedDate,
+                onClick = {
+                    onDateSelected(day.date)
+                }
             )
         }
     }
@@ -49,7 +50,8 @@ fun CalendarSection() {
 @Composable
 private fun CalendarDayItem(
     day: CalendarDay,
-    isSelected: Boolean
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,10 +63,15 @@ private fun CalendarDayItem(
                     Color.Transparent,
                 shape = RoundedCornerShape(16.dp)
             )
+            .clickable(
+                onClick = onClick,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            )
             .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
         Text(
-            text = day.day,
+            text = day.dayNumber,
             fontFamily = GoogleSansFontFamily,
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
@@ -72,7 +79,7 @@ private fun CalendarDayItem(
         )
 
         Text(
-            text = day.weekDay,
+            text = day.dayName,
             fontFamily = GoogleSansFontFamily,
             fontSize = 12.sp,
             fontWeight = FontWeight.Normal,

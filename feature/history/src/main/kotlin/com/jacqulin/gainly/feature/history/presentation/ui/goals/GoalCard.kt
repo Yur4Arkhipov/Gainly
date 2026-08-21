@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.components
+package com.jacqulin.gainly.feature.history.presentation.ui.goals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +34,7 @@ import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
-fun DayTargetCard(
+fun GoalCard(
     title: String,
     icon: Painter,
     currentValue: Int,
@@ -107,7 +107,7 @@ fun DayTargetCard(
 
             Spacer(Modifier.height(4.dp))
 
-            TargetProgressBar(
+            GoalProgressBar(
                 currentValue = currentValue,
                 targetValue = targetValue,
                 progressColor = progressBarColor
@@ -120,7 +120,7 @@ fun DayTargetCard(
 @Composable
 fun DayTargetCardPreview() {
     GainlyTheme() {
-        DayTargetCard(
+        GoalCard(
             title = "Калории",
             icon = painterResource(R.drawable.ic_fire),
             currentValue = 1200,
