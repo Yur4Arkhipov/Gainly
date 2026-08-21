@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.ui
+package com.jacqulin.gainly.feature.history.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -36,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -46,16 +50,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jacqulin.gainly.core.designsystem.theme.Black
+import com.jacqulin.gainly.core.designsystem.theme.BottomNavBarAddButtonContainer
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.GrayText
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.feature.history.viewmodel.HistoryViewModel
+import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
+import com.jacqulin.gainly.feature.history.presentation.viewmodel.HistoryViewModel
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -63,139 +72,158 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val expandedWorkoutId by viewModel.expandedWorkoutId.collectAsState()
-    val workoutDetailsState by viewModel.workoutDetailsState.collectAsState()
 
-    var startDate by remember { mutableStateOf(LocalDate.now().minusMonths(1)) }
-    var endDate by remember { mutableStateOf(LocalDate.now()) }
-
-    LaunchedEffect(startDate, endDate) {
-        viewModel.loadWorkoutHistoryByDateRange(startDate, endDate)
-    }
-
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(White)
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
-                Text(
-                    text = buildAnnotatedString {
-                        append("История ")
+        HistoryTopBar()
 
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                            )
-                        ) {
-                            append("тренировок")
-                        }
-                    },
-                    style = TextStyle(
-                        fontFamily = GoogleSansFontFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal,
-                        lineHeight = 24.sp,
-                        color = Black
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(top = 12.dp)
-                )
-            }
+        Spacer(Modifier.height(10.dp))
 
-            item {
-                DateRangeFilter(
-                    startDate = startDate,
-                    endDate = endDate,
-                    onStartDateChange = { startDate = it },
-                    onEndDateChange = { endDate = it }
-                )
-            }
-
-            when (uiState) {
-                is UiState.Loading -> {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                }
-
-                is UiState.Success -> {
-                    val workouts = (uiState as UiState.Success<List<WorkoutListItem>>).data
-
-                    if (workouts.isEmpty()) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        color = GrayBackgroundMain,
-                                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                                    )
-                            ) {
-                                EmptyHistoryView()
-                            }
-                        }
-                    } else {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        color = GrayBackgroundMain,
-                                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                                    )
-                                    .padding(horizontal = 12.dp, vertical = 12.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    workouts.forEach { workout ->
-                                        ExpandableWorkoutCard(
-                                            workout = workout,
-                                            isExpanded = expandedWorkoutId == workout.workoutId,
-                                            onToggleExpand = { viewModel.toggleWorkoutExpanded(workout.workoutId) },
-                                            workoutDetails = workoutDetailsState,
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                is UiState.Error -> {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = GrayBackgroundMain,
-                                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-                                )
-                                .padding(16.dp)
-                        ) {
-                            ErrorView(message = (uiState as UiState.Error).message)
-                        }
-                    }
-                }
-
-                is UiState.Idle -> { }
-            }
-        }
+        DayInfoSection()
     }
 }
+
+//@Composable
+//fun HistoryScreen(
+//    viewModel: HistoryViewModel = hiltViewModel()
+//) {
+//    val uiState by viewModel.uiState.collectAsState()
+//    val expandedWorkoutId by viewModel.expandedWorkoutId.collectAsState()
+//    val workoutDetailsState by viewModel.workoutDetailsState.collectAsState()
+//
+//    var startDate by remember { mutableStateOf(LocalDate.now().minusMonths(1)) }
+//    var endDate by remember { mutableStateOf(LocalDate.now()) }
+//
+//    LaunchedEffect(startDate, endDate) {
+//        viewModel.loadWorkoutHistoryByDateRange(startDate, endDate)
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(White)
+//    ) {
+//        LazyColumn(
+//            modifier = Modifier.fillMaxSize(),
+//            verticalArrangement = Arrangement.spacedBy(12.dp)
+//        ) {
+//            item {
+//                Text(
+//                    text = buildAnnotatedString {
+//                        append("История ")
+//
+//                        withStyle(
+//                            style = SpanStyle(
+//                                fontWeight = FontWeight.Bold,
+//                            )
+//                        ) {
+//                            append("тренировок")
+//                        }
+//                    },
+//                    style = TextStyle(
+//                        fontFamily = GoogleSansFontFamily,
+//                        fontSize = 20.sp,
+//                        fontWeight = FontWeight.Normal,
+//                        lineHeight = 24.sp,
+//                        color = Black
+//                    ),
+//                    modifier = Modifier
+//                        .padding(horizontal = 12.dp)
+//                        .padding(top = 12.dp)
+//                )
+//            }
+//
+//            item {
+//                DateRangeFilter(
+//                    startDate = startDate,
+//                    endDate = endDate,
+//                    onStartDateChange = { startDate = it },
+//                    onEndDateChange = { endDate = it }
+//                )
+//            }
+//
+//            when (uiState) {
+//                is UiState.Loading -> {
+//                    item {
+//                        Box(
+//                            modifier = Modifier.fillMaxSize(),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            CircularProgressIndicator()
+//                        }
+//                    }
+//                }
+//
+//                is UiState.Success -> {
+//                    val workouts = (uiState as UiState.Success<List<WorkoutListItem>>).data
+//
+//                    if (workouts.isEmpty()) {
+//                        item {
+//                            Box(
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                                    .background(
+//                                        color = GrayBackgroundMain,
+//                                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+//                                    )
+//                            ) {
+//                                EmptyHistoryView()
+//                            }
+//                        }
+//                    } else {
+//                        item {
+//                            Box(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .background(
+//                                        color = GrayBackgroundMain,
+//                                        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+//                                    )
+//                                    .padding(horizontal = 12.dp, vertical = 12.dp)
+//                            ) {
+//                                Column(
+//                                    modifier = Modifier.fillMaxWidth(),
+//                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+//                                ) {
+//                                    workouts.forEach { workout ->
+//                                        ExpandableWorkoutCard(
+//                                            workout = workout,
+//                                            isExpanded = expandedWorkoutId == workout.workoutId,
+//                                            onToggleExpand = { viewModel.toggleWorkoutExpanded(workout.workoutId) },
+//                                            workoutDetails = workoutDetailsState,
+//                                            modifier = Modifier.fillMaxWidth()
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                is UiState.Error -> {
+//                    item {
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .background(
+//                                    color = GrayBackgroundMain,
+//                                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+//                                )
+//                                .padding(16.dp)
+//                        ) {
+//                            ErrorView(message = (uiState as UiState.Error).message)
+//                        }
+//                    }
+//                }
+//
+//                is UiState.Idle -> { }
+//            }
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -219,8 +247,8 @@ private fun DateRangeFilter(
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        val newDate = java.time.Instant.ofEpochMilli(millis)
-                            .atZone(java.time.ZoneId.systemDefault())
+                        val newDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
                             .toLocalDate()
                         onStartDateChange(newDate)
                     }
@@ -248,8 +276,8 @@ private fun DateRangeFilter(
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        val newDate = java.time.Instant.ofEpochMilli(millis)
-                            .atZone(java.time.ZoneId.systemDefault())
+                        val newDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
                             .toLocalDate()
                         onEndDateChange(newDate)
                     }

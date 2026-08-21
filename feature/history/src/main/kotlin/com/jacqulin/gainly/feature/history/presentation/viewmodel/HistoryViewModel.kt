@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.viewmodel
+package com.jacqulin.gainly.feature.history.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -96,7 +97,7 @@ class HistoryViewModel @Inject constructor(
     @OptIn(ExperimentalTime::class)
     fun formatWorkoutDate(dateString: String): String {
         return try {
-            val instant = java.time.Instant.parse(dateString)
+            val instant = Instant.parse(dateString)
 
             val localDateTime = instant
                 .atZone(ZoneId.systemDefault())

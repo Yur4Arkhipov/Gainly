@@ -5,8 +5,8 @@ import com.jacquin.gainly.feature.profile.presentation.navigation.ProfileRoute
 import com.jacqulin.gainly.core.designsystem.icon.AppIcons
 import com.jacqulin.gainly.feature.friends.navigation.FriendsBaseRoute
 import com.jacqulin.gainly.feature.friends.navigation.FriendsRoute
-import com.jacqulin.gainly.feature.history.navigation.HistoryBaseRoute
-import com.jacqulin.gainly.feature.history.navigation.HistoryRoute
+import com.jacqulin.gainly.feature.history.presentation.navigation.HistoryBaseRoute
+import com.jacqulin.gainly.feature.history.presentation.navigation.HistoryRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.HomeRoute
 import kotlin.reflect.KClass

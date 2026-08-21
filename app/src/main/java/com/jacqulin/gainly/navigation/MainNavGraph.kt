@@ -9,7 +9,7 @@ import com.jacqulin.gainly.feature.friends.navigation.friendsSection
 import com.jacqulin.gainly.feature.friends.navigation.friendWorkoutsScreen
 import com.jacqulin.gainly.feature.friends.navigation.navigateToAddFriends
 import com.jacqulin.gainly.feature.friends.navigation.navigateToFriendWorkouts
-import com.jacqulin.gainly.feature.history.navigation.historySection
+import com.jacqulin.gainly.feature.history.presentation.navigation.historySection
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.homeSection
 import com.jacqulin.gainly.mainapp.AppState

@@ -57,7 +57,6 @@ dependencies {
     // Hilt, hilt navigation
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    debugImplementation(libs.androidx.compose.ui.tooling)
     ksp(libs.hilt.android.compiler)
 
     // Compose navigation
@@ -65,4 +64,6 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -157,3 +157,7 @@ val  BottomNavBarContainer = Color(0xFFFFFFFF)
 val BottomNavBarAddButtonContainer = Color(0xFF99BBFE)
 val SelectedBottomBarItem = Color(0xFF99BBFE)
 val UnselectedBottomBarItem = Color(0xFFADA4A5)
+
+val CaloriesProgressBarColor = Color(0xFFFFCC00)
+val StepsProgressBarColor = Color(0xFF34C759)
+val WaterProgressBarColor = Color(0xFF25C0EF)

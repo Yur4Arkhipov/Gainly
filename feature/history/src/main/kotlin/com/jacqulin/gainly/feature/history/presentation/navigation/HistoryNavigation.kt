@@ -1,11 +1,11 @@
-package com.jacqulin.gainly.feature.history.navigation
+package com.jacqulin.gainly.feature.history.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.jacqulin.gainly.feature.history.ui.HistoryScreen
+import com.jacqulin.gainly.feature.history.presentation.ui.HistoryScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
