@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,12 +32,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
@@ -480,7 +480,7 @@ private fun ExpandableWorkoutCard(
                     }
 
                     Icon(
-                        imageVector = Icons.Default.Favorite,
+                        painter = painterResource(R.drawable.ic_favorite_24),
                         contentDescription = null,
                         tint = Color(0xFF1E88E5),
                         modifier = Modifier.padding(start = 12.dp)
@@ -587,7 +587,7 @@ private fun EmptyHistoryView() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Favorite,
+                painter = painterResource(R.drawable.ic_favorite_24),
                 contentDescription = null,
                 tint = Color.LightGray,
                 modifier = Modifier.padding(16.dp)

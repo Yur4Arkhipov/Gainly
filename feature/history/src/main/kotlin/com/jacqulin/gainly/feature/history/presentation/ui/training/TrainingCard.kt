@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -65,7 +63,7 @@ fun TrainingCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                imageVector = Icons.Default.Person,
+                painter = painterResource(R.drawable.ic_person_24) ,
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
