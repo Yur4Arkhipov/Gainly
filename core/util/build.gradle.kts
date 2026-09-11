@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.jacqulin.gainly.core.util"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24
@@ -28,9 +27,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 dependencies {
@@ -48,7 +44,8 @@ dependencies {
 
     implementation(libs.androidx.material.icons.extended)
 
-    debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
+    // For preview
+    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.retrofit)
 //    implementation(libs.retrofit2.converter.gson)
