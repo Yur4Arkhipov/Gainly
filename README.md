@@ -1,6 +1,8 @@
 # Gainly
 ---
 
+Screenshots: https://disk.yandex.ru/d/RsZZASFFON8Vsg
+
 ## About
 
 **Gainly** is an Android application designed to help users track their workouts, monitor their progress, and stay connected with their friends through fitness.
