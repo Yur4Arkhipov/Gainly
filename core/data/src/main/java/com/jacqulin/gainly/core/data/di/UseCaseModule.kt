@@ -13,7 +13,6 @@ import com.jacqulin.gainly.core.data.usecase.auth.SignUpUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.auth.VerifyCodeUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.workout.CreateWorkoutUseCaseImpl
 import com.jacqulin.gainly.core.data.usecase.workout.GetWorkoutByIdUseCaseImpl
-import com.jacqulin.gainly.core.data.usecase.workout.GetWorkoutHistoryUseCaseImpl
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
@@ -30,15 +29,20 @@ import com.jacqulin.gainly.core.domain.usecase.auth.SignUpUseCase
 import com.jacqulin.gainly.core.domain.usecase.auth.VerifyCodeUseCase
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutByIdUseCase
-import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutHistoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+import kotlin.time.Clock
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
+
+    @Provides
+    @Singleton
+    fun provideClock(): Clock = Clock.System
 
     // Auth Use Cases
     @Provides
@@ -102,17 +106,13 @@ object UseCaseModule {
     // Workout Use Cases
     @Provides
     fun provideCreateWorkoutUseCase(
-        repository: WorkoutRepository
-    ): CreateWorkoutUseCase {
-        return CreateWorkoutUseCaseImpl(repository)
-    }
-
-    @Provides
-    fun provideGetWorkoutHistoryUseCase(
         repository: WorkoutRepository,
-        tokenStorage: TokenStorage
-    ): GetWorkoutHistoryUseCase {
-        return GetWorkoutHistoryUseCaseImpl(repository, tokenStorage)
+        clock: Clock
+    ): CreateWorkoutUseCase {
+        return CreateWorkoutUseCaseImpl(
+            workoutRepository = repository,
+            clock = clock
+        )
     }
 
     @Provides

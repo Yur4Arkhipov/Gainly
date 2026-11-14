@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
-import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
+import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
@@ -227,13 +225,14 @@ class AddWorkoutViewModel @Inject constructor(
 
     fun saveWorkout() {
         val state = _uiState.value
-        val workoutData = WorkoutData(
+        val workoutData = Workout(
+            date = "",
             title = state.title,
             exercises = state.exercises.map { exercise ->
-                ExerciseData(
-                    name = exercise.name,
+                com.jacqulin.gainly.core.domain.model.workout.Exercise(
+                    title = exercise.name,
                     sets = exercise.sets.map { set ->
-                        WorkoutSetData(
+                        com.jacqulin.gainly.core.domain.model.workout.Set(
                             reps = set.reps,
                             weight = set.weight,
                             isOwnWeight = exercise.isBodyWeight
