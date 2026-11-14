@@ -119,6 +119,9 @@ val LightAuthButtonTextColor = Color(0xFFFFFFFF)
 
 val BottomSheetContainerColor = Color(0xFFF3F2F8)
 
+val LightGrayColor = Color(0xFFF3F2F8)
+val IconBlackColor = Color(0xFF17171C)
+
 val WorkoutColors = listOf(
     Color(0xFFA287F9),
     Color(0xFFC37BFE),
