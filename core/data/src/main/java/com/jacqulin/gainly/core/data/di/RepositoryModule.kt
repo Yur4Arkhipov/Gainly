@@ -6,11 +6,14 @@ import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.local.dao.FriendDao
 import com.jacqulin.gainly.core.data.local.dao.WorkoutDao
+import com.jacqulin.gainly.core.data.remote.service.AvatarApiService
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.data.repository.AuthRepositoryImpl
+import com.jacqulin.gainly.core.data.repository.AvatarRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.FriendsRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.WorkoutRepositoryImpl
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
+import com.jacqulin.gainly.core.domain.repository.AvatarRepository
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import dagger.Module
@@ -55,5 +58,13 @@ object RepositoryModule {
         workoutDao: WorkoutDao,
     ): WorkoutRepository {
         return WorkoutRepositoryImpl(api, workoutDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAvatarRepository(
+        api: AvatarApiService
+    ): AvatarRepository {
+        return AvatarRepositoryImpl(api)
     }
 }

@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.di
 
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
+import com.jacqulin.gainly.core.data.remote.service.AvatarApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.remote.service.HealthApiService
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
@@ -13,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -48,7 +50,18 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://gainly.site/")
+//            .baseUrl("https://gainly.site/")
+            .baseUrl("https://fitness-app-api-gateway.fly.dev")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Named("AvatarRetrofit")
+    fun provideAvatarRetrofit(client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://gainly-avatars.fly.dev/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -72,5 +85,12 @@ object NetworkModule {
     @Provides
     fun provideWorkoutApiService(retrofit: Retrofit): WorkoutApiService {
         return retrofit.create(WorkoutApiService::class.java)
+    }
+
+    @Provides
+    fun provideAvatarApiService(
+        @Named("AvatarRetrofit") retrofit: Retrofit
+    ): AvatarApiService {
+        return retrofit.create(AvatarApiService::class.java)
     }
 }

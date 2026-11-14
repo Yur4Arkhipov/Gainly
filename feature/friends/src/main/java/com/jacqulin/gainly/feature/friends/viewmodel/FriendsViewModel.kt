@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
@@ -27,13 +28,16 @@ class FriendsViewModel @Inject constructor(
     private val tokenStorage: TokenStorage,
 ) : ViewModel() {
 
-    val friends: StateFlow<List<FriendData>> =
-        repository.observeFriendsLocal()
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                emptyList()
-            )
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+//    val friends: StateFlow<List<FriendData>> =
+//        repository.observeFriends()
+//            .stateIn(
+//                viewModelScope,
+//                SharingStarted.WhileSubscribed(5000),
+//                emptyList()
+//            )
 
     fun syncFriends() {
         viewModelScope.launch {
@@ -41,26 +45,20 @@ class FriendsViewModel @Inject constructor(
             try {
                 val remoteFriends = repository.getFriends(token)
                 repository.syncFriends(remoteFriends.friends)
+                Log.d("Friends VM", "friends synced")
             } catch (e: Exception) {
-                Log.e("SYNC", "Error: $e")
+                Log.e("Friends VM", "friends sync error: $e")
             }
         }
     }
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
-
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val filteredFriends: StateFlow<List<FriendData>> =
         _searchQuery
-            .debounce(300)
+            .debounce(300.milliseconds)
             .distinctUntilChanged()
             .flatMapLatest { query ->
-                if (query.isBlank()) {
-                    repository.observeFriendsLocal()
-                } else {
-                    repository.searchFriendsLocal(query)
-                }
+                repository.observeFriends(query)
             }
             .stateIn(
                 viewModelScope,
