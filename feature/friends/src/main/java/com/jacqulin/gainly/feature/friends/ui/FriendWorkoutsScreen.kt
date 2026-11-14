@@ -51,10 +51,9 @@ import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
+import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
 import com.jacqulin.gainly.core.util.UiState
 import com.jacqulin.gainly.feature.friends.viewmodel.FriendWorkoutsViewModel
 import java.time.LocalDate
@@ -269,11 +268,13 @@ private fun ExpandableWorkoutCard(
                         .padding(top = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    WorkoutStat(label = "Упражнений", value = workout.exerciseCount.toString())
+                    WorkoutStat(label = "Упражнений", value = workout.exercises.size.toString())
 
-                    workout.duration?.let {
-                        WorkoutStat(label = "Время (мин)", value = it.toString())
-                    }
+//                    WorkoutStat(label = "Упражнений", value = workout.exerciseCount.toString())
+//
+//                    workout.duration?.let {
+//                        WorkoutStat(label = "Время (мин)", value = it.toString())
+//                    }
                 }
             }
         }
@@ -428,7 +429,7 @@ private fun WorkoutDetailsView(
 }
 
 @Composable
-private fun ExerciseItem(exercise: ExerciseData) {
+private fun ExerciseItem(exercise: Exercise) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -440,7 +441,7 @@ private fun ExerciseItem(exercise: ExerciseData) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = exercise.name,
+            text = exercise.title,
             style = TextStyle(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -460,7 +461,7 @@ private fun ExerciseItem(exercise: ExerciseData) {
 }
 
 @Composable
-private fun SetRow(setNumber: Int, set: WorkoutSetData) {
+private fun SetRow(setNumber: Int, set: com.jacqulin.gainly.core.domain.model.workout.Set) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),

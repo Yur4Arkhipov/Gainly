@@ -9,14 +9,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FriendDao {
-    @Query("SELECT * FROM friends")
-    fun observeFriends(): Flow<List<FriendEntity>>
 
     @Query("""
         SELECT * FROM friends 
-        WHERE LOWER(username) LIKE '%' || LOWER(:query) || '%'
+        WHERE :query = '' OR LOWER(username) LIKE '%' || LOWER(:query) || '%'
     """)
-    fun searchFriends(query: String): Flow<List<FriendEntity>>
+    fun observeFriends(query: String): Flow<List<FriendEntity>>
 
     @Query("SELECT * FROM friends")
     suspend fun getAllFriendsOnce(): List<FriendEntity>
