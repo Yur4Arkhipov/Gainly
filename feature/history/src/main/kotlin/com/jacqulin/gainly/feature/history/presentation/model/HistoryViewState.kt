@@ -1,7 +1,5 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation.model
 
-import com.jacqulin.gainly.feature.history.presentation.model.CalendarDayUi
-import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import java.time.LocalDate
 
 data class HistoryViewState(

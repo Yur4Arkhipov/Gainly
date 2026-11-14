@@ -1,9 +1,11 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation
 
 //import com.jacqulin.gainly.feature.history.data.usecase.getMockTrainingCards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.repository.TimeProvider
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

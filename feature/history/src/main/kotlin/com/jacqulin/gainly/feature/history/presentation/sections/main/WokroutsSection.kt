@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.sections.main
+package com.jacqulin.gainly.feature.history.presentation.sections.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
-import com.jacqulin.gainly.feature.history.presentation.ui.sections.workout.WorkoutCard
+import com.jacqulin.gainly.feature.history.presentation.sections.workout.WorkoutCard
 
 @Composable
 fun WorkoutsSection(

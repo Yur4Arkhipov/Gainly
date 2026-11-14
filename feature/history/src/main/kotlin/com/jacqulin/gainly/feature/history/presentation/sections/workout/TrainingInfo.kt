@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.sections.workout
+package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

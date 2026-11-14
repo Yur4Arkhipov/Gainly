@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.sections.main
+package com.jacqulin.gainly.feature.history.presentation.sections.main
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column

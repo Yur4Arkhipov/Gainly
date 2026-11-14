@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation
 
 //object Reducer {
 //    fun reduce(

@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui
+package com.jacqulin.gainly.feature.history.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,8 +45,8 @@ import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.feature.history.presentation.ui.sections.main.HistoryTopBar
-import com.jacqulin.gainly.feature.history.presentation.ui.sections.main.WorkoutsSection
+import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
+import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

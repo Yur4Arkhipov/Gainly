@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.sections.calendar
+package com.jacqulin.gainly.feature.history.presentation.sections.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
