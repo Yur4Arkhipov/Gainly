@@ -2,16 +2,13 @@ package com.jacqulin.gainly.core.data.repository
 
 import android.util.Log
 import com.jacqulin.gainly.core.data.local.dao.WorkoutDao
-import com.jacqulin.gainly.core.data.remote.dto.workout.ExerciseDto
-import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutRequestDto
-import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutSetDto
+import com.jacqulin.gainly.core.data.mappers.toCreateRequestDto
+import com.jacqulin.gainly.core.data.mappers.toDomain
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
-import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
+import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
@@ -22,28 +19,18 @@ class WorkoutRepositoryImpl @Inject constructor(
     private val workoutApiService: WorkoutApiService,
     private val workoutDao: WorkoutDao
 ) : WorkoutRepository {
-    override suspend fun createWorkout(accessToken: String, workout: WorkoutData): Result<WorkoutId, WorkoutError> {
+    override suspend fun createWorkout(
+        accessToken: String,
+        workout: Workout
+    ): Result<WorkoutId, WorkoutError> {
         return try {
-            val request = WorkoutRequestDto(
-                title = workout.title,
-                exercises = workout.exercises.map { exercise ->
-                    ExerciseDto(
-                        name = exercise.name,
-                        sets = exercise.sets.map { set ->
-                            WorkoutSetDto(
-                                reps = set.reps,
-                                weight = set.weight,
-                                isOwnWeight = set.isOwnWeight
-                            )
-                        }
-                    )
-                }
-            )
-            Log.d("Workout", "Workout: $request")
+            val request = workout.toCreateRequestDto()
+            Log.d("WorkoutRepository", "Create workout request: $request")
             val response = workoutApiService.createWorkout(accessToken, request)
-            Log.d("Workout", "Response: $response")
-            Result.Success(response)
+            Log.d("WorkoutRepository", "Create workout response: $response")
+            Result.Success(response.toDomain())
         } catch (e: Throwable) {
+            Log.d("WorkoutRepository", "Create workout error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
@@ -61,22 +48,12 @@ class WorkoutRepositoryImpl @Inject constructor(
                 to = to,
                 last = last
             )
-            val items = response.map { dto ->
-                WorkoutListItem(
-                    workoutId = dto.id,
-                    userId = dto.userId,
-                    title = dto.title,
-                    date = dto.date,
-                    exerciseCount = dto.exercises?.size ?: 0,
-                    duration = null
-                )
-            }
-//
-//            // Синхронизация с локальной БД
-//            syncWorkoutsToDatabase(response)
+            Log.d("WorkoutRepository", "Get workout history response: $response")
+            val items = response.map { it.toDomain() }
 
             Result.Success(items)
         } catch (e: Throwable) {
+            Log.d("WorkoutRepository", "Get workout history error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
@@ -96,22 +73,12 @@ class WorkoutRepositoryImpl @Inject constructor(
                 to = to,
                 last = last
             )
-            val items = response.map { dto ->
-                WorkoutListItem(
-                    workoutId = dto.id,
-                    userId = dto.userId,
-                    title = dto.title,
-                    date = dto.date,
-                    exerciseCount = dto.exercises?.size ?: 0,
-                    duration = null
-                )
-            }
-//
-//            // Синхронизация с локальной БД
-//            syncWorkoutsToDatabase(response)
+            Log.d("WorkoutRepository", "Get friend workout history response: $response")
+            val items = response.map { it.toDomain() }
 
             Result.Success(items)
         } catch (e: Throwable) {
+            Log.d("WorkoutRepository", "Get friend workout history error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
@@ -125,29 +92,12 @@ class WorkoutRepositoryImpl @Inject constructor(
                 accessToken = accessToken,
                 workoutId = workoutId
             )
-            val result = WorkoutById(
-                id = response.id,
-                date = response.date,
-                exercises = response.exercises.map { exercise ->
-                    ExerciseData(
-                        name = exercise.name,
-                        sets = exercise.sets.map { set ->
-                            WorkoutSetData(
-                                reps = set.reps,
-                                weight = set.weight,
-                                isOwnWeight = set.isOwnWeight
-                            )
-                        }
-                    )
-                }
-            )
-//            // Сохраняем в локальную БД
-//            syncSingleWorkoutToDatabase(response)
-//
-//            val result = response.toWorkoutById()
-            Result.Success(result)
+            Log.d("WorkoutRepository", "Get workout by id response: $response")
+            val result = response.toDomain()
 
+            Result.Success(result)
         } catch (e: Throwable) {
+            Log.d("WorkoutRepository", "Get workout by id error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
