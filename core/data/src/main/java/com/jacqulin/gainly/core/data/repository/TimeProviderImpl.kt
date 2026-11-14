@@ -1,6 +1,6 @@
-package com.jacqulin.gainly.feature.history.data.repository
+package com.jacqulin.gainly.core.data.repository
 
-import com.jacqulin.gainly.feature.history.domain.repository.TimeProvider
+import com.jacqulin.gainly.core.domain.repository.TimeProvider
 import java.time.LocalDate
 import javax.inject.Inject
 

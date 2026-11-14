@@ -1,30 +1,26 @@
 package com.jacqulin.gainly.feature.history.presentation.ui
 
+//import com.jacqulin.gainly.feature.history.data.usecase.getMockTrainingCards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.feature.history.data.usecase.GenerateWeekDaysUseCase
-import com.jacqulin.gainly.feature.history.data.usecase.GetWorkoutsForDateUseCase
-//import com.jacqulin.gainly.feature.history.data.usecase.getMockTrainingCards
-import com.jacqulin.gainly.feature.history.data.usecase.getMockWorkouts
-import com.jacqulin.gainly.feature.history.domain.repository.TimeProvider
+import com.jacqulin.gainly.core.domain.repository.TimeProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    generateWeekDaysUseCase: GenerateWeekDaysUseCase,
+//    generateWeekDaysUseCase: GenerateWeekDaysUseCase,
     val timeProvider: TimeProvider,
-    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
+//    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
 
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
         value = HistoryViewState(
-            calendarDays = generateWeekDaysUseCase(),
+            calendarDays = emptyList(),
             selectedDate = timeProvider.now(),
             isLoading = true
         )
@@ -46,13 +42,13 @@ class HistoryViewModel @Inject constructor(
     }
 
     private fun fetchAllWorkouts() {
-        viewModelScope.launch {
-            val result = getMockWorkouts()
-            _state.value = HistoryViewState(
-                workouts = result,
-                selectedDate = timeProvider.now()
-            )
-        }
+//        viewModelScope.launch {
+//            val result = getMockWorkouts()
+//            _state.value = HistoryViewState(
+//                workouts = result,
+//                selectedDate = timeProvider.now()
+//            )
+//        }
     }
 }
 

@@ -1,9 +1,4 @@
-package com.jacqulin.gainly.feature.history.data.usecase
-
-import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
-import com.jacqulin.gainly.feature.history.presentation.model.WorkoutInfoUi
-import java.time.DayOfWeek
-import java.time.LocalDate
+//package com.jacqulin.gainly.feature.history.data.usecase
 
 
 //fun getMockTrainingCards(
@@ -141,28 +136,28 @@ import java.time.LocalDate
 //        else -> emptyList()
 //    }
 //}
-
-fun getMockWorkouts(): List<WorkoutCardUi> {
-    return listOf(
-        WorkoutCardUi(
-            title = "Подтягивания",
-            time = "fdsf"
-        ),
-        WorkoutCardUi(
-            title = "Подтягивания",
-            time = "fdsf"
-        ),
-        WorkoutCardUi(
-            title = "Подтягивания",
-            time = "fdsf"
-        ),
-        WorkoutCardUi(
-            title = "Подтягивания",
-            time = "fdsf"
-        ),
-        WorkoutCardUi(
-            title = "Подтягивания",
-            time = "fdsf"
-        )
-    )
-}
+//
+//fun getMockWorkouts(): List<WorkoutCardUi> {
+//    return listOf(
+//        WorkoutCardUi(
+//            title = "Подтягивания",
+//            time = "fdsf"
+//        ),
+//        WorkoutCardUi(
+//            title = "Подтягивания",
+//            time = "fdsf"
+//        ),
+//        WorkoutCardUi(
+//            title = "Подтягивания",
+//            time = "fdsf"
+//        ),
+//        WorkoutCardUi(
+//            title = "Подтягивания",
+//            time = "fdsf"
+//        ),
+//        WorkoutCardUi(
+//            title = "Подтягивания",
+//            time = "fdsf"
+//        )
+//    )
+//}

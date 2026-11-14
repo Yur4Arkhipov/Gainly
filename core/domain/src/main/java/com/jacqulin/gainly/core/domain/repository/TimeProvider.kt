@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.domain.repository
+package com.jacqulin.gainly.core.domain.repository
 
 import java.time.LocalDate
 

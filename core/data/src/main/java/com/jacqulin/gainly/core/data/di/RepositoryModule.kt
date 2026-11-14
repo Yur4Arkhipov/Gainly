@@ -11,10 +11,12 @@ import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.data.repository.AuthRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.AvatarRepositoryImpl
 import com.jacqulin.gainly.core.data.repository.FriendsRepositoryImpl
+import com.jacqulin.gainly.core.data.repository.TimeProviderImpl
 import com.jacqulin.gainly.core.data.repository.WorkoutRepositoryImpl
 import com.jacqulin.gainly.core.domain.repository.AuthRepository
 import com.jacqulin.gainly.core.domain.repository.AvatarRepository
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
+import com.jacqulin.gainly.core.domain.repository.TimeProvider
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import dagger.Module
 import dagger.Provides
@@ -66,5 +68,11 @@ object RepositoryModule {
         api: AvatarApiService
     ): AvatarRepository {
         return AvatarRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTimeProvider(): TimeProvider {
+        return TimeProviderImpl()
     }
 }
