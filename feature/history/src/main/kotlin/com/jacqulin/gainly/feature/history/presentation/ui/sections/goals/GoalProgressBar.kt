@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.goals
+package com.jacqulin.gainly.feature.history.presentation.ui.sections.goals
 
 import android.util.Log
 import androidx.compose.foundation.background

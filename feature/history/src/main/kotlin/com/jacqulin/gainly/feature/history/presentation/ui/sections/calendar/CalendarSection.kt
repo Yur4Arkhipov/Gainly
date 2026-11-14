@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.calendar
+package com.jacqulin.gainly.feature.history.presentation.ui.sections.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,12 +22,12 @@ import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayText
-import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
+import com.jacqulin.gainly.feature.history.presentation.model.CalendarDayUi
 import java.time.LocalDate
 
 @Composable
 fun CalendarSection(
-    days: List<CalendarDay>,
+    days: List<CalendarDayUi>,
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
 ) {
@@ -49,7 +49,7 @@ fun CalendarSection(
 
 @Composable
 private fun CalendarDayItem(
-    day: CalendarDay,
+    day: CalendarDayUi,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {

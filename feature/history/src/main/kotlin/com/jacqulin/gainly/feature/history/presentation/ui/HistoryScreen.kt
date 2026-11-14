@@ -17,18 +17,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,16 +37,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
+import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
-import com.jacqulin.gainly.core.domain.model.workout.ExerciseData
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutSetData
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.feature.history.presentation.viewmodel.HistoryViewModel
+import com.jacqulin.gainly.feature.history.presentation.ui.sections.main.HistoryTopBar
+import com.jacqulin.gainly.feature.history.presentation.ui.sections.main.WorkoutsSection
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -56,7 +56,7 @@ import java.time.format.DateTimeFormatter
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -64,16 +64,13 @@ fun HistoryScreen(
             .background(White)
     ) {
         HistoryTopBar(
-            calendarDays = uiState.calendarDays,
-            selectedDate = uiState.selectedDate,
             onCalendarClick = { },
-            onDateSelected = viewModel::onDateSelected
         )
 
         Spacer(Modifier.height(10.dp))
 
-        DayInfoSection(
-            trainingCards = uiState.trainingCards
+        WorkoutsSection(
+            workouts = state.workouts
         )
     }
 }
@@ -493,11 +490,11 @@ private fun ExpandableWorkoutCard(
                         .padding(top = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    WorkoutStat(label = "Упражнений", value = workout.exerciseCount.toString())
+                    WorkoutStat(label = "Упражнений", value = workout.exercises.size.toString())
 
-                    workout.duration?.let {
-                        WorkoutStat(label = "Время (мин)", value = it.toString())
-                    }
+//                    workout.duration?.let {
+//                        WorkoutStat(label = "Время (мин)", value = it.toString())
+//                    }
                 }
             }
         }
@@ -651,7 +648,7 @@ private fun WorkoutDetailsView(
 }
 
 @Composable
-private fun ExerciseItem(exercise: ExerciseData) {
+private fun ExerciseItem(exercise: Exercise) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -663,7 +660,7 @@ private fun ExerciseItem(exercise: ExerciseData) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = exercise.name,
+            text = exercise.title,
             style = TextStyle(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -683,7 +680,7 @@ private fun ExerciseItem(exercise: ExerciseData) {
 }
 
 @Composable
-private fun SetRow(setNumber: Int, set: WorkoutSetData) {
+private fun SetRow(setNumber: Int, set: com.jacqulin.gainly.core.domain.model.workout.Set) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),

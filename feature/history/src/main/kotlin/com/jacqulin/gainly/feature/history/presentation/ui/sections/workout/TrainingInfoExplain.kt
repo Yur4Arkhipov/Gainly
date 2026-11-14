@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.training
+package com.jacqulin.gainly.feature.history.presentation.ui.sections.workout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutInfoUi
 
 @Composable
 fun TrainingInfoExplain(
-    trainingInfo: TrainingInfo
+    trainingInfo: WorkoutInfoUi
 ) {
     Column {
         Row(

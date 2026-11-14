@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.training
+package com.jacqulin.gainly.feature.history.presentation.ui.sections.workout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,12 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingCardModel
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import kotlin.math.abs
 
+/*
 @Composable
 fun BalancedTrainingCards(
-    trainingCards: List<TrainingCardModel>,
+    trainingCards: List<WorkoutCardUi>,
     modifier: Modifier = Modifier
 ) {
     val visibleCards = remember(trainingCards) {
@@ -57,7 +58,7 @@ fun BalancedTrainingCards(
 }
 
 private fun findBestDistribution(
-    cards: List<TrainingCardModel>
+    cards: List<WorkoutCardUi>
 ): Pair<List<Int>, List<Int>> {
 
     if (cards.size <= 1) {
@@ -118,7 +119,7 @@ private fun findBestDistribution(
 }
 
 private fun estimateCardHeight(
-    card: TrainingCardModel
+    card: WorkoutCardUi
 ): Int {
     val headerHeight = 60
     val trainingHeight = 45
@@ -129,4 +130,4 @@ private fun estimateCardHeight(
             padding +
             card.trainingInfoList.size * trainingHeight +
             (card.trainingInfoList.size - 1).coerceAtLeast(0) * spacing
-}
+}*/

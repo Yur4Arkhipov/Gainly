@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.history.presentation.ui.training
+package com.jacqulin.gainly.feature.history.presentation.ui.sections.workout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,12 +36,12 @@ import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutInfoUi
 
 @Composable
 fun TrainingCard(
     modifier: Modifier = Modifier,
-    trainingInfoList: List<TrainingInfo>
+    trainingInfoList: List<WorkoutInfoUi>
 ) {
 
     var isExpanded by rememberSaveable {

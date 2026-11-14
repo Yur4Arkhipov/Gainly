@@ -1,143 +1,94 @@
-package com.jacqulin.gainly.feature.history.presentation.viewmodel
+package com.jacqulin.gainly.feature.history.presentation.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.feature.history.data.usecase.GenerateWeekDaysUseCase
-import com.jacqulin.gainly.feature.history.presentation.model.CalendarDay
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingCardModel
-import com.jacqulin.gainly.feature.history.presentation.model.TrainingInfo
+import com.jacqulin.gainly.feature.history.data.usecase.GetWorkoutsForDateUseCase
+//import com.jacqulin.gainly.feature.history.data.usecase.getMockTrainingCards
+import com.jacqulin.gainly.feature.history.data.usecase.getMockWorkouts
+import com.jacqulin.gainly.feature.history.domain.repository.TimeProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import java.time.DayOfWeek
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     generateWeekDaysUseCase: GenerateWeekDaysUseCase,
-//    private val getDayDataUseCase: GetDayDataUseCase
+    val timeProvider: TimeProvider,
+    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
+
 ) : ViewModel() {
 
-    private val initialDate = LocalDate.now()
-
-    private val _uiState = MutableStateFlow(
-        value = HistoryUiState(
-            selectedDate = initialDate,
+    private val _state = MutableStateFlow(
+        value = HistoryViewState(
             calendarDays = generateWeekDaysUseCase(),
-            trainingCards = getMockTrainingCards(initialDate)
+            selectedDate = timeProvider.now(),
+            isLoading = true
         )
     )
-    val uiState = _uiState.asStateFlow()
+    val state: StateFlow<HistoryViewState> = _state
 
-    fun onDateSelected(date: LocalDate) {
-        _uiState.update {
-            it.copy(
-                selectedDate = date,
-                trainingCards = getMockTrainingCards(date)
-            )
+    init {
+        fetchAllWorkouts()
+    }
+
+    fun handleEvent(event: HistoryEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is HistoryEvent.LoadWorkoutsForDate -> {
+//                    fetchWorkouts(event.date)
+                }
+            }
         }
     }
 
-    private fun getMockTrainingCards(
-        date: LocalDate
-    ): List<TrainingCardModel> {
-        return when (date.dayOfWeek) {
-
-            DayOfWeek.MONDAY -> listOf(
-                TrainingCardModel(
-                    id = "1",
-                    trainingInfoList = listOf(
-                        TrainingInfo(
-                            title = "Подтягивания",
-                            text = "4 × 10"
-                        ),
-                        TrainingInfo(
-                            title = "Отжимания",
-                            text = "4 × 15"
-                        ),
-                        TrainingInfo(
-                            title = "Приседания",
-                            text = "smth"
-                        ),
-                        TrainingInfo(
-                            title = "Жим",
-                            text = "smth"
-                        )
-                    )
-                ),
-                TrainingCardModel(
-                    id = "2",
-                    trainingInfoList = listOf(
-                        TrainingInfo(
-                            title = "Приседания",
-                            text = "3 × 20"
-                        ),
-                        TrainingInfo(
-                            title = "Подтягивания",
-                            text = "smth"
-                        ),
-                        TrainingInfo(
-                            title = "Отжимания",
-                            text = "smth"
-                        ),
-                        TrainingInfo(
-                            title = "Тяга",
-                            text = "smth"
-                        )
-                    )
-                )
+    private fun fetchAllWorkouts() {
+        viewModelScope.launch {
+            val result = getMockWorkouts()
+            _state.value = HistoryViewState(
+                workouts = result,
+                selectedDate = timeProvider.now()
             )
-
-            DayOfWeek.TUESDAY -> listOf(
-                TrainingCardModel(
-                    id = "3",
-                    trainingInfoList = listOf(
-                        TrainingInfo(
-                            title = "Бег",
-                            text = "5 км"
-                        ),
-                        TrainingInfo(
-                            title = "Подтягивания",
-                            text = "smth"
-                        )
-                    )
-                )
-            )
-            DayOfWeek.WEDNESDAY -> listOf(
-                TrainingCardModel(
-                    id = "4",
-                    trainingInfoList = listOf(
-                        TrainingInfo(
-                            title = "Жим лёжа",
-                            text = "4 × 8"
-                        ),
-                        TrainingInfo(
-                            title = "Тяга",
-                            text = "4 × 10"
-                        ),
-                        TrainingInfo(
-                            title = "Планка",
-                            text = "3 × 60 сек"
-                        ),
-                        TrainingInfo(
-                            title = "Бег",
-                            text = "smth"
-                        )
-                    )
-                )
-            )
-
-            else -> emptyList()
         }
     }
 }
 
-data class HistoryUiState(
-    val selectedDate: LocalDate,
-    val calendarDays: List<CalendarDay>,
-    val trainingCards: List<TrainingCardModel>,
-)
+//    private fun fetchWorkouts(date: LocalDate) {
+//        _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+//
+//        viewModelScope.launch {
+//            try {
+////                val result = getWorkoutsForDateUseCase(date)
+////                val result = getMockTrainingCards(date)
+////                when (result) {
+////                    is Result.Success -> {
+////                        _state.update {
+////                            it.copy(
+////                                isLoading = false,
+////                                workouts = result.data.toWorkoutCardUi(),
+////                                errorMessage = null
+////                            )
+////                        }
+////                    }
+////                }
+//                _state.value = HistoryViewState(
+//                    selectedDate = date,
+//                    isLoading = false,
+//                    workouts = result
+//                )
+//            } catch (e: Exception) {
+//                _state.value = HistoryViewState(
+//                    isLoading = false,
+//                    selectedDate = date,
+//                    errorMessage = e.message ?: "Error fetching workouts"
+//                )
+//            }
+//        }
+//    }
+//}
 
 /*
 @HiltViewModel

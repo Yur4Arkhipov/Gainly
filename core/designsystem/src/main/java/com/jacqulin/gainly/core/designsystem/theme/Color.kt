@@ -161,3 +161,5 @@ val UnselectedBottomBarItem = Color(0xFFADA4A5)
 val CaloriesProgressBarColor = Color(0xFFFFCC00)
 val StepsProgressBarColor = Color(0xFF34C759)
 val WaterProgressBarColor = Color(0xFF25C0EF)
+
+val GrayColor = Color(0xFF3E3E3F)
