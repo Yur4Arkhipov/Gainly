@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -24,17 +25,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Black
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
-import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
+import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutInfoUi
 
@@ -43,7 +46,6 @@ fun TrainingCard(
     modifier: Modifier = Modifier,
     trainingInfoList: List<WorkoutInfoUi>
 ) {
-
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -68,13 +70,13 @@ fun TrainingCard(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray)
+                    .background(LightGrayColor)
             )
 
             IconButton(
                 onClick = { },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = GrayBackgroundMain,
+                    containerColor = LightGrayColor,
                     contentColor = GrayIconColor
                 ),
                 modifier = Modifier
@@ -86,7 +88,18 @@ fun TrainingCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Скоро",
+                        text = "60",
+                        style = TextStyle(
+                            color = Black,
+                            fontFamily = GoogleSansFontFamily,
+                            fontWeight = FontWeight.W500,
+                            fontStyle = FontStyle.Normal,
+                            fontSize = 14.sp,
+                            letterSpacing = 0.sp
+                        )
+                    )
+                    Text(
+                        text = "ккал",
                         style = TextStyle(
                             fontFamily = GoogleSansFontFamily,
                             fontWeight = FontWeight.Normal,
@@ -95,27 +108,6 @@ fun TrainingCard(
                             letterSpacing = 0.sp
                         )
                     )
-//                    Text(
-//                        text = "60",
-//                        style = TextStyle(
-//                            color = Black,
-//                            fontFamily = GoogleSansFontFamily,
-//                            fontWeight = FontWeight.W500,
-//                            fontStyle = FontStyle.Normal,
-//                            fontSize = 14.sp,
-//                            letterSpacing = 0.sp
-//                        )
-//                    )
-//                    Text(
-//                        text = "ккал",
-//                        style = TextStyle(
-//                            fontFamily = GoogleSansFontFamily,
-//                            fontWeight = FontWeight.Normal,
-//                            fontStyle = FontStyle.Normal,
-//                            fontSize = 8.sp,
-//                            letterSpacing = 0.sp
-//                        )
-//                    )
                 }
             }
 
@@ -124,7 +116,7 @@ fun TrainingCard(
                     isExpanded = !isExpanded
                 },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = GrayBackgroundMain,
+                    containerColor = LightGrayColor,
                     contentColor = GrayIconColor
                 ),
                 modifier = Modifier
@@ -168,12 +160,30 @@ fun TrainingCard(
     }
 }
 
-//@Preview
-//@Composable
-//fun TrainingCardPreview() {
-//    GainlyTheme {
-//        TrainingCard(
-//            modifier = Modifier.width(170.dp)
-//        )
-//    }
-//}
+@Preview
+@Composable
+fun TrainingCardPreview() {
+    GainlyTheme {
+        TrainingCard(
+            modifier = Modifier.width(170.dp),
+            trainingInfoList = listOf(
+                WorkoutInfoUi(
+                    title = "Подтягивания",
+                    text = "4 × 10"
+                ),
+                WorkoutInfoUi(
+                    title = "Отжимания",
+                    text = "4 × 15"
+                ),
+                WorkoutInfoUi(
+                    title = "Приседания",
+                    text = "smth"
+                ),
+                WorkoutInfoUi(
+                    title = "Жим",
+                    text = "smth"
+                )
+            )
+        )
+    }
+}

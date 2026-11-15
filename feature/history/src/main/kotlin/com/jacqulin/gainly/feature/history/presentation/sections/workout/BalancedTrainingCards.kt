@@ -16,13 +16,9 @@ fun BalancedTrainingCards(
     trainingCards: List<WorkoutCardUi>,
     modifier: Modifier = Modifier
 ) {
-    val visibleCards = remember(trainingCards) {
-        trainingCards.takeLast(6)
-    }
-
-    val distribution = remember(visibleCards.map { it.id }) {
+    val distribution = remember(trainingCards.map { it.id }) {
         findBestDistribution(
-            cards = visibleCards
+            cards = trainingCards
         )
     }
 
@@ -37,7 +33,7 @@ fun BalancedTrainingCards(
             distribution.first.forEach { index ->
                 TrainingCard(
                     modifier = Modifier.fillMaxWidth(),
-                    trainingInfoList = visibleCards[index].trainingInfoList,
+                    trainingInfoList = trainingCards[index].trainingInfoList,
                 )
             }
         }
@@ -49,7 +45,7 @@ fun BalancedTrainingCards(
             distribution.second.forEach { index ->
                 TrainingCard(
                     modifier = Modifier.fillMaxWidth(),
-                    trainingInfoList = visibleCards[index].trainingInfoList
+                    trainingInfoList = trainingCards[index].trainingInfoList
                 )
             }
         }
@@ -125,8 +121,7 @@ private fun estimateCardHeight(
     val padding = 20
     val spacing = 8
 
-    return headerHeight +
-            padding +
+    return headerHeight + padding +
             card.trainingInfoList.size * trainingHeight +
             (card.trainingInfoList.size - 1).coerceAtLeast(0) * spacing
 }
