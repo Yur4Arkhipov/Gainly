@@ -51,7 +51,6 @@ import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.UiState
 import com.jacqulin.gainly.feature.history.getMockTrainingCards
-import com.jacqulin.gainly.feature.history.presentation.model.CalendarDayUi
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
@@ -80,18 +79,7 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     onEvent: (HistoryEvent) -> Unit = {},
 ) {
-    val today = LocalDate.now()
-    val days = listOf(
-        CalendarDayUi(today.minusDays(4), "чт", "1"),
-        CalendarDayUi(today.minusDays(3), "пт", "2"),
-        CalendarDayUi(today.minusDays(2),"сб", "3"),
-        CalendarDayUi(today.minusDays(1), "вс", "4"),
-        CalendarDayUi(today, "пн", "5"),
-        CalendarDayUi(today.plusDays(1), "вт", "6"),
-        CalendarDayUi(today.plusDays(2), "ср", "7"),
-    )
-
-    val workouts = getMockTrainingCards(today)
+    val workouts = getMockTrainingCards(LocalDate.now())
     Log.d("HistoryScreen", "workouts: $workouts")
 
     LazyColumn(
@@ -108,8 +96,8 @@ fun HistoryScreen(
 
         item {
             CalendarSection(
-                days = days,
-                selectedDate = today,
+                days = state.calendarDays,
+                selectedDate = state.selectedDate,
                 month = "May",
                 year = "2026",
                 modifier = Modifier.padding(horizontal = 10.dp),

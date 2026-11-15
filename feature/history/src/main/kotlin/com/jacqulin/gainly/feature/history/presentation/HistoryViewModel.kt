@@ -1,29 +1,31 @@
 package com.jacqulin.gainly.feature.history.presentation
 
-//import com.jacqulin.gainly.feature.history.data.usecase.getMockTrainingCards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.domain.repository.TimeProvider
+import com.jacqulin.gainly.core.domain.usecase.history.GenerateWeekDaysUseCase
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
+import com.jacqulin.gainly.feature.history.presentation.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-//    generateWeekDaysUseCase: GenerateWeekDaysUseCase,
-    val timeProvider: TimeProvider,
+    generateWeekDaysUseCase: GenerateWeekDaysUseCase,
 //    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
 
 ) : ViewModel() {
 
+    private val initialDate = LocalDate.now()
+
     private val _state = MutableStateFlow(
         value = HistoryViewState(
-            calendarDays = emptyList(),
-            selectedDate = timeProvider.now(),
+            calendarDays = generateWeekDaysUseCase(initialDate).map { it.toUi() },
+            selectedDate = initialDate,
             isLoading = true
         )
     )
