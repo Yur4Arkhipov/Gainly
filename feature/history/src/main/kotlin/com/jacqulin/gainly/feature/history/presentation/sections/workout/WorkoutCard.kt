@@ -37,7 +37,6 @@ fun WorkoutCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable(
                 onClick = onClick,
                 indication = null,

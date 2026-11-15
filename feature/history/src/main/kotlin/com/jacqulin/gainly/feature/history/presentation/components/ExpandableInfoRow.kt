@@ -56,9 +56,9 @@ fun ExpandableInfoRow(
                 .height(64.dp)
                 .background(
                     color = White,
-                    shape = RoundedCornerShape(32.dp)
+                    shape = RoundedCornerShape(30.dp)
                 )
-                .padding(horizontal = 5.dp)
+                .padding(horizontal = 8.dp)
         ) {
             Text(
                 text = title,
@@ -79,7 +79,9 @@ fun ExpandableInfoRow(
             )
             IconButton(
                 onClick = {
-                    isExpanded = !isExpanded
+                    if (!hasDevelopingStatus) {
+                        isExpanded = !isExpanded
+                    }
                 },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = GrayBackgroundMain,

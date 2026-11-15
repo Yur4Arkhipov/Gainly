@@ -1,6 +1,16 @@
 package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
-/*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
+import kotlin.math.abs
+
 @Composable
 fun BalancedTrainingCards(
     trainingCards: List<WorkoutCardUi>,
@@ -119,4 +129,5 @@ private fun estimateCardHeight(
             padding +
             card.trainingInfoList.size * trainingHeight +
             (card.trainingInfoList.size - 1).coerceAtLeast(0) * spacing
-}*/
+}
+

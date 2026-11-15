@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.feature.history.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,16 +36,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.UiState
+import com.jacqulin.gainly.feature.history.getMockTrainingCards
+import com.jacqulin.gainly.feature.history.presentation.model.CalendarDayUi
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
+import com.jacqulin.gainly.feature.history.presentation.sections.calendar.CalendarSection
 import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
 import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
 import java.time.Instant
@@ -58,19 +68,77 @@ fun HistoryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    HistoryScreen(
+        state = state,
+    )
+}
+
+@Composable
+fun HistoryScreen(
+    state: HistoryViewState,
+    modifier: Modifier = Modifier,
+    onEvent: (HistoryEvent) -> Unit = {},
+) {
+    val today = LocalDate.now()
+    val days = listOf(
+        CalendarDayUi(today.minusDays(4), "чт", "1"),
+        CalendarDayUi(today.minusDays(3), "пт", "2"),
+        CalendarDayUi(today.minusDays(2),"сб", "3"),
+        CalendarDayUi(today.minusDays(1), "вс", "4"),
+        CalendarDayUi(today, "пн", "5"),
+        CalendarDayUi(today.plusDays(1), "вт", "6"),
+        CalendarDayUi(today.plusDays(2), "ср", "7"),
+    )
+
+    val workouts = getMockTrainingCards(today)
+    Log.d("HistoryScreen", "workouts: $workouts")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(White)
+            .background(White),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         HistoryTopBar(
-            onCalendarClick = { },
+            modifier = Modifier.padding(horizontal = 10.dp)
         )
 
-        Spacer(Modifier.height(10.dp))
+        CalendarSection(
+            days = days,
+            selectedDate = today,
+            month = "May",
+            year = "2026",
+            modifier = Modifier.padding(horizontal = 10.dp),
+            onDateSelected = {},
+            onMonthClick = {},
+            onTodayClick = {}
+        )
 
         WorkoutsSection(
-            workouts = state.workouts
+            workouts = workouts,
+            modifier = Modifier
+                .weight(1f)
+                .background(
+                    color = LightGrayColor,
+                    shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+                )
+                .padding(horizontal = 10.dp)
+        )
+    }
+}
+
+@Composable
+@Preview(showSystemUi = true)
+fun HistoryScreenPreview() {
+    GainlyTheme {
+        HistoryScreen(
+            state = HistoryViewState(
+                selectedDate = LocalDate.now(),
+                workouts = listOf(
+                    WorkoutCardUi(),
+                    WorkoutCardUi()
+                )
+            )
         )
     }
 }
