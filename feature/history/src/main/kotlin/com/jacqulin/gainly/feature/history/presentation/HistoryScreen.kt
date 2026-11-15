@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -93,37 +94,42 @@ fun HistoryScreen(
     val workouts = getMockTrainingCards(today)
     Log.d("HistoryScreen", "workouts: $workouts")
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(White),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        HistoryTopBar(
-            modifier = Modifier.padding(horizontal = 10.dp)
-        )
+        item {
+            HistoryTopBar(
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
+        }
 
-        CalendarSection(
-            days = days,
-            selectedDate = today,
-            month = "May",
-            year = "2026",
-            modifier = Modifier.padding(horizontal = 10.dp),
-            onDateSelected = {},
-            onMonthClick = {},
-            onTodayClick = {}
-        )
+        item {
+            CalendarSection(
+                days = days,
+                selectedDate = today,
+                month = "May",
+                year = "2026",
+                modifier = Modifier.padding(horizontal = 10.dp),
+                onDateSelected = {},
+                onMonthClick = {},
+                onTodayClick = {}
+            )
+        }
 
-        WorkoutsSection(
-            workouts = workouts,
-            modifier = Modifier
-                .weight(1f)
-                .background(
-                    color = LightGrayColor,
-                    shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-                )
-                .padding(horizontal = 10.dp)
-        )
+        item {
+            WorkoutsSection(
+                workouts = workouts,
+                modifier = Modifier
+                    .background(
+                        color = LightGrayColor,
+                        shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+                    )
+                    .padding(horizontal = 10.dp)
+            )
+        }
     }
 }
 
