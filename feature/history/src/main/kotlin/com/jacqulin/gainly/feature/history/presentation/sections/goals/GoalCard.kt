@@ -50,7 +50,7 @@ fun GoalCard(
             )
             .background(
                 color = White,
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(30.dp)
             )
             .padding(10.dp)
     ) {
@@ -122,7 +122,7 @@ fun DayTargetCardPreview() {
     GainlyTheme() {
         GoalCard(
             title = "Калории",
-            icon = painterResource(R.drawable.ic_fire),
+            icon = painterResource(R.drawable.ic_water),
             currentValue = 1200,
             progressBarColor = StepsProgressBarColor,
             targetValue = 2000,

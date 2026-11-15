@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
-import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 
 @Composable
@@ -58,7 +58,7 @@ fun GoalProgressBar(
                 textAlign = TextAlign.Center
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -88,7 +88,7 @@ fun GoalProgressBar(
                 .fillMaxWidth()
                 .height(40.dp)
                 .background(
-                    color = GrayBackgroundMain,
+                    color = LightGrayColor,
                     shape = RoundedCornerShape(100)
                 )
         ) {
