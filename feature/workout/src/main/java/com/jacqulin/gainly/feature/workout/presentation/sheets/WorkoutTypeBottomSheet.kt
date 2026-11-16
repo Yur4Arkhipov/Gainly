@@ -1,20 +1,19 @@
-package com.jacqulin.gainly.feature.workout.ui
+package com.jacqulin.gainly.feature.workout.presentation.sheets
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -28,31 +27,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.BottomSheetContainerColor
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.SelectedAddWorkoutItem
+import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.core.designsystem.theme.WorkoutColors
-import com.jacqulin.gainly.feature.workout.ui.components.SaveButton
+import com.jacqulin.gainly.feature.workout.presentation.components.SaveButton
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColorPickerBottomSheet(
-    initialColor: Color,
-    onColorSelected: (Color) -> Unit,
+fun WorkoutTypeBottomSheet(
+    initialType: WorkoutType,
+    onTypeSelected: (WorkoutType) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var pickedColor by remember { mutableStateOf(initialColor) }
+    var pickedType by remember { mutableStateOf(initialType) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -65,10 +64,10 @@ fun ColorPickerBottomSheet(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp),
-            horizontalAlignment = Alignment.Start
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Цвет тренировки",
+                text = "Выберите тип тренировки",
                 style = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Normal,
@@ -80,28 +79,21 @@ fun ColorPickerBottomSheet(
                 color = Black
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                maxItemsInEachRow = 6
-            ) {
-                WorkoutColors.forEach { color ->
-                    ColorCircle(
-                        color = color,
-                        isSelected = color == pickedColor,
-                        onClick = { pickedColor = color }
-                    )
-                }
+            WorkoutType.entries.forEach { type ->
+                WorkoutTypeRow(
+                    type = type,
+                    isSelected = type == pickedType,
+                    onClick = { pickedType = type }
+                )
             }
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             SaveButton(
                 onClick = {
-                    onColorSelected(pickedColor)
+                    onTypeSelected(pickedType)
                     onDismiss()
                 }
             )
@@ -110,34 +102,52 @@ fun ColorPickerBottomSheet(
 }
 
 @Composable
-private fun ColorCircle(
-    color: Color,
+private fun WorkoutTypeRow(
+    type: WorkoutType,
     isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .size(48.dp)
-            .clip(CircleShape)
-            .background(color)
-            .then(
-                if (isSelected) Modifier.border(3.dp, White, CircleShape)
-                else Modifier
-            )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(32.dp))
+            .background(White)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
+            )
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (isSelected) {
+        Text(
+            text = type.label,
+            style = TextStyle(
+                fontFamily = GoogleSansFontFamily,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 16.sp,
+                letterSpacing = 0.sp
+            ),
+            color = Black
+        )
+
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(
+                    if (isSelected) SelectedAddWorkoutItem
+                    else UnselectedAddWorkoutItem
+                ),
+            contentAlignment = Alignment.Center
+        ) {
             Icon(
-                painter = painterResource(R.drawable.ic_checkmark),
+                painter = painterResource(type.iconRes),
                 contentDescription = null,
-                tint = White,
-                modifier = Modifier.size(22.dp)
+                tint = if (isSelected) White else Black,
+                modifier = Modifier.size(20.dp)
             )
         }
     }
