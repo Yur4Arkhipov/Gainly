@@ -1,28 +1,37 @@
 package com.jacqulin.gainly.feature.workout.presentation.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
-import com.jacqulin.gainly.feature.workout.presentation.AddWorkoutViewModel
+import com.jacqulin.gainly.feature.workout.presentation.CreateWorkoutViewModel
+import com.jacqulin.gainly.feature.workout.presentation.components.SaveButton
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesStep
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutInfoStep
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutTopBar
-import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutState
+import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
+import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 
 @Composable
 fun CreateWorkoutScreenRoute(
-    viewModel: AddWorkoutViewModel = hiltViewModel(),
+    viewModel: CreateWorkoutViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -32,23 +41,45 @@ fun CreateWorkoutScreenRoute(
         pageCount = { 2 }
     )
 
-    CreateWorkoutScreen(
-        state = state,
-        pagerState = pagerState,
-        onBackClick = onBackClick
-    )
+    when (val currentState = state) {
+        is CreateWorkoutUiState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is CreateWorkoutUiState.Content -> {
+            CreateWorkoutScreen(
+                state = currentState,
+                pagerState = pagerState,
+                onEvent = viewModel::onEvent,
+                onBackClick = onBackClick
+            )
+        }
+
+        is CreateWorkoutUiState.Error -> {
+            Text(currentState.message)
+        }
+    }
 }
 
 @Composable
 fun CreateWorkoutScreen(
-    state: WorkoutState,
+    state: CreateWorkoutUiState.Content,
     pagerState: PagerState,
+    onEvent: (CreateWorkoutEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(GrayBackgroundMain)
+            .padding(12.dp)
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         WorkoutTopBar(
             title = "Новая тренировка",
@@ -66,10 +97,31 @@ fun CreateWorkoutScreen(
             modifier = Modifier.weight(1f)
         ) { page ->
             when (page) {
-                0 -> WorkoutInfoStep(state = state)
+                0 -> WorkoutInfoStep(
+                    state = state,
+                    onTypeSelected = { type ->
+                        onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
+                    },
+                    onTitleChanged = { title ->
+                        onEvent(CreateWorkoutEvent.OnTitleChanged(title))
+                    },
+                    onDateChanged = { date ->
+                        onEvent(CreateWorkoutEvent.OnDateChanged(date))
+                    },
+                    onTimeChanged = { time ->
+                        onEvent(CreateWorkoutEvent.OnTimeChanged(time))
+                    },
+                    onNoteChanged = {},
+                )
                 1 -> WorkoutExercisesStep(state = state)
             }
         }
+
+        SaveButton(
+            enabled = state.exercises.isNotEmpty(),
+            text = "Сохранить тренировку",
+            onClick = {}
+        )
     }
 }
 
@@ -83,8 +135,9 @@ fun CreateWorkoutScreenPreview() {
         )
 
         CreateWorkoutScreen(
-            state = WorkoutState(),
+            state = CreateWorkoutUiState.Content(),
             pagerState = pagerState,
+            onEvent = {},
             onBackClick = {}
         )
     }
