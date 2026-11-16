@@ -2,11 +2,9 @@ package com.jacqulin.gainly.mainapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -54,12 +52,6 @@ class AppState(
 
 ) {
     private val previousDestination = mutableStateOf<NavDestination?>(null)
-
-    var showAddWorkoutSheet by mutableStateOf(false)
-
-    fun showAddWorkoutSheet() {
-        showAddWorkoutSheet = true
-    }
 
     val currentDestination: NavDestination?
         @Composable get() {

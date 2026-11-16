@@ -12,6 +12,7 @@ import com.jacqulin.gainly.feature.friends.navigation.navigateToFriendWorkouts
 import com.jacqulin.gainly.feature.history.navigation.historySection
 import com.jacqulin.gainly.feature.home.navigation.HomeBaseRoute
 import com.jacqulin.gainly.feature.home.navigation.homeSection
+import com.jacqulin.gainly.feature.workout.navigation.workoutSection
 import com.jacqulin.gainly.mainapp.AppState
 
 @Composable
@@ -48,6 +49,10 @@ fun MainNavHost(
         }
 
         profileSection {
+
+        }
+
+        workoutSection {
 
         }
     }

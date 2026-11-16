@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.component.BottomBarItem
 import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBar
-import com.jacqulin.gainly.feature.workout.presentation.sheets.AddWorkoutBottomSheet
+import com.jacqulin.gainly.feature.workout.navigation.navigateToCreateWorkout
 import com.jacqulin.gainly.navigation.MainNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +52,7 @@ internal fun App(
             if (appState.currentTopLevelDestination != null) {
                 FloatingBottomBar(
                     items = bottomBarItems,
-                    onAddClick =  { appState.showAddWorkoutSheet() },
+                    onAddClick = { appState.navController.navigateToCreateWorkout() },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 20.dp, vertical = 4.dp)
@@ -60,11 +60,5 @@ internal fun App(
                 )
             }
         }
-    }
-
-    if (appState.showAddWorkoutSheet) {
-        AddWorkoutBottomSheet(
-            onDismiss = { appState.showAddWorkoutSheet = false }
-        )
     }
 }
