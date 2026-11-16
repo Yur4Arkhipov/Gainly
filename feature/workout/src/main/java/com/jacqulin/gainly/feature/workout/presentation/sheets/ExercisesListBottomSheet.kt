@@ -151,6 +151,7 @@ fun ExercisesListBottomSheet(
 
             if (!isSelectionMode) {
                 SaveButton(
+                    enabled = exercises.isNotEmpty(),
                     onClick = {
                         onSave()
                         onDismiss()

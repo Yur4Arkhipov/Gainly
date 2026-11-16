@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -146,62 +147,79 @@ fun ExerciseDetailBottomSheet(
                         }
                     }
                 } else {
-                    BasicTextField(
-                        value = exercise.name,
-                        onValueChange = { newText ->
-                            if (newText.length <= 24) {
-                                onNameChanged(newText)
-                            }
-                        },
-                        textStyle = TextStyle(
-                            fontFamily = GoogleSansFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 28.sp,
-                            lineHeight = 28.sp,
-                            letterSpacing = 0.sp,
-                            color = selectedColor
-                        ),
-                        modifier = Modifier.weight(1f),
-                        maxLines = 2,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Done,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusRequester.requestFocus()
-                            }
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Свой вес",
-                            style = TextStyle(
-                                fontFamily = GoogleSansFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 12.sp,
-                                lineHeight = 12.sp,
-                                letterSpacing = 0.sp
-                            ),
-                            color = Black
-                        )
-                        Switch(
-                            checked = exercise.isBodyWeight,
-                            onCheckedChange = onBodyWeightChanged,
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = White,
-                                checkedTrackColor = selectedColor,
-                                uncheckedThumbColor = White,
-                                uncheckedTrackColor = UncheckedSwitchTrackColor,
-                                uncheckedBorderColor = Color.Transparent
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            BasicTextField(
+                                value = exercise.name,
+                                onValueChange = { newText ->
+                                    if (newText.length <= 24) {
+                                        onNameChanged(newText)
+                                    }
+                                },
+                                textStyle = TextStyle(
+                                    fontFamily = GoogleSansFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 28.sp,
+                                    lineHeight = 28.sp,
+                                    letterSpacing = 0.sp,
+                                    color = selectedColor
+                                ),
+                                modifier = Modifier.weight(1f),
+                                maxLines = 2,
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Done,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        focusRequester.requestFocus()
+                                    }
+                                )
                             )
-                        )
+
+                            Icon(
+                                painter = painterResource(R.drawable.ic_edit),
+                                contentDescription = "Редактировать",
+                                tint = selectedColor.copy(alpha = 0.5f),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Свой вес",
+                                style = TextStyle(
+                                    fontFamily = GoogleSansFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 12.sp,
+                                    lineHeight = 12.sp,
+                                    letterSpacing = 0.sp
+                                ),
+                                color = Black
+                            )
+                            Switch(
+                                checked = exercise.isBodyWeight,
+                                onCheckedChange = onBodyWeightChanged,
+                                colors = SwitchDefaults.colors(
+                                    checkedThumbColor = White,
+                                    checkedTrackColor = selectedColor,
+                                    uncheckedThumbColor = White,
+                                    uncheckedTrackColor = UncheckedSwitchTrackColor,
+                                    uncheckedBorderColor = Color.Transparent
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -284,6 +302,7 @@ fun ExerciseDetailBottomSheet(
 
             if (!isSelectionMode) {
                 SaveButton(
+                    enabled = exercise.sets.isNotEmpty(),
                     onClick = {
                         onSave()
                         onDismiss()

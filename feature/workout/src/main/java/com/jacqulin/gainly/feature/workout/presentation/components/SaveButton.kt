@@ -20,6 +20,7 @@ import com.jacqulin.gainly.core.designsystem.theme.White
 @Composable
 fun SaveButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = false,
     text: String = "Сохранить",
     onClick: () -> Unit
 ) {
@@ -32,7 +33,8 @@ fun SaveButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = SaveWorkoutButtonContainerColor,
             contentColor = White
-        )
+        ),
+        enabled = enabled
     ) {
         Text(
             text = text,
