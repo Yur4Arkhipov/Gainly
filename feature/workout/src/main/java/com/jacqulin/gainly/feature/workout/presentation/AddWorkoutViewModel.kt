@@ -1,15 +1,18 @@
-package com.jacqulin.gainly.feature.workout.ui
+package com.jacqulin.gainly.feature.workout.presentation
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutState
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,44 +21,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class WorkoutState(
-    val title: String = "Название тренировки",
-    val selectedColor: Color = Color(0xFF505b92),
-    val workoutType: WorkoutType = WorkoutType.Cardio,
-    val date: String = "",
-    val isColorPickerVisible: Boolean = false,
-    val isTypePickerVisible: Boolean = false,
-    val isExerciseDetailVisible: Boolean = false,
-    val isExercisesListVisible: Boolean = false,
-    val isDatePickerVisible: Boolean = false,
-    val exercises: List<Exercise> = emptyList(),
-    val editingExerciseId: String? = null,
-    val selectedExerciseIds: Set<String> = emptySet(),
-    val selectedSetIndices: Set<Int> = emptySet()
-)
-
-data class Exercise(
-    val id: String,
-    val name: String = "",
-    val sets: List<WorkoutSet> = emptyList(),
-    val isBodyWeight: Boolean = false
-)
-
-data class WorkoutSet(
-    val number: Int,
-    val reps: Int = 0,
-    val weight: Int = 0
-)
-
-sealed class WorkoutType(val label: String, val iconRes: Int) {
-    object Cardio : WorkoutType("Кардио тренировка", R.drawable.ic_cardio)
-    object Strength : WorkoutType("Силовая тренировка", R.drawable.ic_strength)
-
-    companion object {
-        val entries by lazy { listOf(Cardio, Strength) }
-    }
-}
 
 @HiltViewModel
 class AddWorkoutViewModel @Inject constructor(
@@ -104,7 +69,8 @@ class AddWorkoutViewModel @Inject constructor(
 
     fun addExercise() {
         val newExerciseId = java.util.UUID.randomUUID().toString()
-        val newExercise = Exercise(id = newExerciseId, name = "Упражнение ${_uiState.value.exercises.size + 1}")
+        val newExercise =
+            WorkoutExerciseUi(id = newExerciseId, name = "Упражнение ${_uiState.value.exercises.size + 1}")
         _uiState.update {
             it.copy(
                 exercises = it.exercises + newExercise,
@@ -166,7 +132,7 @@ class AddWorkoutViewModel @Inject constructor(
             val updatedExercises = state.exercises.map { exercise ->
                 if (exercise.id == exerciseId) {
                     val newSetNumber = exercise.sets.size + 1
-                    exercise.copy(sets = exercise.sets + WorkoutSet(newSetNumber))
+                    exercise.copy(sets = exercise.sets + WorkoutSetUi(newSetNumber))
                 } else {
                     exercise
                 }
