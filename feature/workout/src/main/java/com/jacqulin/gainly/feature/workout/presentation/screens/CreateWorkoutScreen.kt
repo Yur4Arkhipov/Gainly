@@ -3,6 +3,9 @@ package com.jacqulin.gainly.feature.workout.presentation.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -12,6 +15,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.feature.workout.presentation.AddWorkoutViewModel
+import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesStep
+import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutInfoStep
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutTopBar
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutState
 
@@ -22,16 +27,22 @@ fun CreateWorkoutScreenRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    CreateWorkoutScreen(
-        state = state,
-        onBackClick = onBackClick
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { 2 }
     )
 
+    CreateWorkoutScreen(
+        state = state,
+        pagerState = pagerState,
+        onBackClick = onBackClick
+    )
 }
 
 @Composable
 fun CreateWorkoutScreen(
     state: WorkoutState,
+    pagerState: PagerState,
     onBackClick: () -> Unit
 ) {
     Column(
@@ -41,10 +52,24 @@ fun CreateWorkoutScreen(
     ) {
         WorkoutTopBar(
             title = "Новая тренировка",
-            stepText = "О тренировке",
-            currentStep = 1,
+            stepText = if (pagerState.currentPage == 0) {
+                "О тренировке"
+            } else {
+                "Упражнения"
+            },
+            currentStep = pagerState.currentPage + 1,
             onBackClick = onBackClick,
         )
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.weight(1f)
+        ) { page ->
+            when (page) {
+                0 -> WorkoutInfoStep(state = state)
+                1 -> WorkoutExercisesStep(state = state)
+            }
+        }
     }
 }
 
@@ -52,8 +77,14 @@ fun CreateWorkoutScreen(
 @Composable
 fun CreateWorkoutScreenPreview() {
     GainlyTheme {
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            pageCount = { 2 }
+        )
+
         CreateWorkoutScreen(
             state = WorkoutState(),
+            pagerState = pagerState,
             onBackClick = {}
         )
     }

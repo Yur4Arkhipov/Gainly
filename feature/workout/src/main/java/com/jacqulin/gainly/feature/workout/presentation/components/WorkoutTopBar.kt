@@ -43,7 +43,7 @@ fun WorkoutTopBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp)) {
+            .padding(vertical = 12.dp)) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -97,14 +97,18 @@ fun WorkoutTopBar(
                     .weight(1f)
                     .height(4.dp)
                     .clip(RoundedCornerShape(2.dp))
-                    .background(if (currentStep >= 1) PrimaryBlue else White)
+                    .background(
+                        if (currentStep == 1) PrimaryBlue else White
+                    )
             )
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .height(4.dp)
                     .clip(RoundedCornerShape(2.dp))
-                    .background(if (currentStep >= 2) PrimaryBlue else White)
+                    .background(
+                        if (currentStep == 2) PrimaryBlue else White
+                    )
             )
         }
     }
