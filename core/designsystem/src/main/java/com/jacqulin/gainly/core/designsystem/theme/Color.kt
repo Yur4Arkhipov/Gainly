@@ -151,8 +151,6 @@ val SelectedToRemoveBlue = Color(0xFF2196F3)
 val TextBlackColor = Color(0xFF1C1C0D)
 
 val BadgeColor = Color(0xFFE85451)
-val GrayBackgroundMain = Color(0xFFF3F2F8)
-val GrayIconColor = Color(0xFF717171)
 val SearchFieldTextColor = Color(0x87000000)
 val GreenCheckmark = Color(0xFF34C759)
 val RedCheckmark = Color(0xFFFF383C)
@@ -166,3 +164,13 @@ val StepsProgressBarColor = Color(0xFF34C759)
 val WaterProgressBarColor = Color(0xFF25C0EF)
 
 val GrayColor = Color(0xFF3E3E3F)
+
+
+
+
+
+
+val PrimaryBlue = Color(0xFF99BBFE)
+val GrayBackgroundMain = Color(0xFFF3F2F8)
+val GrayIconColor = Color(0xFF717171)
+val GrayTextColor = Color(0xFF717171)

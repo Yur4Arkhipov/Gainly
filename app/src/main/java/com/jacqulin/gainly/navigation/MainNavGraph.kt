@@ -52,8 +52,8 @@ fun MainNavHost(
 
         }
 
-        workoutSection {
-
-        }
+        workoutSection(
+            onBackClick = { navController.popBackStack() }
+        )
     }
 }

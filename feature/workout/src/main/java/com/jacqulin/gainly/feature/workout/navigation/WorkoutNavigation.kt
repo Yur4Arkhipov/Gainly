@@ -16,12 +16,13 @@ data object CreateWorkoutBaseRoute
 fun NavController.navigateToCreateWorkout(navOptions: NavOptions? = null) = navigate(route = CreateWorkoutRoute, navOptions)
 
 fun NavGraphBuilder.workoutSection(
-    workoutDestinations: NavGraphBuilder.() -> Unit
+    onBackClick: () -> Unit
 ) {
     navigation< CreateWorkoutBaseRoute>(startDestination = CreateWorkoutRoute) {
         composable<CreateWorkoutRoute>() {
-            CreateWorkoutScreenRoute()
+            CreateWorkoutScreenRoute(
+                onBackClick = onBackClick
+            )
         }
-        workoutDestinations()
     }
 }
