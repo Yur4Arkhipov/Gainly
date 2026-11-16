@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.core.util.Result
@@ -17,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AddWorkoutViewModel @Inject constructor(
     private val createWorkoutUseCase: CreateWorkoutUseCase,
-    private val tokenStorage: TokenStorage
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WorkoutState())
@@ -209,15 +206,7 @@ class AddWorkoutViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            val authData = tokenStorage.tokens.firstOrNull()
-            val token = authData?.accessToken
-
-            if (token == null) {
-                Log.d("TOKEN_WORKOUT", "Access token not found")
-                return@launch
-            }
-
-            when (val result = createWorkoutUseCase(token, workoutData)) {
+            when (val result = createWorkoutUseCase(workoutData)) {
                 is Result.Success -> {
                     Log.d("Workout","Id: $result")
                     println("Workout created successfully")
