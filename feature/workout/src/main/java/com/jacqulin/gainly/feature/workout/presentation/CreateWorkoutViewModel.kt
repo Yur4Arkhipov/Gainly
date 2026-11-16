@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.UUID
 import javax.inject.Inject
 import kotlin.String
 
@@ -30,9 +32,15 @@ class CreateWorkoutViewModel @Inject constructor(
             is CreateWorkoutEvent.OnDateChanged -> updateDate(event.date)
             is CreateWorkoutEvent.OnTimeChanged -> updateTime(event.time)
             is CreateWorkoutEvent.OnWorkoutTypeChanged -> updateWorkoutType(event.type)
+
+            CreateWorkoutEvent.OnCreateExercise -> createExercise()
+            is CreateWorkoutEvent.OnToggleExerciseSelection -> toggleExerciseSelect(event.exerciseId)
+            CreateWorkoutEvent.OnClearExerciseSelection -> clearExerciseSelection()
+            CreateWorkoutEvent.OnDeleteSelectedExercises -> deleteSelectedExercises()
         }
     }
 
+    // Info page
     private fun updateTitle(title: String) {
         updateContent {
             copy(title = title)
@@ -51,9 +59,50 @@ class CreateWorkoutViewModel @Inject constructor(
         }
     }
 
-    fun updateWorkoutType(type: WorkoutType) {
+    private fun updateWorkoutType(type: WorkoutType) {
         updateContent {
             copy(workoutType = type)
+        }
+    }
+
+    // Exercises page
+    private fun createExercise() {
+        updateContent {
+            val newExerciseId = UUID.randomUUID().toString()
+            val newExercise = WorkoutExerciseUi(
+                id = newExerciseId,
+                name = "Упражнение ${exercises.size + 1}"
+            )
+            copy(
+                exercises = exercises + newExercise
+            )
+        }
+    }
+
+    fun toggleExerciseSelect(exerciseId: String) {
+        updateContent {
+            val newSelected = if (exerciseId in selectedExerciseIds) {
+                selectedExerciseIds - exerciseId
+            } else {
+                selectedExerciseIds + exerciseId
+            }
+
+            copy(selectedExerciseIds = newSelected)
+        }
+    }
+
+    fun clearExerciseSelection() {
+        updateContent {
+            copy(selectedExerciseIds = emptySet())
+        }
+    }
+
+    fun deleteSelectedExercises() {
+        updateContent {
+            copy(
+                exercises = exercises.filter { !selectedExerciseIds.contains(it.id) },
+                selectedExerciseIds = emptySet(),
+            )
         }
     }
 

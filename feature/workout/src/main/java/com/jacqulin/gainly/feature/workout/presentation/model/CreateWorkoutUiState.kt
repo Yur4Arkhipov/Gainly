@@ -15,6 +15,7 @@ sealed interface CreateWorkoutUiState {
         val time: String = "18:23",
         val note: String = "Future note",
         val exercises: List<WorkoutExerciseUi> = emptyList(),
+        val selectedExerciseIds: Set<String> = emptySet()
     ) : CreateWorkoutUiState
 
     data class Error(

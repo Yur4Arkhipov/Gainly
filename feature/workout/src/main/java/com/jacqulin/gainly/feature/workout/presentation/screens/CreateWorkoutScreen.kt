@@ -23,8 +23,8 @@ import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.feature.workout.presentation.CreateWorkoutViewModel
 import com.jacqulin.gainly.feature.workout.presentation.components.SaveButton
-import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesStep
-import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutInfoStep
+import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesPage
+import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutInfoPage
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutTopBar
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
@@ -70,6 +70,8 @@ fun CreateWorkoutScreen(
 ) {
     val focusManager = LocalFocusManager.current
 
+    val isSelectionMode = state.selectedExerciseIds.isNotEmpty()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +99,7 @@ fun CreateWorkoutScreen(
             modifier = Modifier.weight(1f)
         ) { page ->
             when (page) {
-                0 -> WorkoutInfoStep(
+                0 -> WorkoutInfoPage(
                     state = state,
                     onTypeSelected = { type ->
                         onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
@@ -113,15 +115,28 @@ fun CreateWorkoutScreen(
                     },
                     onNoteChanged = {},
                 )
-                1 -> WorkoutExercisesStep(state = state)
+                1 -> WorkoutExercisesPage(
+                    state = state,
+                    isSelectionMode = isSelectionMode,
+                    onAddExercise = { onEvent(CreateWorkoutEvent.OnCreateExercise) },
+                    onEditExercise = { },
+                    onToggleSelect = { exerciseId ->
+                        onEvent(CreateWorkoutEvent.OnToggleExerciseSelection(exerciseId))
+                    },
+                    onClearSelection = { onEvent(CreateWorkoutEvent.OnClearExerciseSelection) },
+                    onDeleteSelected = { },
+                )
             }
         }
 
-        SaveButton(
-            enabled = state.exercises.isNotEmpty(),
-            text = "Сохранить тренировку",
-            onClick = {}
-        )
+
+        if (!isSelectionMode) {
+            SaveButton(
+                enabled = state.exercises.isNotEmpty(),
+                text = "Сохранить",
+                onClick = {}
+            )
+        }
     }
 }
 
