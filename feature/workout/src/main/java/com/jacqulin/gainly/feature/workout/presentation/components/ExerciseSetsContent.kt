@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
-import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed

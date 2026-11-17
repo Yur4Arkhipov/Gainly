@@ -77,7 +77,7 @@ fun WorkoutInfoPage(
                 modifier = Modifier.weight(1f)
             )
         }
-
+/*
         Spacer(modifier = Modifier.height(16.dp))
 
         CustomTextField(
@@ -85,7 +85,7 @@ fun WorkoutInfoPage(
             value = state.note,
             fontSize = 12.sp,
             onValueChange = onNoteChanged
-        )
+        )*/
     }
 }
 
