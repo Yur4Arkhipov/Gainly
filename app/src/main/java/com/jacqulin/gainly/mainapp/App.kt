@@ -3,7 +3,9 @@ package com.jacqulin.gainly.mainapp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +48,13 @@ internal fun App(
                     start = paddingValues.calculateStartPadding(LocalLayoutDirection.current)/* + 12.dp*/,
                     end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) /*+ 12.dp*/
                 )
+                .consumeWindowInsets(paddingValues)
+                .imePadding()
         ) {
-            MainNavHost(appState = appState)
+            MainNavHost(
+                appState = appState,
+                modifier = Modifier.fillMaxSize()
+            )
 
             if (appState.currentTopLevelDestination != null) {
                 FloatingBottomBar(

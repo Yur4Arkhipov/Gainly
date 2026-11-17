@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,11 +36,13 @@ import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WorkoutExercisesPage(
     state: CreateWorkoutUiState.Content,
     isSelectionMode: Boolean,
     modifier: Modifier = Modifier,
+    isKeyboardVisible: Boolean = false,
     onAddExercise: () -> Unit,
     onToggleExpanded: (String) -> Unit,
     onToggleSelect: (String) -> Unit,
@@ -60,9 +63,7 @@ fun WorkoutExercisesPage(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 20.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
@@ -118,9 +119,15 @@ fun WorkoutExercisesPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .fadeScrollableVerticalEdges(
-                    listState = listState,
-                    fadeLength = 24.dp
+                .then(
+                    if (isKeyboardVisible) {
+                        Modifier
+                    } else {
+                        Modifier.fadeScrollableVerticalEdges(
+                            listState = listState,
+                            fadeLength = 24.dp
+                        )
+                    }
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             overscrollEffect = null
@@ -160,6 +167,7 @@ fun WorkoutExercisesPage(
                 item {
                     AddButton(
                         text = "Добавить упражнение",
+                        modifier = Modifier.padding(bottom = 20.dp),
                         contentColor = LightBlackTextColor,
                         onClick = onAddExercise
                     )

@@ -3,9 +3,12 @@ package com.jacqulin.gainly.feature.workout.presentation.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -107,6 +110,7 @@ fun CreateWorkoutScreenRoute(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateWorkoutScreen(
     state: CreateWorkoutUiState.Content,
@@ -118,6 +122,7 @@ fun CreateWorkoutScreen(
     val focusManager = LocalFocusManager.current
 
     val isSelectionMode = state.selectedExerciseIds.isNotEmpty()
+    val isKeyboardVisible = WindowInsets.isImeVisible
 
     Column(
         modifier = modifier
@@ -170,6 +175,7 @@ fun CreateWorkoutScreen(
                 1 -> WorkoutExercisesPage(
                     state = state,
                     isSelectionMode = isSelectionMode,
+                    isKeyboardVisible = isKeyboardVisible,
                     onAddExercise = { onEvent(CreateWorkoutEvent.OnCreateExercise) },
                     onToggleExpanded = { exerciseId ->
                         onEvent(CreateWorkoutEvent.OnExerciseExpanded(exerciseId))
@@ -204,7 +210,7 @@ fun CreateWorkoutScreen(
             }
         }
 
-        if (!isSelectionMode) {
+        if (!isSelectionMode && !isKeyboardVisible) {
             SaveButton(
                 enabled = state.exercises.isNotEmpty() &&
                         state.exercises.all { it.sets.isNotEmpty() },

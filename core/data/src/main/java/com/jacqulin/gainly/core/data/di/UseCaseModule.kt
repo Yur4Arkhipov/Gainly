@@ -108,7 +108,6 @@ object UseCaseModule {
     fun provideCreateWorkoutUseCase(
         repository: WorkoutRepository,
         tokenStorage: TokenStorage,
-        clock: Clock
     ): CreateWorkoutUseCase {
         return CreateWorkoutUseCaseImpl(
             workoutRepository = repository,
