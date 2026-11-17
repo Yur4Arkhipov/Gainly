@@ -19,7 +19,8 @@ sealed interface CreateWorkoutUiState {
         val exercises: List<WorkoutExerciseUi> = emptyList(),
         val selectedExerciseIds: Set<String> = emptySet(),
         val invalidRepsSetIds: Set<String> = emptySet(),
-        val invalidWeightSetIds: Set<String> = emptySet()
+        val invalidWeightSetIds: Set<String> = emptySet(),
+        val invalidExerciseTitleIds: Set<String> = emptySet()
     ) : CreateWorkoutUiState {
         companion object {
             fun initial(): Content {

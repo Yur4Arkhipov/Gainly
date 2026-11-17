@@ -126,6 +126,7 @@ fun WorkoutExercisesPage(
                     selectedSetIds = exercise.selectedSetIds,
                     invalidRepsSetIds = state.invalidRepsSetIds,
                     invalidWeightSetIds = state.invalidWeightSetIds,
+                    invalidExerciseTitleIds = state.invalidExerciseTitleIds,
                     onToggleExpanded = { onToggleExpanded(exercise.id) },
                     onToggleSelect = { onToggleSelect(exercise.id) },
                     onToggleSetSelect = { setId ->

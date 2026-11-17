@@ -68,6 +68,7 @@ fun ExerciseItem(
     selectedSetIds: Set<String>,
     invalidRepsSetIds: Set<String>,
     invalidWeightSetIds: Set<String>,
+    invalidExerciseTitleIds: Set<String>,
     onToggleExpanded: () -> Unit,
     onToggleSelect: () -> Unit,
     onToggleSetSelect: (setId: String) -> Unit,
@@ -189,7 +190,11 @@ fun ExerciseItem(
                 Icon(
                     painter = painterResource(R.drawable.ic_edit),
                     contentDescription = "Редактировать название",
-                    tint = selectedColor.copy(alpha = 0.5f),
+                    tint = if (exercise.id in invalidExerciseTitleIds) {
+                        Color.Red
+                    } else {
+                        selectedColor.copy(alpha = 0.5f)
+                    },
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .size(20.dp)

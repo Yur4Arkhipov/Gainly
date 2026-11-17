@@ -137,9 +137,25 @@ class CreateWorkoutViewModel @Inject constructor(
         }
     }
 
-    private fun updateExerciseTitle(exerciseId: String, title: String) {
-        updateExercise(exerciseId) {
-            copy(title = title)
+    private fun updateExerciseTitle(
+        exerciseId: String,
+        title: String
+    ) {
+        updateContent {
+            copy(
+                exercises = exercises.map { exercise ->
+                    if (exercise.id == exerciseId) {
+                        exercise.copy(title = title)
+                    } else {
+                        exercise
+                    }
+                },
+                invalidExerciseTitleIds = if (title.isNotBlank()) {
+                    invalidExerciseTitleIds - exerciseId
+                } else {
+                    invalidExerciseTitleIds
+                }
+            )
         }
     }
 
@@ -267,13 +283,27 @@ class CreateWorkoutViewModel @Inject constructor(
 
         val (invalidReps, invalidWeight) = validateSets(content.exercises)
 
-        if (invalidReps.isNotEmpty() || invalidWeight.isNotEmpty()) {
+        val invalidTitles = content.exercises
+            .filter { it.title.isBlank() }
+            .map { it.id }
+            .toSet()
+
+        if (
+            invalidReps.isNotEmpty() ||
+            invalidWeight.isNotEmpty() ||
+            invalidTitles.isNotEmpty()
+        ) {
             updateContent {
                 copy(
                     invalidRepsSetIds = invalidReps,
                     invalidWeightSetIds = invalidWeight,
+                    invalidExerciseTitleIds = invalidTitles,
                     exercises = exercises.map { exercise ->
-                        if (exercise.sets.any { it.id in invalidReps || it.id in invalidWeight }) {
+                        if (
+                            exercise.sets.any {
+                                it.id in invalidReps || it.id in invalidWeight
+                            }
+                        ) {
                             exercise.copy(isExpanded = true)
                         } else {
                             exercise
