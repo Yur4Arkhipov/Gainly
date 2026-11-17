@@ -33,12 +33,12 @@ fun WorkoutInfoPage(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        WorkoutTypeSwitcher(
+/*        WorkoutTypeSwitcher(
             selectedType = state.workoutType,
             onTypeSelected = onTypeSelected,
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))*/
 
         CustomTextField(
             label = "Название тренировки",

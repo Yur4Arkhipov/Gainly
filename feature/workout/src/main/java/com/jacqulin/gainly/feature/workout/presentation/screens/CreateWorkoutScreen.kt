@@ -90,7 +90,6 @@ fun CreateWorkoutScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(GrayBackgroundMain)
-            .padding(12.dp)
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
@@ -112,7 +111,9 @@ fun CreateWorkoutScreen(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp)
         ) { page ->
             when (page) {
                 0 -> WorkoutInfoPage(
@@ -175,7 +176,8 @@ fun CreateWorkoutScreen(
                 enabled = state.exercises.isNotEmpty() &&
                         state.exercises.all { it.sets.isNotEmpty() },
                 text = "Сохранить",
-                onClick = { onEvent(CreateWorkoutEvent.OnSaveWorkout) }
+                onClick = { onEvent(CreateWorkoutEvent.OnSaveWorkout) },
+                modifier = Modifier.padding(horizontal = 12.dp)
             )
         }
     }
