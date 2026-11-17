@@ -1,6 +1,8 @@
 package com.jacqulin.gainly.feature.workout.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,7 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -55,6 +63,8 @@ fun TimeTextField(
     fontSize: TextUnit = 16.sp,
     fontWeight: FontWeight = FontWeight.Medium,
 ) {
+    var isEditing by remember { mutableStateOf(false) }
+
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
@@ -64,8 +74,19 @@ fun TimeTextField(
         )
     }
 
+    var hadFocus by remember { mutableStateOf(false) }
+
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(isEditing) {
+        if (isEditing) {
+            focusRequester.requestFocus()
+        }
+    }
+
     LaunchedEffect(value) {
-        if (value != textFieldValue.text) {
+        if (!isEditing && textFieldValue.text != value) {
             textFieldValue = TextFieldValue(
                 text = value,
                 selection = TextRange(value.length)
@@ -94,56 +115,99 @@ fun TimeTextField(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BasicTextField(
-                value = textFieldValue,
-                onValueChange = { newValue ->
-                    val digits = newValue.text
-                        .filter(Char::isDigit)
-                        .take(4)
+            if (!showEditIcon || isEditing) {
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = { newValue ->
+                        val digits = newValue.text
+                            .filter(Char::isDigit)
+                            .take(4)
 
-                    if (!digits.isValidTimeInput()) return@BasicTextField
+                        if (!digits.isValidTimeInput()) {
+                            return@BasicTextField
+                        }
 
-                    val formatted = when {
-                        digits.length <= 2 -> digits
-                        else -> "${digits.take(2)}:${digits.drop(2)}"
-                    }
+                        val formatted = when {
+                            digits.length <= 2 -> digits
+                            else -> "${digits.take(2)}:${digits.drop(2)}"
+                        }
 
-                    val cursorPosition = newValue.selection.start
-                        .coerceIn(0, newValue.text.length)
+                        val cursorPosition = newValue.selection.start
+                            .coerceIn(0, newValue.text.length)
 
-                    val digitsBeforeCursor = newValue.text
-                        .take(cursorPosition)
-                        .count(Char::isDigit)
-                        .coerceAtMost(digits.length)
+                        val digitsBeforeCursor = newValue.text
+                            .take(cursorPosition)
+                            .count(Char::isDigit)
+                            .coerceAtMost(digits.length)
 
-                    val formattedCursor = when {
-                        digitsBeforeCursor <= 2 -> digitsBeforeCursor
-                        else -> digitsBeforeCursor + 1
-                    }.coerceAtMost(formatted.length)
+                        val formattedCursor = when {
+                            digitsBeforeCursor <= 2 -> digitsBeforeCursor
+                            else -> digitsBeforeCursor + 1
+                        }.coerceAtMost(formatted.length)
 
-                    val updatedValue = TextFieldValue(
-                        text = formatted,
-                        selection = TextRange(formattedCursor)
-                    )
+                        val updatedValue = TextFieldValue(
+                            text = formatted,
+                            selection = TextRange(formattedCursor)
+                        )
 
-                    textFieldValue = updatedValue
-                    onValueChange(formatted)
-                },
-                modifier = Modifier.weight(1f),
-                textStyle = TextStyle(
-                    fontFamily = GoogleSansFontFamily,
-                    fontWeight = fontWeight,
-                    fontSize = fontSize,
-                    lineHeight = fontSize * 1.2,
-                    letterSpacing = 0.sp,
-                    color = textColor
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                singleLine = true
-            )
+                        textFieldValue = updatedValue
+                        onValueChange(formatted)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .then(
+                            if (showEditIcon) {
+                                Modifier
+                                    .focusRequester(focusRequester)
+                                    .onFocusChanged { focusState ->
+                                        if (focusState.isFocused) {
+                                            hadFocus = true
+                                        } else if (hadFocus) {
+                                            hadFocus = false
+                                            isEditing = false
+                                        }
+                                    }
+                            } else {
+                                Modifier
+                            }
+                        ),
+                    textStyle = TextStyle(
+                        fontFamily = GoogleSansFontFamily,
+                        fontWeight = fontWeight,
+                        fontSize = fontSize,
+                        lineHeight = fontSize * 1.2,
+                        letterSpacing = 0.sp,
+                        color = textColor
+                    ),
+                    cursorBrush = SolidColor(textColor),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (showEditIcon) {
+                                isEditing = false
+                            }
+                            keyboardController?.hide()
+                        }
+                    ),
+                    singleLine = true
+                )
+            } else {
+                Text(
+                    text = value,
+                    style = TextStyle(
+                        fontFamily = GoogleSansFontFamily,
+                        fontWeight = fontWeight,
+                        fontSize = fontSize,
+                        lineHeight = fontSize * 1.2,
+                        letterSpacing = 0.sp,
+                        color = textColor
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
             if (showEditIcon) {
                 Spacer(Modifier.width(8.dp))
@@ -156,7 +220,18 @@ fun TimeTextField(
                     } else {
                         textColor.copy(alpha = 0.5f)
                     },
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            textFieldValue = TextFieldValue(
+                                text = value,
+                                selection = TextRange(value.length)
+                            )
+                            isEditing = true
+                        }
                 )
             }
         }

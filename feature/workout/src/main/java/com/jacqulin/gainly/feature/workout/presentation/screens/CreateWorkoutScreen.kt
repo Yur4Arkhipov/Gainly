@@ -166,10 +166,10 @@ fun CreateWorkoutScreen(
             }
         }
 
-
         if (!isSelectionMode) {
             SaveButton(
-                enabled = state.exercises.isNotEmpty(),
+                enabled = state.exercises.isNotEmpty() &&
+                        state.exercises.all { it.sets.isNotEmpty() },
                 text = "Сохранить",
                 onClick = { onEvent(CreateWorkoutEvent.OnSaveWorkout) }
             )
