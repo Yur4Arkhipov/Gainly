@@ -157,7 +157,7 @@ fun CreateWorkoutScreen(
             SaveButton(
                 enabled = state.exercises.isNotEmpty(),
                 text = "Сохранить",
-                onClick = {}
+                onClick = { onEvent(CreateWorkoutEvent.OnSaveWorkout) }
             )
         }
     }

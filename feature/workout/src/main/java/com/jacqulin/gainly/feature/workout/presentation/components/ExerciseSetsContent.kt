@@ -38,6 +38,8 @@ fun ExerciseSetsContent(
     exercise: WorkoutExerciseUi,
     selectedColor: Color,
     isSelectionMode: Boolean,
+    invalidRepsSetIds: Set<String>,
+    invalidWeightSetIds: Set<String>,
     selectedSetIds: Set<String>,
     onBodyWeightChanged: (String, Boolean) -> Unit,
     onRepsChanged: (String, Int) -> Unit,
@@ -145,6 +147,8 @@ fun ExerciseSetsContent(
                     isSelected = set.id in selectedSetIds,
                     selectionMode = isSelectionMode,
                     isBodyWeight = exercise.isBodyWeight,
+                    isRepsError = set.id in invalidRepsSetIds,
+                    isWeightError = set.id in invalidWeightSetIds,
                     onRepsChanged = { newReps ->
                         onRepsChanged(set.id, newReps)
                     },

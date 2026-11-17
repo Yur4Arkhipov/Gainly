@@ -66,6 +66,8 @@ fun ExerciseItem(
     selectionMode: Boolean,
     selectedColor: Color,
     selectedSetIds: Set<String>,
+    invalidRepsSetIds: Set<String>,
+    invalidWeightSetIds: Set<String>,
     onToggleExpanded: () -> Unit,
     onToggleSelect: () -> Unit,
     onToggleSetSelect: (setId: String) -> Unit,
@@ -251,6 +253,8 @@ fun ExerciseItem(
                 isSelectionMode = selectedSetIds.isNotEmpty(),
                 selectedSetIds = selectedSetIds,
                 onBodyWeightChanged = onBodyWeightChanged,
+                invalidRepsSetIds = invalidRepsSetIds,
+                invalidWeightSetIds = invalidWeightSetIds,
                 onDeleteSelectedSets = {
                     onDeleteSelectedSets(exercise.id)
                 },

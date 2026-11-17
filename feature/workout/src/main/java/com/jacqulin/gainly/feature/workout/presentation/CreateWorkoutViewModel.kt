@@ -52,6 +52,8 @@ class CreateWorkoutViewModel @Inject constructor(
             is CreateWorkoutEvent.OnSetWeightChanged -> updateSetWeight(event.exerciseId, event.setId, event.weight)
             is CreateWorkoutEvent.OnSetRepetitionsChanged -> updateSetRepetitions(event.exerciseId, event.setId, event.repetitions)
             is CreateWorkoutEvent.OnToggleExercisesSetsSelection -> toggleSetSelection(event.exerciseId, event.setId)
+
+            CreateWorkoutEvent.OnSaveWorkout -> saveWorkout()
         }
     }
 
@@ -192,16 +194,26 @@ class CreateWorkoutViewModel @Inject constructor(
         setId: String,
         weight: String
     ) {
+        val newWeight = weight.toIntOrNull() ?: 0
+
         updateExercise(exerciseId) {
             copy(
                 sets = sets.map { set ->
                     if (set.id == setId) {
-                        set.copy(weight = weight.toInt())
+                        set.copy(weight = newWeight)
                     } else {
                         set
                     }
                 }
             )
+        }
+
+        if (newWeight > 0) {
+            updateContent {
+                copy(
+                    invalidWeightSetIds = invalidWeightSetIds - setId
+                )
+            }
         }
     }
 
@@ -210,16 +222,26 @@ class CreateWorkoutViewModel @Inject constructor(
         setId: String,
         repetitions: String
     ) {
+        val newReps = repetitions.toIntOrNull() ?: 0
+
         updateExercise(exerciseId) {
             copy(
                 sets = sets.map { set ->
                     if (set.id == setId) {
-                        set.copy(reps = repetitions.toInt())
+                        set.copy(reps = newReps)
                     } else {
                         set
                     }
                 }
             )
+        }
+
+        if (newReps > 0) {
+            updateContent {
+                copy(
+                    invalidRepsSetIds = invalidRepsSetIds - setId
+                )
+            }
         }
     }
 
@@ -236,6 +258,34 @@ class CreateWorkoutViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    // Saving
+    private fun saveWorkout() {
+        val content = _uiState.value as? CreateWorkoutUiState.Content
+            ?: return
+
+        val (invalidReps, invalidWeight) = validateSets(content.exercises)
+
+        if (invalidReps.isNotEmpty() || invalidWeight.isNotEmpty()) {
+            updateContent {
+                copy(
+                    invalidRepsSetIds = invalidReps,
+                    invalidWeightSetIds = invalidWeight,
+                    exercises = exercises.map { exercise ->
+                        if (exercise.sets.any { it.id in invalidReps || it.id in invalidWeight }) {
+                            exercise.copy(isExpanded = true)
+                        } else {
+                            exercise
+                        }
+                    }
+                )
+            }
+
+            return
+        }
+
+        // TODO: создание тренировки
     }
 
     // Utils
@@ -266,5 +316,26 @@ class CreateWorkoutViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun validateSets(
+        exercises: List<WorkoutExerciseUi>
+    ): Pair<Set<String>, Set<String>> {
+        val invalidReps = mutableSetOf<String>()
+        val invalidWeight = mutableSetOf<String>()
+
+        exercises.forEach { exercise ->
+            exercise.sets.forEach { set ->
+                if (set.reps <= 0) {
+                    invalidReps.add(set.id)
+                }
+
+                if (!exercise.isBodyWeight && set.weight <= 0) {
+                    invalidWeight.add(set.id)
+                }
+            }
+        }
+
+        return invalidReps to invalidWeight
     }
 }

@@ -67,4 +67,6 @@ sealed interface CreateWorkoutEvent {
         val exerciseId: String,
         val setId: String,
     ): CreateWorkoutEvent
+
+    data object OnSaveWorkout: CreateWorkoutEvent
 }

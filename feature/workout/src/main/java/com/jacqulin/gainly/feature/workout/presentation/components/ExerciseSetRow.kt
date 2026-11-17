@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.feature.workout.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.Red
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveBlue
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveWhite
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
@@ -47,6 +50,8 @@ fun ExerciseSetRow(
     isSelected: Boolean,
     selectionMode: Boolean,
     isBodyWeight: Boolean,
+    isRepsError: Boolean,
+    isWeightError: Boolean,
     onRepsChanged: (Int) -> Unit,
     onWeightChanged: (Int) -> Unit,
     onToggleSelect: () -> Unit
@@ -111,7 +116,14 @@ fun ExerciseSetRow(
                 .height(56.dp)
                 .clip(RoundedCornerShape(32.dp))
                 .background(
-                    if (isSelected) SelectedToRemoveWhite else UnselectedAddWorkoutItem
+                    color = if (isSelected) SelectedToRemoveWhite
+                    else UnselectedAddWorkoutItem,
+                    shape = RoundedCornerShape(32.dp)
+                )
+                .border(
+                    width = if (isRepsError) 1.dp else 0.dp,
+                    color = if (isRepsError) Red else Color.Transparent,
+                    shape = RoundedCornerShape(32.dp)
                 )
                 .focusRequester(repsFocusRequester),
             contentAlignment = Alignment.Center
@@ -156,7 +168,14 @@ fun ExerciseSetRow(
                     .height(56.dp)
                     .clip(RoundedCornerShape(32.dp))
                     .background(
-                        if (isSelected) SelectedToRemoveWhite else UnselectedAddWorkoutItem
+                        color = if (isSelected) SelectedToRemoveWhite
+                        else UnselectedAddWorkoutItem,
+                        shape = RoundedCornerShape(32.dp)
+                    )
+                    .border(
+                        width = if (isWeightError) 1.dp else 0.dp,
+                        color = if (isWeightError) Red else Color.Transparent,
+                        shape = RoundedCornerShape(32.dp)
                     )
                     .focusRequester(weightFocusRequester),
                 contentAlignment = Alignment.Center

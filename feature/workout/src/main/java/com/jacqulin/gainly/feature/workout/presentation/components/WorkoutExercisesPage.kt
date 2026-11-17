@@ -124,6 +124,8 @@ fun WorkoutExercisesPage(
                     selectionMode = isSelectionMode,
                     selectedColor = state.selectedColor,
                     selectedSetIds = exercise.selectedSetIds,
+                    invalidRepsSetIds = state.invalidRepsSetIds,
+                    invalidWeightSetIds = state.invalidWeightSetIds,
                     onToggleExpanded = { onToggleExpanded(exercise.id) },
                     onToggleSelect = { onToggleSelect(exercise.id) },
                     onToggleSetSelect = { setId ->
