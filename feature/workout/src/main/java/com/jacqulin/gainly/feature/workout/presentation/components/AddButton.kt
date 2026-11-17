@@ -18,14 +18,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
 fun AddButton(
     text: String,
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.White,
-    contentColor: Color = Color.Black,
+    containerColor: Color = White,
+    contentColor: Color = Black,
     onClick: () -> Unit
 ) {
     Button(

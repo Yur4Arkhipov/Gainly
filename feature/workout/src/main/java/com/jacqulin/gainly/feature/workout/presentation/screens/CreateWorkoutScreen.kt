@@ -105,7 +105,7 @@ fun CreateWorkoutScreen(
                         onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
                     },
                     onTitleChanged = { title ->
-                        onEvent(CreateWorkoutEvent.OnTitleChanged(title))
+                        onEvent(CreateWorkoutEvent.OnWorkoutTitleChanged(title))
                     },
                     onDateChanged = { date ->
                         onEvent(CreateWorkoutEvent.OnDateChanged(date))
@@ -119,12 +119,35 @@ fun CreateWorkoutScreen(
                     state = state,
                     isSelectionMode = isSelectionMode,
                     onAddExercise = { onEvent(CreateWorkoutEvent.OnCreateExercise) },
-                    onEditExercise = { },
+                    onToggleExpanded = { exerciseId ->
+                        onEvent(CreateWorkoutEvent.OnExerciseExpanded(exerciseId))
+                    },
                     onToggleSelect = { exerciseId ->
                         onEvent(CreateWorkoutEvent.OnToggleExerciseSelection(exerciseId))
                     },
+                    onToggleSetSelect = { exerciseId, setId ->
+                        onEvent(CreateWorkoutEvent.OnToggleExercisesSetsSelection(exerciseId, setId))
+                    },
                     onClearSelection = { onEvent(CreateWorkoutEvent.OnClearExerciseSelection) },
-                    onDeleteSelected = { },
+                    onDeleteSelected = { onEvent(CreateWorkoutEvent.OnDeleteSelectedExercises) },
+                    onSetWeightChanged = { exerciseId, setId, weight ->
+                        onEvent(CreateWorkoutEvent.OnSetWeightChanged(exerciseId, setId, weight))
+                    },
+                    onSetRepetitionsChanged = { exerciseId, setId, reps ->
+                        onEvent(CreateWorkoutEvent.OnSetRepetitionsChanged(exerciseId, setId, reps))
+                    },
+                    onAddSet = { exerciseId ->
+                        onEvent(CreateWorkoutEvent.OnSetAdded(exerciseId))
+                    },
+                    onDeleteSelectedSets = { exerciseId ->
+                        onEvent(CreateWorkoutEvent.OnDeleteSelectedSets(exerciseId))
+                    },
+                    onExerciseTitleChanged = { exerciseId, title ->
+                        onEvent(CreateWorkoutEvent.OnExerciseTitleChanged(exerciseId, title))
+                    },
+                    onBodyWeightChanged = {exerciseId, isBodyWeight ->
+                        onEvent(CreateWorkoutEvent.OnBodyWeightChanged(exerciseId, isBodyWeight))
+                    }
                 )
             }
         }

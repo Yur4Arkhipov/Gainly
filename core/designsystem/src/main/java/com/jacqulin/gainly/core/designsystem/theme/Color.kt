@@ -139,7 +139,7 @@ val WorkoutColors = listOf(
 
 val SaveWorkoutButtonContainerColor = Color(0xFF99BBFE)
 val SelectedAddWorkoutItem = Color(0xFF99BBFE)
-val UnselectedAddWorkoutItem = Color(0xFFE5E5EA)
+val UnselectedAddWorkoutItem = Color(0xFFF3F3F6)
 
 val UncheckedSwitchTrackColor = Color(0xFFD3D3D3)
 
@@ -174,4 +174,6 @@ val PrimaryBlue = Color(0xFF99BBFE)
 val GrayBackgroundMain = Color(0xFFF3F2F8)
 val GrayIconColor = Color(0xFF717171)
 val GrayTextColor = Color(0xFF717171)
+val LightGrayTextColor = Color(0xFF8E8E93)
 val BlueWorkoutColor = Color(0xFF505b92)
+val VeryLightGrayColor = Color(0xFFF3F3F6)

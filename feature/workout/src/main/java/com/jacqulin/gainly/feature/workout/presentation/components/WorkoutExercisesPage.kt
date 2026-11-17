@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,23 +36,29 @@ import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiSta
 fun WorkoutExercisesPage(
     state: CreateWorkoutUiState.Content,
     isSelectionMode: Boolean,
+    modifier: Modifier = Modifier,
     onAddExercise: () -> Unit,
-    onEditExercise: (String) -> Unit,
+    onToggleExpanded: (String) -> Unit,
     onToggleSelect: (String) -> Unit,
+    onToggleSetSelect: (exerciseId: String, setId: String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
-    modifier: Modifier = Modifier
+    onSetWeightChanged: (exerciseId: String, setId: String, weight: String) -> Unit,
+    onSetRepetitionsChanged: (exerciseId: String, setId: String, repetitions: String) -> Unit,
+    onAddSet: (exerciseId: String) -> Unit,
+    onDeleteSelectedSets: (exerciseId: String) -> Unit,
+    onExerciseTitleChanged: (exerciseId: String, title: String) -> Unit,
+    onBodyWeightChanged: (exerciseId: String, isBodyWeight: Boolean) -> Unit
 ) {
-//    DisposableEffect(Unit) {
-//        onDispose {
-//            onClearSelection()
-//        }
-//    }
+    DisposableEffect(Unit) {
+        onDispose {
+            onClearSelection()
+        }
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
             .padding(bottom = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -115,8 +122,23 @@ fun WorkoutExercisesPage(
                     exercise = exercise,
                     isSelected = state.selectedExerciseIds.contains(exercise.id),
                     selectionMode = isSelectionMode,
-                    onClick = { onEditExercise(exercise.id) },
-                    onToggleSelect = { onToggleSelect(exercise.id) }
+                    selectedColor = state.selectedColor,
+                    selectedSetIds = exercise.selectedSetIds,
+                    onToggleExpanded = { onToggleExpanded(exercise.id) },
+                    onToggleSelect = { onToggleSelect(exercise.id) },
+                    onToggleSetSelect = { setId ->
+                        onToggleSetSelect(exercise.id, setId)
+                    },
+                    onSetWeightChanged = { setId, weight ->
+                        onSetWeightChanged(exercise.id, setId, weight)
+                    },
+                    onSetRepetitionsChanged = { setId, repetitions ->
+                        onSetRepetitionsChanged(exercise.id, setId, repetitions)
+                    },
+                    onAddSet = { onAddSet(exercise.id) },
+                    onDeleteSelectedSets = { onDeleteSelectedSets(exercise.id) },
+                    onExerciseTitleChanged = onExerciseTitleChanged,
+                    onBodyWeightChanged = onBodyWeightChanged
                 )
             }
 

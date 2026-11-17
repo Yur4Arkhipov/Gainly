@@ -1,10 +1,12 @@
 package com.jacqulin.gainly.feature.workout.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
+import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +30,7 @@ class CreateWorkoutViewModel @Inject constructor(
 
     fun onEvent(event: CreateWorkoutEvent) {
         when (event) {
-            is CreateWorkoutEvent.OnTitleChanged -> updateTitle(event.title)
+            is CreateWorkoutEvent.OnWorkoutTitleChanged -> updateWorkoutTitle(event.title)
             is CreateWorkoutEvent.OnDateChanged -> updateDate(event.date)
             is CreateWorkoutEvent.OnTimeChanged -> updateTime(event.time)
             is CreateWorkoutEvent.OnWorkoutTypeChanged -> updateWorkoutType(event.type)
@@ -37,11 +39,20 @@ class CreateWorkoutViewModel @Inject constructor(
             is CreateWorkoutEvent.OnToggleExerciseSelection -> toggleExerciseSelect(event.exerciseId)
             CreateWorkoutEvent.OnClearExerciseSelection -> clearExerciseSelection()
             CreateWorkoutEvent.OnDeleteSelectedExercises -> deleteSelectedExercises()
+
+            is CreateWorkoutEvent.OnExerciseExpanded -> toggleExerciseExpanded(event.exerciseId)
+            is CreateWorkoutEvent.OnExerciseTitleChanged -> updateExerciseTitle(event.exerciseId, event.title)
+            is CreateWorkoutEvent.OnSetAdded -> addSet(event.exerciseId)
+            is CreateWorkoutEvent.OnDeleteSelectedSets -> deleteSelectedSets(event.exerciseId)
+            is CreateWorkoutEvent.OnBodyWeightChanged -> changeBodyWeight(event.exerciseId, event.isBodyWeight)
+            is CreateWorkoutEvent.OnSetWeightChanged -> updateSetWeight(event.exerciseId, event.setId, event.weight)
+            is CreateWorkoutEvent.OnSetRepetitionsChanged -> updateSetRepetitions(event.exerciseId, event.setId, event.repetitions)
+            is CreateWorkoutEvent.OnToggleExercisesSetsSelection -> toggleSetSelection(event.exerciseId, event.setId)
         }
     }
 
     // Info page
-    private fun updateTitle(title: String) {
+    private fun updateWorkoutTitle(title: String) {
         updateContent {
             copy(title = title)
         }
@@ -71,7 +82,7 @@ class CreateWorkoutViewModel @Inject constructor(
             val newExerciseId = UUID.randomUUID().toString()
             val newExercise = WorkoutExerciseUi(
                 id = newExerciseId,
-                name = "Упражнение ${exercises.size + 1}"
+                title = "Упражнение ${exercises.size + 1}"
             )
             copy(
                 exercises = exercises + newExercise
@@ -106,6 +117,110 @@ class CreateWorkoutViewModel @Inject constructor(
         }
     }
 
+    private fun updateExerciseTitle(exerciseId: String, title: String) {
+        updateExercise(exerciseId) {
+            copy(title = title)
+        }
+    }
+
+    fun toggleExerciseExpanded(exerciseId: String) {
+        updateExercise(exerciseId) {
+            copy(isExpanded = !isExpanded)
+        }
+    }
+
+    private fun changeBodyWeight(
+        exerciseId: String,
+        isBodyWeight: Boolean
+    ) {
+        updateExercise(exerciseId) {
+            copy(isBodyWeight = isBodyWeight)
+        }
+    }
+
+    private fun addSet(exerciseId: String) {
+        updateExercise(exerciseId) {
+            val newSet = WorkoutSetUi(
+                id = UUID.randomUUID().toString(),
+                number = sets.size + 1
+            )
+
+            val updatedSets = sets + newSet
+
+            Log.d(
+                "CreateWorkout VM",
+                "Exercise id: $exerciseId, Sets: $updatedSets"
+            )
+
+            copy(sets = updatedSets)
+        }
+    }
+
+    private fun deleteSelectedSets(exerciseId: String) {
+        updateExercise(exerciseId) {
+            copy(
+                sets = sets
+                    .filterNot { it.id in selectedSetIds }
+                    .mapIndexed { index, set ->
+                        set.copy(number = index + 1)
+                    },
+                selectedSetIds = emptySet()
+            )
+        }
+    }
+
+    private fun updateSetWeight(
+        exerciseId: String,
+        setId: String,
+        weight: String
+    ) {
+        updateExercise(exerciseId) {
+            copy(
+                sets = sets.map { set ->
+                    if (set.id == setId) {
+                        set.copy(weight = weight.toInt())
+                    } else {
+                        set
+                    }
+                }
+            )
+        }
+    }
+
+    private fun updateSetRepetitions(
+        exerciseId: String,
+        setId: String,
+        repetitions: String
+    ) {
+        updateExercise(exerciseId) {
+            copy(
+                sets = sets.map { set ->
+                    if (set.id == setId) {
+                        set.copy(reps = repetitions.toInt())
+                    } else {
+                        set
+                    }
+                }
+            )
+        }
+    }
+
+    private fun toggleSetSelection(
+        exerciseId: String,
+        setId: String
+    ) {
+        updateExercise(exerciseId) {
+            copy(
+                selectedSetIds = if (setId in selectedSetIds) {
+                    selectedSetIds - setId
+                } else {
+                    selectedSetIds + setId
+                }
+            )
+        }
+    }
+
+    // Utils
     private inline fun updateContent(
         transform: CreateWorkoutUiState.Content.() -> CreateWorkoutUiState.Content
     ) {
@@ -115,6 +230,23 @@ class CreateWorkoutViewModel @Inject constructor(
             } else {
                 state
             }
+        }
+    }
+
+    private inline fun updateExercise(
+        exerciseId: String,
+        crossinline transform: WorkoutExerciseUi.() -> WorkoutExerciseUi
+    ) {
+        updateContent {
+            copy(
+                exercises = exercises.map { exercise ->
+                    if (exercise.id == exerciseId) {
+                        exercise.transform()
+                    } else {
+                        exercise
+                    }
+                }
+            )
         }
     }
 }

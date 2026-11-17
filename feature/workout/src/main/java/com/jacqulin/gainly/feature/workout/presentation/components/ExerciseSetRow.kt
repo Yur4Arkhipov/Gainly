@@ -37,6 +37,7 @@ import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveBlue
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveWhite
+import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
 
@@ -78,7 +79,7 @@ fun ExerciseSetRow(
                 .size(56.dp)
                 .clip(CircleShape)
                 .background(
-                    if (isSelected) SelectedToRemoveBlue else White
+                    if (isSelected) SelectedToRemoveBlue else UnselectedAddWorkoutItem
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -110,15 +111,15 @@ fun ExerciseSetRow(
                 .height(56.dp)
                 .clip(RoundedCornerShape(32.dp))
                 .background(
-                    if (isSelected) SelectedToRemoveWhite else White
+                    if (isSelected) SelectedToRemoveWhite else UnselectedAddWorkoutItem
                 )
                 .focusRequester(repsFocusRequester),
             contentAlignment = Alignment.Center
         ) {
             BasicTextField(
                 value = if (set.reps <= 0) "" else set.reps.toString(),
-                onValueChange = {
-                    val newValue = it.filter { char -> char.isDigit() }
+                onValueChange = { value ->
+                    val newValue = value.filter { it.isDigit() }
                     onRepsChanged(newValue.toIntOrNull() ?: 0)
                 },
                 enabled = !isSelected && !selectionMode,
@@ -155,15 +156,15 @@ fun ExerciseSetRow(
                     .height(56.dp)
                     .clip(RoundedCornerShape(32.dp))
                     .background(
-                        if (isSelected) SelectedToRemoveWhite else White
+                        if (isSelected) SelectedToRemoveWhite else UnselectedAddWorkoutItem
                     )
                     .focusRequester(weightFocusRequester),
                 contentAlignment = Alignment.Center
             ) {
                 BasicTextField(
                     value = if (set.weight <= 0) "" else set.weight.toString(),
-                    onValueChange = {
-                        val newValue = it.filter { char -> char.isDigit() }
+                    onValueChange = { value ->
+                        val newValue = value.filter { it.isDigit() }
                         onWeightChanged(newValue.toIntOrNull() ?: 0)
                     },
                     enabled = !isSelected && !selectionMode,
