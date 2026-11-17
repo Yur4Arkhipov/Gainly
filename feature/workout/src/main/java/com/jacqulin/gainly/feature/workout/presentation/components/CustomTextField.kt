@@ -31,6 +31,7 @@ import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
+import com.jacqulin.gainly.core.designsystem.theme.Red
 import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
@@ -39,6 +40,7 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String? = null,
+    isError: Boolean = false,
     textColor: Color = Black,
     backgroundColor: Color = White,
     showEditIcon: Boolean = false,
@@ -97,7 +99,11 @@ fun CustomTextField(
                 Icon(
                     painter = painterResource(R.drawable.ic_edit),
                     contentDescription = "Редактировать",
-                    tint = textColor.copy(alpha = 0.5f),
+                    tint = if (isError) {
+                        Red
+                    } else {
+                        textColor.copy(alpha = 0.5f)
+                    },
                     modifier = Modifier.size(20.dp)
                 )
             }

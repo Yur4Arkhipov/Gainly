@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -26,6 +27,7 @@ import com.jacqulin.gainly.feature.workout.presentation.components.SaveButton
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesPage
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutInfoPage
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutTopBar
+import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEffect
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 
@@ -40,6 +42,16 @@ fun CreateWorkoutScreenRoute(
         initialPage = 0,
         pageCount = { 2 }
     )
+
+    LaunchedEffect(viewModel, pagerState) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is CreateWorkoutEffect.NavigateToPage -> {
+                    pagerState.animateScrollToPage(effect.page)
+                }
+            }
+        }
+    }
 
     when (val currentState = state) {
         is CreateWorkoutUiState.Loading -> {
@@ -101,6 +113,8 @@ fun CreateWorkoutScreen(
             when (page) {
                 0 -> WorkoutInfoPage(
                     state = state,
+                    isTitleError = state.invalidWorkoutTitle,
+                    isTimeError = state.invalidWorkoutTime,
                     onTypeSelected = { type ->
 //                        onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
                     },

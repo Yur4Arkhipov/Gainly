@@ -2,18 +2,24 @@ package com.jacqulin.gainly.feature.workout.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
+import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEffect
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 import com.jacqulin.gainly.feature.workout.presentation.util.dateFormatter
+import com.jacqulin.gainly.feature.workout.presentation.util.isValidTime
 import com.jacqulin.gainly.feature.workout.presentation.util.isValidTimeInput
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.UUID
@@ -31,6 +37,9 @@ class CreateWorkoutViewModel @Inject constructor(
         )
 
     val uiState = _uiState.asStateFlow()
+
+    private val _effects = MutableSharedFlow<CreateWorkoutEffect>()
+    val effects = _effects.asSharedFlow()
 
     fun onEvent(event: CreateWorkoutEvent) {
         when (event) {
@@ -60,7 +69,10 @@ class CreateWorkoutViewModel @Inject constructor(
     // Info page
     private fun updateWorkoutTitle(title: String) {
         updateContent {
-            copy(title = title)
+            copy(
+                title = title,
+                invalidWorkoutTitle = title.isBlank() && invalidWorkoutTitle
+            )
         }
     }
 
@@ -86,7 +98,11 @@ class CreateWorkoutViewModel @Inject constructor(
         }
 
         updateContent {
-            copy(time = formattedTime)
+            copy(
+                time = formattedTime,
+                invalidWorkoutTime = formattedTime.isValidTime().not() &&
+                        invalidWorkoutTime
+            )
         }
     }
 
@@ -278,44 +294,28 @@ class CreateWorkoutViewModel @Inject constructor(
 
     // Saving
     private fun saveWorkout() {
-        val content = _uiState.value as? CreateWorkoutUiState.Content
-            ?: return
+        val content = _uiState.value as? CreateWorkoutUiState.Content ?: return
 
-        val (invalidReps, invalidWeight) = validateSets(content.exercises)
+        val hasWorkoutInfoErrors = validateWorkoutInfo(content)
+        val hasExerciseErrors = validateExercises(content.exercises)
 
-        val invalidTitles = content.exercises
-            .filter { it.title.isBlank() }
-            .map { it.id }
-            .toSet()
-
-        if (
-            invalidReps.isNotEmpty() ||
-            invalidWeight.isNotEmpty() ||
-            invalidTitles.isNotEmpty()
-        ) {
-            updateContent {
-                copy(
-                    invalidRepsSetIds = invalidReps,
-                    invalidWeightSetIds = invalidWeight,
-                    invalidExerciseTitleIds = invalidTitles,
-                    exercises = exercises.map { exercise ->
-                        if (
-                            exercise.sets.any {
-                                it.id in invalidReps || it.id in invalidWeight
-                            }
-                        ) {
-                            exercise.copy(isExpanded = true)
-                        } else {
-                            exercise
-                        }
-                    }
-                )
+        when {
+            hasWorkoutInfoErrors -> {
+                viewModelScope.launch {
+                    _effects.emit(CreateWorkoutEffect.NavigateToPage(0))
+                }
+                return
             }
 
-            return
+            hasExerciseErrors -> {
+                viewModelScope.launch {
+                    _effects.emit(CreateWorkoutEffect.NavigateToPage(1))
+                }
+                return
+            }
         }
 
-        // TODO: создание тренировки
+        // Здесь выполняется сохранение тренировки.
     }
 
     // Utils
@@ -346,6 +346,56 @@ class CreateWorkoutViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun validateWorkoutInfo(
+        content: CreateWorkoutUiState.Content
+    ): Boolean {
+        val invalidTitle = content.title.isBlank()
+        val invalidTime = !content.time.isValidTime()
+
+        updateContent {
+            copy(
+                invalidWorkoutTitle = invalidTitle,
+                invalidWorkoutTime = invalidTime
+            )
+        }
+
+        return invalidTitle || invalidTime
+    }
+
+    private fun validateExercises(
+        exercises: List<WorkoutExerciseUi>
+    ): Boolean {
+        val (invalidReps, invalidWeight) = validateSets(exercises)
+
+        val invalidTitles = exercises
+            .filter { it.title.isBlank() }
+            .map { it.id }
+            .toSet()
+
+        updateContent {
+            copy(
+                invalidExerciseTitleIds = invalidTitles,
+                invalidRepsSetIds = invalidReps,
+                invalidWeightSetIds = invalidWeight,
+                exercises = exercises.map { exercise ->
+                    if (
+                        exercise.sets.any { set ->
+                            set.id in invalidReps || set.id in invalidWeight
+                        }
+                    ) {
+                        exercise.copy(isExpanded = true)
+                    } else {
+                        exercise
+                    }
+                }
+            )
+        }
+
+        return invalidTitles.isNotEmpty() ||
+                invalidReps.isNotEmpty() ||
+                invalidWeight.isNotEmpty()
     }
 
     private fun validateSets(

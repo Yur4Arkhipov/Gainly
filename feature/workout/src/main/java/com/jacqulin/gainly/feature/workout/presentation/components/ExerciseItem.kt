@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.Red
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveBlue
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveWhite
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
@@ -191,7 +192,7 @@ fun ExerciseItem(
                     painter = painterResource(R.drawable.ic_edit),
                     contentDescription = "Редактировать название",
                     tint = if (exercise.id in invalidExerciseTitleIds) {
-                        Color.Red
+                        Red
                     } else {
                         selectedColor.copy(alpha = 0.5f)
                     },

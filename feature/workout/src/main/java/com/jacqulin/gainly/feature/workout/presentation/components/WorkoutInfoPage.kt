@@ -20,6 +20,8 @@ import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
 @Composable
 fun WorkoutInfoPage(
     state: CreateWorkoutUiState.Content,
+    isTitleError: Boolean,
+    isTimeError: Boolean,
     onTypeSelected: (WorkoutType) -> Unit,
     onTitleChanged: (String) -> Unit,
     onDateChanged: (Long) -> Unit,
@@ -42,6 +44,7 @@ fun WorkoutInfoPage(
             label = "Название тренировки",
             value = state.title,
             onValueChange = onTitleChanged,
+            isError = isTitleError,
             textColor = state.selectedColor,
             showEditIcon = true,
             maxLines = 2,
@@ -67,6 +70,7 @@ fun WorkoutInfoPage(
                 label = "Время",
                 value = state.time,
                 showEditIcon = true,
+                isError = isTimeError,
                 textColor = state.selectedColor,
                 fontWeight = FontWeight.Bold,
                 onValueChange = onTimeChanged,
@@ -102,5 +106,7 @@ private fun WorkoutInfoStepPreview() {
         onDateChanged = {},
         onTimeChanged = {},
         onNoteChanged = {},
+        isTitleError = true,
+        isTimeError = true,
     )
 }

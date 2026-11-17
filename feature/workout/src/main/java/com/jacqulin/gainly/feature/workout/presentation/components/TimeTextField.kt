@@ -38,6 +38,7 @@ import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
+import com.jacqulin.gainly.core.designsystem.theme.Red
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.presentation.util.isValidTimeInput
 
@@ -48,6 +49,7 @@ fun TimeTextField(
     modifier: Modifier = Modifier,
     label: String? = null,
     showEditIcon: Boolean = false,
+    isError: Boolean = false,
     textColor: Color = Black,
     backgroundColor: Color = White,
     fontSize: TextUnit = 16.sp,
@@ -149,7 +151,11 @@ fun TimeTextField(
                 Icon(
                     painter = painterResource(R.drawable.ic_edit),
                     contentDescription = "Редактировать",
-                    tint = textColor.copy(alpha = 0.5f),
+                    tint = if (isError) {
+                        Red
+                    } else {
+                        textColor.copy(alpha = 0.5f)
+                    },
                     modifier = Modifier.size(20.dp)
                 )
             }

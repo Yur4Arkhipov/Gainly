@@ -29,3 +29,12 @@ internal fun String.isValidTimeInput(): Boolean {
 
     return true
 }
+
+internal fun String.isValidTime(): Boolean {
+    if (length != 5 || this[2] != ':') return false
+
+    val hours = take(2).toIntOrNull() ?: return false
+    val minutes = takeLast(2).toIntOrNull() ?: return false
+
+    return hours in 0..23 && minutes in 0..59
+}
