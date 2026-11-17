@@ -22,7 +22,7 @@ fun WorkoutInfoPage(
     state: CreateWorkoutUiState.Content,
     onTypeSelected: (WorkoutType) -> Unit,
     onTitleChanged: (String) -> Unit,
-    onDateChanged: (String) -> Unit,
+    onDateChanged: (Long) -> Unit,
     onTimeChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit
 ) {
@@ -55,15 +55,20 @@ fun WorkoutInfoPage(
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            CustomTextField(
+            DatePickerField(
                 label = "Дата",
                 value = state.date,
-                onValueChange = onDateChanged,
+                textColor = state.selectedColor,
+                fontWeight = FontWeight.Bold,
+                onDateSelected = onDateChanged,
                 modifier = Modifier.weight(1.8f)
             )
-            CustomTextField(
+            TimeTextField(
                 label = "Время",
                 value = state.time,
+                showEditIcon = true,
+                textColor = state.selectedColor,
+                fontWeight = FontWeight.Bold,
                 onValueChange = onTimeChanged,
                 modifier = Modifier.weight(1f)
             )

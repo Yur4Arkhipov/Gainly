@@ -102,7 +102,7 @@ fun CreateWorkoutScreen(
                 0 -> WorkoutInfoPage(
                     state = state,
                     onTypeSelected = { type ->
-                        onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
+//                        onEvent(CreateWorkoutEvent.OnWorkoutTypeChanged(type))
                     },
                     onTitleChanged = { title ->
                         onEvent(CreateWorkoutEvent.OnWorkoutTitleChanged(title))

@@ -7,7 +7,7 @@ sealed interface CreateWorkoutEvent {
     ): CreateWorkoutEvent
 
     data class OnDateChanged(
-        val date: String
+        val date: Long
     ): CreateWorkoutEvent
 
     data class OnTimeChanged(

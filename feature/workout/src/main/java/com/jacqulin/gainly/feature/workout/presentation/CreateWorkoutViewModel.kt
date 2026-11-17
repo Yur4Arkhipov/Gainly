@@ -8,10 +8,14 @@ import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiSta
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
+import com.jacqulin.gainly.feature.workout.presentation.util.dateFormatter
+import com.jacqulin.gainly.feature.workout.presentation.util.isValidTimeInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.Instant
+import java.time.ZoneOffset
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.String
@@ -23,7 +27,7 @@ class CreateWorkoutViewModel @Inject constructor(
 
     private val _uiState =
         MutableStateFlow<CreateWorkoutUiState>(
-            CreateWorkoutUiState.Content()
+            CreateWorkoutUiState.Content.initial()
         )
 
     val uiState = _uiState.asStateFlow()
@@ -58,15 +62,29 @@ class CreateWorkoutViewModel @Inject constructor(
         }
     }
 
-    private fun updateDate(date: String) {
+    private fun updateDate(dateMillis: Long) {
+        val date = Instant.ofEpochMilli(dateMillis)
+            .atZone(ZoneOffset.UTC)
+            .toLocalDate()
+            .format(dateFormatter)
+
         updateContent {
             copy(date = date)
         }
     }
 
     private fun updateTime(time: String) {
+        val digits = time.filter(Char::isDigit)
+
+        if (!digits.isValidTimeInput()) return
+
+        val formattedTime = when {
+            digits.length <= 2 -> digits
+            else -> "${digits.take(2)}:${digits.drop(2)}"
+        }
+
         updateContent {
-            copy(time = time)
+            copy(time = formattedTime)
         }
     }
 
