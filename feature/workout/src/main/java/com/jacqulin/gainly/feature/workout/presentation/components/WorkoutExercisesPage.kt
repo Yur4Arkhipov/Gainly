@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
@@ -67,7 +68,7 @@ fun WorkoutExercisesPage(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(40.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -76,8 +77,8 @@ fun WorkoutExercisesPage(
                 style = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp,
-                    lineHeight = 28.sp,
+                    fontSize = 22.sp,
+                    lineHeight = 22.sp,
                     letterSpacing = 0.sp,
                     color = state.selectedColor,
                     textAlign = TextAlign.Center
@@ -87,8 +88,8 @@ fun WorkoutExercisesPage(
             if (isSelectionMode) {
                 Box(
                     modifier = Modifier
-                        .height(40.dp)
-                        .widthIn(min = 80.dp)
+                        .height(30.dp)
+                        .widthIn(min = 60.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(SelectedToRemoveLightRed)
                         .clickable(onClick = onDeleteSelected),
@@ -159,6 +160,7 @@ fun WorkoutExercisesPage(
                 item {
                     AddButton(
                         text = "Добавить упражнение",
+                        contentColor = LightBlackTextColor,
                         onClick = onAddExercise
                     )
                 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
 import com.jacqulin.gainly.core.designsystem.theme.White
 
@@ -57,7 +58,7 @@ fun BodyweightToggleBlock(
                     lineHeight = 16.sp,
                     fontWeight = FontWeight.Medium
                 ),
-                color = Black
+                color = LightBlackTextColor
             )
         }
 

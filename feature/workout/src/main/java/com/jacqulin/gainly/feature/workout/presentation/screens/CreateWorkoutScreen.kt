@@ -3,7 +3,9 @@ package com.jacqulin.gainly.feature.workout.presentation.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -105,6 +107,8 @@ fun CreateWorkoutScreen(
             currentStep = pagerState.currentPage + 1,
             onBackClick = onBackClick,
         )
+
+        Spacer(Modifier.height(12.dp))
 
         HorizontalPager(
             state = pagerState,

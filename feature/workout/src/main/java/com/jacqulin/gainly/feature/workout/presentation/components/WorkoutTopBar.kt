@@ -30,6 +30,7 @@ import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.PrimaryBlue
 import com.jacqulin.gainly.core.designsystem.theme.White
 
@@ -41,10 +42,8 @@ fun WorkoutTopBar(
     onBackClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)) {
-
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -75,7 +74,7 @@ fun WorkoutTopBar(
                         text = title,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Black
+                        color = LightBlackTextColor
                     )
                     Text(
                         text = stepText,

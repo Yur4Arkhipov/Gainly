@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedAddWorkoutItem
 import com.jacqulin.gainly.core.designsystem.theme.White
@@ -113,7 +114,7 @@ fun ExerciseSetsContent(
                     text = "Сеты",
                     modifier = Modifier.width(56.dp),
                     textAlign = TextAlign.Center,
-                    color = Black,
+                    color = LightBlackTextColor,
                     fontSize = 12.sp
                 )
 
@@ -121,7 +122,7 @@ fun ExerciseSetsContent(
                     text = "Повторения",
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    color = Black,
+                    color = LightBlackTextColor,
                     fontSize = 12.sp
                 )
 
@@ -130,7 +131,7 @@ fun ExerciseSetsContent(
                         text = "Вес",
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        color = Black,
+                        color = LightBlackTextColor,
                         fontSize = 12.sp
                     )
                 }
@@ -166,6 +167,7 @@ fun ExerciseSetsContent(
                     text = "Добавить сет",
                     onClick = onAddSet,
                     containerColor = UnselectedAddWorkoutItem,
+                    contentColor = LightBlackTextColor
                 )
             }
         }
