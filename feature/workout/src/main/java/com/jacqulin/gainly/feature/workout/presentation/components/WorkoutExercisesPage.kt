@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.extensions.fadeScrollableVerticalEdges
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
 import com.jacqulin.gainly.core.designsystem.theme.White
@@ -108,11 +110,19 @@ fun WorkoutExercisesPage(
             }
         }
 
+        val listState = rememberLazyListState()
+
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .weight(1f)
+                .fadeScrollableVerticalEdges(
+                    listState = listState,
+                    fadeLength = 24.dp
+                ),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            overscrollEffect = null
         ) {
             items(
                 items = state.exercises,
