@@ -10,11 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -24,6 +30,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
+import com.jacqulin.gainly.core.designsystem.theme.VeryLightGrayColor
 import com.jacqulin.gainly.feature.workout.presentation.CreateWorkoutViewModel
 import com.jacqulin.gainly.feature.workout.presentation.components.SaveButton
 import com.jacqulin.gainly.feature.workout.presentation.components.WorkoutExercisesPage
@@ -45,32 +53,56 @@ fun CreateWorkoutScreenRoute(
         pageCount = { 2 }
     )
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(viewModel, pagerState) {
         viewModel.effects.collect { effect ->
             when (effect) {
                 is CreateWorkoutEffect.NavigateToPage -> {
                     pagerState.animateScrollToPage(effect.page)
                 }
+                is CreateWorkoutEffect.NavigateToBack -> {
+                    onBackClick()
+                }
+                is CreateWorkoutEffect.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(
+                        message = effect.message
+                    )
+                }
             }
         }
     }
 
-    when (val currentState = state) {
-        is CreateWorkoutUiState.Loading -> {
-            CircularProgressIndicator()
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = VeryLightGrayColor,
+                    contentColor = LightBlackTextColor,
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
         }
+    ) { innerPadding ->
+        when (val currentState = state) {
+            is CreateWorkoutUiState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-        is CreateWorkoutUiState.Content -> {
-            CreateWorkoutScreen(
-                state = currentState,
-                pagerState = pagerState,
-                onEvent = viewModel::onEvent,
-                onBackClick = onBackClick
-            )
-        }
+            is CreateWorkoutUiState.Content -> {
+                CreateWorkoutScreen(
+                    state = currentState,
+                    pagerState = pagerState,
+                    modifier = Modifier.padding(innerPadding),
+                    onEvent = viewModel::onEvent,
+                    onBackClick = onBackClick
+                )
+            }
 
-        is CreateWorkoutUiState.Error -> {
-            Text(currentState.message)
+            is CreateWorkoutUiState.Error -> {
+                Text(currentState.message)
+            }
         }
     }
 }
@@ -79,6 +111,7 @@ fun CreateWorkoutScreenRoute(
 fun CreateWorkoutScreen(
     state: CreateWorkoutUiState.Content,
     pagerState: PagerState,
+    modifier: Modifier = Modifier,
     onEvent: (CreateWorkoutEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -87,7 +120,7 @@ fun CreateWorkoutScreen(
     val isSelectionMode = state.selectedExerciseIds.isNotEmpty()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(GrayBackgroundMain)
             .pointerInput(Unit) {

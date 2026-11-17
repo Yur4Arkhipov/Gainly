@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.usecase.workout.CreateWorkoutUseCase
+import com.jacqulin.gainly.core.util.Result
+import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEffect
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutEvent
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutExerciseUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutSetUi
 import com.jacqulin.gainly.feature.workout.presentation.model.WorkoutType
+import com.jacqulin.gainly.feature.workout.presentation.model.toDomain
 import com.jacqulin.gainly.feature.workout.presentation.util.dateFormatter
 import com.jacqulin.gainly.feature.workout.presentation.util.isValidTime
 import com.jacqulin.gainly.feature.workout.presentation.util.isValidTimeInput
@@ -315,7 +318,24 @@ class CreateWorkoutViewModel @Inject constructor(
             }
         }
 
-        // Здесь выполняется сохранение тренировки.
+        val workout = content.toDomain()
+
+        viewModelScope.launch {
+            when (val result = createWorkoutUseCase(workout)) {
+                is Result.Success -> {
+                    Log.d("Workout", "Workout created: $result")
+                    _uiState.value = CreateWorkoutUiState.Content.initial()
+
+                    _effects.emit(CreateWorkoutEffect.NavigateToBack)
+                }
+
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    Log.e("Workout", "Failed to create workout: $message")
+                    _effects.emit(CreateWorkoutEffect.ShowSnackbar(message))
+                }
+            }
+        }
     }
 
     // Utils

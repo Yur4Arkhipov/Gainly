@@ -1,10 +1,16 @@
 package com.jacqulin.gainly.feature.workout.presentation.util
 
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-internal val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+internal val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu")
+
+internal val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+internal val apiDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss")
 
 internal fun String.toDateMillis(): Long {
     val date = LocalDate.parse(this, dateFormatter)
@@ -31,10 +37,17 @@ internal fun String.isValidTimeInput(): Boolean {
 }
 
 internal fun String.isValidTime(): Boolean {
-    if (length != 5 || this[2] != ':') return false
+    if (length != 5) return false
 
-    val hours = take(2).toIntOrNull() ?: return false
-    val minutes = takeLast(2).toIntOrNull() ?: return false
+    return runCatching {
+        LocalTime.parse(this, timeFormatter)
+    }.isSuccess
+}
 
-    return hours in 0..23 && minutes in 0..59
+internal fun String.toWorkoutDateTime(time: String): String {
+    val date = LocalDate.parse(this, dateFormatter)
+    val localTime = LocalTime.parse(time, timeFormatter)
+
+    return LocalDateTime.of(date, localTime)
+        .format(apiDateTimeFormatter)
 }

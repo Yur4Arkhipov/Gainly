@@ -113,7 +113,6 @@ object UseCaseModule {
         return CreateWorkoutUseCaseImpl(
             workoutRepository = repository,
             tokenStorage = tokenStorage,
-            clock = clock
         )
     }
 

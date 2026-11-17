@@ -2,6 +2,9 @@ package com.jacqulin.gainly.feature.workout.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import com.jacqulin.gainly.core.designsystem.theme.BlueWorkoutColor
+import com.jacqulin.gainly.core.domain.model.workout.Exercise
+import com.jacqulin.gainly.core.domain.model.workout.Workout
+import com.jacqulin.gainly.feature.workout.presentation.util.toWorkoutDateTime
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -39,4 +42,23 @@ sealed interface CreateWorkoutUiState {
     data class Error(
         val message: String
     ) : CreateWorkoutUiState
+}
+
+internal fun CreateWorkoutUiState.Content.toDomain(): Workout {
+    return Workout(
+        date = date.toWorkoutDateTime(time),
+        title = title.trim(),
+        exercises = exercises.map { exercise ->
+            Exercise(
+                title = exercise.title.trim(),
+                sets = exercise.sets.map { set ->
+                    com.jacqulin.gainly.core.domain.model.workout.Set(
+                        reps = set.reps,
+                        weight = set.weight,
+                        isOwnWeight = exercise.isBodyWeight
+                    )
+                }
+            )
+        }
+    )
 }
