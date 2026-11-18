@@ -3,12 +3,16 @@ package com.jacqulin.gainly.feature.history.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.usecase.history.GenerateWeekDaysUseCase
+import com.jacqulin.gainly.core.domain.usecase.history.GetWorkoutsForDateUseCase
+import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
+import com.jacqulin.gainly.feature.history.presentation.model.toCardUi
 import com.jacqulin.gainly.feature.history.presentation.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -16,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     generateWeekDaysUseCase: GenerateWeekDaysUseCase,
-//    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
+    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
 
 ) : ViewModel() {
 
@@ -39,56 +43,93 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is HistoryEvent.LoadWorkoutsForDate -> {
-//                    fetchWorkouts(event.date)
+                    fetchWorkouts(event.date)
                 }
             }
         }
     }
 
     private fun fetchAllWorkouts() {
-//        viewModelScope.launch {
+        viewModelScope.launch {
 //            val result = getMockWorkouts()
-//            _state.value = HistoryViewState(
-//                workouts = result,
-//                selectedDate = timeProvider.now()
-//            )
-//        }
-    }
-}
+            when (val result = getWorkoutsForDateUseCase(LocalDate.now())) {
+                is Result.Success -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            workouts = result.data.map { workout -> workout.toCardUi() },
+                            errorMessage = null
+                        )
+                    }
+                }
 
-//    private fun fetchWorkouts(date: LocalDate) {
-//        _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+                is Result.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.error.toString()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchWorkouts(date: LocalDate) {
+        _state.update { it.copy(isLoading = true, errorMessage = null) }
+
+        viewModelScope.launch {
+            try {
+                val result = getWorkoutsForDateUseCase(date)
+                when (result) {
+                    is Result.Success -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                workouts = result.data.map { workout -> workout.toCardUi() },
+                                errorMessage = null
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = result.error.toString()
+                            )
+                        }
+                    }
+                }
+//                when (result) {
+//                    is Result.Success -> {
+//                        _state.update {
+//                            it.copy(
+//                                isLoading = false,
+//                                workouts = result.data.toWorkoutCardUi(),
+//                                errorMessage = null
+//                            )
+//                        }
+//                    }
+//                    is Result.Error -> {
 //
-//        viewModelScope.launch {
-//            try {
-////                val result = getWorkoutsForDateUseCase(date)
-////                val result = getMockTrainingCards(date)
-////                when (result) {
-////                    is Result.Success -> {
-////                        _state.update {
-////                            it.copy(
-////                                isLoading = false,
-////                                workouts = result.data.toWorkoutCardUi(),
-////                                errorMessage = null
-////                            )
-////                        }
-////                    }
-////                }
+//                    }
+//                }
 //                _state.value = HistoryViewState(
 //                    selectedDate = date,
 //                    isLoading = false,
 //                    workouts = result
 //                )
-//            } catch (e: Exception) {
-//                _state.value = HistoryViewState(
-//                    isLoading = false,
-//                    selectedDate = date,
-//                    errorMessage = e.message ?: "Error fetching workouts"
-//                )
-//            }
-//        }
-//    }
-//}
+            } catch (e: Exception) {
+                _state.value = HistoryViewState(
+                    isLoading = false,
+                    selectedDate = date,
+                    errorMessage = e.message ?: "Error fetching workouts"
+                )
+            }
+        }
+    }
+}
 
 /*
 @HiltViewModel

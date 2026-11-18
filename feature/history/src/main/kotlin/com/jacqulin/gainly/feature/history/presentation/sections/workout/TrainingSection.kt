@@ -2,10 +2,7 @@ package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.feature.history.presentation.components.InfoRow
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
@@ -19,12 +16,20 @@ fun TrainingSection(
     ) {
         InfoRow(title = "Тренировки за сутки")
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            BalancedTrainingCards(
-                trainingCards = trainings
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            BalancedTrainingCards(
+//                trainingCards = trainings
+//            )
+//        }
+
+        trainings.forEach { workout ->
+            WorkoutCard(
+                workoutrTitle = workout.title,
+                exercises = workout.exercises,
+                onClick = { }
             )
         }
     }

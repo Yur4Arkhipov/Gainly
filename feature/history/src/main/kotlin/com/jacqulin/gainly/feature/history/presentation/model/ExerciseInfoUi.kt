@@ -1,7 +1,6 @@
 package com.jacqulin.gainly.feature.history.presentation.model
 
-data class WorkoutInfoUi(
+data class ExerciseInfoUi(
     val title: String,
-    val reps: String,
-    val weight: String
+    val sets: List<SetInfoUi>
 )

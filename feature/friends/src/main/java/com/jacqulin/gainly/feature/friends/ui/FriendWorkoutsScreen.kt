@@ -268,7 +268,7 @@ private fun ExpandableWorkoutCard(
                         .padding(top = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    WorkoutStat(label = "Упражнений", value = workout.exercises.size.toString())
+                    WorkoutStat(label = "Упражнений", value = workout.exercises.orEmpty().size.toString())
 
 //                    WorkoutStat(label = "Упражнений", value = workout.exerciseCount.toString())
 //
@@ -420,7 +420,7 @@ private fun WorkoutDetailsView(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                workout.exercises.forEach { exercise ->
+                workout.exercises.orEmpty().forEach { exercise ->
                     ExerciseItem(exercise = exercise)
                 }
             }
@@ -441,7 +441,7 @@ private fun ExerciseItem(exercise: Exercise) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = exercise.title,
+            text = exercise.title ?: "no title",
             style = TextStyle(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
