@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.workout.ui.components
+package com.jacqulin.gainly.feature.workout.presentation.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,15 +18,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
 fun AddButton(
     text: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.White,
-    contentColor: Color = Color.Black
+    containerColor: Color = White,
+    contentColor: Color = Black,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,

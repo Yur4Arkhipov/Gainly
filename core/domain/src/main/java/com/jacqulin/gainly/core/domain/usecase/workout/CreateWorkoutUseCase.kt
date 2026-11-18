@@ -6,8 +6,5 @@ import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.WorkoutError
 
 interface CreateWorkoutUseCase {
-    suspend operator fun invoke(
-        accessToken: String,
-        workout: Workout
-    ): Result<WorkoutId, WorkoutError>
+    suspend operator fun invoke(workout: Workout): Result<WorkoutId, WorkoutError>
 }

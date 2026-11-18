@@ -107,11 +107,11 @@ object UseCaseModule {
     @Provides
     fun provideCreateWorkoutUseCase(
         repository: WorkoutRepository,
-        clock: Clock
+        tokenStorage: TokenStorage,
     ): CreateWorkoutUseCase {
         return CreateWorkoutUseCaseImpl(
             workoutRepository = repository,
-            clock = clock
+            tokenStorage = tokenStorage,
         )
     }
 

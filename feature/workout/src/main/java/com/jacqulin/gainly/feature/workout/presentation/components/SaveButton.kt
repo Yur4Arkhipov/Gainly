@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.workout.ui.components
+package com.jacqulin.gainly.feature.workout.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +19,10 @@ import com.jacqulin.gainly.core.designsystem.theme.White
 
 @Composable
 fun SaveButton(
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = false,
     text: String = "Сохранить",
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
@@ -32,7 +33,8 @@ fun SaveButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = SaveWorkoutButtonContainerColor,
             contentColor = White
-        )
+        ),
+        enabled = enabled
     ) {
         Text(
             text = text,
