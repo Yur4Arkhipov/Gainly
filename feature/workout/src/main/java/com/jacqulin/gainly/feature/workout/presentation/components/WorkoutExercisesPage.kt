@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.extensions.fadeScrollableVerticalEdges
+import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
-import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.SelectedToRemoveLightRed
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.workout.presentation.model.CreateWorkoutUiState
@@ -89,7 +89,7 @@ fun WorkoutExercisesPage(
             if (isSelectionMode) {
                 Box(
                     modifier = Modifier
-                        .height(30.dp)
+                        .height(40.dp)
                         .widthIn(min = 60.dp)
                         .clip(RoundedCornerShape(32.dp))
                         .background(SelectedToRemoveLightRed)
@@ -168,7 +168,7 @@ fun WorkoutExercisesPage(
                     AddButton(
                         text = "Добавить упражнение",
                         modifier = Modifier.padding(bottom = 20.dp),
-                        contentColor = LightBlackTextColor,
+                        contentColor = Black,
                         onClick = onAddExercise
                     )
                 }

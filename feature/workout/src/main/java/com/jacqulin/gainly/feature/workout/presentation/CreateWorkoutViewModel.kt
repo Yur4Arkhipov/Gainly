@@ -321,6 +321,8 @@ class CreateWorkoutViewModel @Inject constructor(
         val workout = content.toDomain()
 
         viewModelScope.launch {
+            _uiState.value = CreateWorkoutUiState.Loading
+
             when (val result = createWorkoutUseCase(workout)) {
                 is Result.Success -> {
                     Log.d("Workout", "Workout created: $result")
@@ -332,6 +334,7 @@ class CreateWorkoutViewModel @Inject constructor(
                 is Result.Error -> {
                     val message = ErrorUiMapper.toMessage(result.error)
                     Log.e("Workout", "Failed to create workout: $message")
+                    _uiState.value = content
                     _effects.emit(CreateWorkoutEffect.ShowSnackbar(message))
                 }
             }
