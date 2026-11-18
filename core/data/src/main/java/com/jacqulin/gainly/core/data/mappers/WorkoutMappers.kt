@@ -26,7 +26,7 @@ fun WorkoutListItemDto.toDomain(): WorkoutListItem = WorkoutListItem(
     userId = this.userId,
     title = this.title,
     date = this.date,
-    exercises = this.exercises.map { it.toDomain() }
+    exercises = emptyList()
 )
 
 fun WorkoutListItem.toDto(): WorkoutListItemDto = WorkoutListItemDto(

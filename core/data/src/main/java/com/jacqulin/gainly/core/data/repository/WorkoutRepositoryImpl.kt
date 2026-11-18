@@ -13,7 +13,11 @@ import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
 import com.jacqulin.gainly.core.util.errors.WorkoutError
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class WorkoutRepositoryImpl @Inject constructor(
     private val workoutApiService: WorkoutApiService,
@@ -40,7 +44,7 @@ class WorkoutRepositoryImpl @Inject constructor(
         from: String,
         to: String,
         last: Int
-    ): Result<List<WorkoutListItem>, WorkoutError> {
+    ): Result<List<Workout>, WorkoutError> {
         return try {
             val response = workoutApiService.getWorkoutHistory(
                 accessToken = accessToken,
@@ -49,10 +53,33 @@ class WorkoutRepositoryImpl @Inject constructor(
                 last = last
             )
             Log.d("WorkoutRepository", "Get workout history response: $response")
-            val items = response.map { it.toDomain() }
 
-            Result.Success(items)
-        } catch (e: Throwable) {
+            val workouts = coroutineScope {
+                response.map { workoutListItemDto ->
+                    async {
+                        val workoutListItem = workoutListItemDto.toDomain()
+                        Log.d("WorkoutRepository", "workoutListItem: $workoutListItem")
+                        val workoutByIdDto = workoutApiService.getWorkoutById(
+                            accessToken = accessToken,
+                            workoutId = workoutListItem.workoutId
+                        )
+                        Log.d("WorkoutRepository", "workoutByIdDto: $workoutByIdDto")
+                        val workoutById = workoutByIdDto.toDomain()
+                        Log.d("WorkoutRepository", "workoutById: $workoutById")
+                        Workout(
+                            date = workoutListItem.date,
+                            title = workoutListItem.title,
+                            exercises = workoutById.exercises
+                        )
+                    }
+                }.awaitAll()
+            }
+
+            Result.Success(workouts)
+
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
             Log.d("WorkoutRepository", "Get workout history error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
         }

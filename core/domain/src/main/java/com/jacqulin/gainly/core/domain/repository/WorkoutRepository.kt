@@ -18,7 +18,7 @@ interface WorkoutRepository {
         from: String,
         to: String,
         last: Int
-    ): Result<List<WorkoutListItem>, WorkoutError>
+    ): Result<List<Workout>, WorkoutError>
 
     suspend fun getFriendWorkoutHistory(
         accessToken: String,
