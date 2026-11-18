@@ -1,6 +1,6 @@
 package com.jacqulin.gainly.core.data.remote.dto.workout
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,8 +15,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ExerciseListItemDto(
-    @SerialName("id") val exerciseId: String,
-    @SerialName("workoutId") val workoutId: String,
-    @SerialName("name") val title: String,
-    @SerialName("sets") val sets: SetListItemDto
+    @SerializedName("id") val exerciseId: String,
+    @SerializedName("workoutId") val workoutId: String,
+    @SerializedName("name") val title: String,
+    @SerializedName("sets") val sets: SetListItemDto
 )

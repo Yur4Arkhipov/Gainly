@@ -1,6 +1,6 @@
 package com.jacqulin.gainly.core.data.remote.dto.workout
 
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class SetDto(
-    @SerialName("reps") val reps: Int,
-    @SerialName("weight") val weight: Int,
-    @SerialName("isOwnWeight") val isOwnWeight: Boolean
+    @SerializedName("reps") val reps: Int,
+    @SerializedName("weight") val weight: Int,
+    @SerializedName("isOwnWeight") val isOwnWeight: Boolean
 )
