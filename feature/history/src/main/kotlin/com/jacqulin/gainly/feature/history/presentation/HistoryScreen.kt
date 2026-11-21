@@ -102,7 +102,10 @@ fun HistoryScreen(
                 onTodayClick = {
                     onEvent(HistoryEvent.TodayClicked)
                 },
-                onChooseAnotherDay = {}
+                onChooseAnotherDay = { showDatePicker = true },
+                onRetry = {
+                    onEvent(HistoryEvent.RetryLoading(state.selectedDate))
+                }
             )
         }
     }

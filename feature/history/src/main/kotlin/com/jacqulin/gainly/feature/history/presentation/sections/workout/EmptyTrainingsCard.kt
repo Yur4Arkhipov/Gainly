@@ -125,7 +125,8 @@ fun EmptyTrainingsCard(
                 style = TextStyle(
                     fontFamily = GoogleSansFontFamily,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = White
                 )
             )
         }

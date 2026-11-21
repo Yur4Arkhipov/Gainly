@@ -15,6 +15,7 @@ import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
 import com.jacqulin.gainly.feature.history.presentation.sections.workout.TrainingSection
 import com.jacqulin.gainly.feature.history.presentation.sections.workout.WorkoutCardShimmer
+import com.jacqulin.gainly.feature.history.presentation.sections.workout.WorkoutErrorContent
 import java.time.LocalDate
 
 @Composable
@@ -23,6 +24,7 @@ fun WorkoutsSection(
     selectedDate: LocalDate,
     onChooseAnotherDay: () -> Unit,
     onTodayClick: () -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -59,7 +61,12 @@ fun WorkoutsSection(
                     )
                 }
 
-                is WorkoutsUiState.Error -> {}
+                is WorkoutsUiState.Error -> {
+                    WorkoutErrorContent(
+                        errorCause = workoutsState.message,
+                        onRetry = onRetry
+                    )
+                }
             }
         }
     }
@@ -107,7 +114,8 @@ fun WorkoutSectionPreview() {
             ),
             selectedDate = LocalDate.now(),
             onTodayClick = {},
-            onChooseAnotherDay = {}
+            onChooseAnotherDay = {},
+            onRetry = {}
         )
     }
 }

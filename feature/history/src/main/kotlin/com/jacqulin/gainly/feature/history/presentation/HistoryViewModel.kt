@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.usecase.history.GenerateWeekDaysUseCase
 import com.jacqulin.gainly.core.domain.usecase.history.GetWorkoutsForDateUseCase
 import com.jacqulin.gainly.core.util.Result
+import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
@@ -47,17 +48,16 @@ class HistoryViewModel @Inject constructor(
     fun handleEvent(event: HistoryEvent) {
         viewModelScope.launch {
             when (event) {
-                is HistoryEvent.LoadWorkoutsForDate -> {
-                    fetchWorkoutsForDate(event.date)
-                }
                 is HistoryEvent.DateSelected -> {
                     selectDate(event.date)
                 }
-                is HistoryEvent.MonthSelected -> {
-//                    selectDate(event.date)
-                }
+
                 is HistoryEvent.TodayClicked -> {
                     selectDate(LocalDate.now())
+                }
+
+                is HistoryEvent.RetryLoading -> {
+                    fetchWorkoutsForDate(event.date)
                 }
             }
         }
@@ -100,10 +100,11 @@ class HistoryViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
+                        val message = ErrorUiMapper.toMessage(result.error)
                         _state.update {
                             it.copy(
                                 workoutsState = WorkoutsUiState.Error(
-                                    message = result.error.toString()
+                                    message = message
                                 )
                             )
                         }
