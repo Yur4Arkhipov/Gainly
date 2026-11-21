@@ -25,6 +25,8 @@ import com.jacqulin.gainly.feature.history.presentation.sections.calendar.Calend
 import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
 import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun HistoryScreen(
@@ -34,6 +36,7 @@ fun HistoryScreen(
 
     HistoryScreen(
         state = state,
+        onEvent = viewModel::handleEvent
     )
 }
 
@@ -43,6 +46,11 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     onEvent: (HistoryEvent) -> Unit = {},
 ) {
+    val russianLocale = Locale.forLanguageTag("ru-RU")
+    val month = state.selectedDate.month
+        .getDisplayName(TextStyle.FULL_STANDALONE, russianLocale)
+        .replaceFirstChar { it.titlecase(russianLocale) }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -59,13 +67,16 @@ fun HistoryScreen(
             CalendarSection(
                 days = state.calendarDays,
                 selectedDate = state.selectedDate,
-                month = "May",
-                year = "2026",
+                month = month,
+                year = state.selectedDate.year.toString(),
                 modifier = Modifier.padding(horizontal = 10.dp),
-                onDateSelected = {
+                onDateSelected = { date ->
+                    onEvent(HistoryEvent.DateSelected(date))
                 },
                 onMonthClick = {},
-                onTodayClick = {}
+                onTodayClick = {
+                    onEvent(HistoryEvent.TodayClicked)
+                }
             )
         }
 
