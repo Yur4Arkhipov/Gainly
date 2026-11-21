@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.component
+package com.jacqulin.gainly.feature.friends.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

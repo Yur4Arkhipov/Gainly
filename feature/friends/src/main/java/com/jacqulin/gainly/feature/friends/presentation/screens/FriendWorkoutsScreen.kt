@@ -1,6 +1,6 @@
 @file:Suppress("NewApi")
 
-package com.jacqulin.gainly.feature.friends.ui
+package com.jacqulin.gainly.feature.friends.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,7 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
@@ -55,7 +55,7 @@ import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.UiState
-import com.jacqulin.gainly.feature.friends.viewmodel.FriendWorkoutsViewModel
+import com.jacqulin.gainly.feature.friends.presentation.viewmodels.FriendWorkoutsViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

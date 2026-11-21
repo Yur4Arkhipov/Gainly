@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.viewmodel
+package com.jacqulin.gainly.feature.friends.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,6 @@ import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel

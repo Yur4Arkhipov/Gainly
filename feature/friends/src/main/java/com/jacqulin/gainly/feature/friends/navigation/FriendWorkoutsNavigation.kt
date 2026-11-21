@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.jacqulin.gainly.feature.friends.ui.FriendWorkoutsScreen
+import com.jacqulin.gainly.feature.friends.presentation.screens.FriendWorkoutsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

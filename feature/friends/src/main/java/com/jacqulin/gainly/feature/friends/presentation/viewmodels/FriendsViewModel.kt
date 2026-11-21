@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.viewmodel
+package com.jacqulin.gainly.feature.friends.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.ui
+package com.jacqulin.gainly.feature.friends.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,16 +21,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
-import com.jacqulin.gainly.feature.friends.component.FriendRow
+import com.jacqulin.gainly.feature.friends.presentation.components.FriendRow
 import com.jacqulin.gainly.feature.friends.presentation.components.FriendsTopBar
-import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
+import com.jacqulin.gainly.feature.friends.presentation.viewmodels.FriendsViewModel
 
 @Composable
 fun FriendsScreen(

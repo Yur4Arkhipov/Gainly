@@ -1,11 +1,11 @@
-package com.jacqulin.gainly.feature.friends.viewmodel
+package com.jacqulin.gainly.feature.friends.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jacqulin.gainly.core.domain.auth.TokenStorage
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.domain.usecase.workout.GetWorkoutByIdUseCase
 import com.jacqulin.gainly.core.util.Result
@@ -113,4 +113,3 @@ class FriendWorkoutsViewModel @Inject constructor(
         }
     }
 }
-
