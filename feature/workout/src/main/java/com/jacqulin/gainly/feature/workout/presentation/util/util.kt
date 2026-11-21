@@ -3,19 +3,17 @@ package com.jacqulin.gainly.feature.workout.presentation.util
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 internal val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu")
 
 internal val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-internal val apiDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss")
-
 internal fun String.toDateMillis(): Long {
     val date = LocalDate.parse(this, dateFormatter)
 
-    return date.atStartOfDay(ZoneOffset.UTC)
+    return date.atStartOfDay(ZoneId.systemDefault())
         .toInstant()
         .toEpochMilli()
 }
@@ -49,5 +47,7 @@ internal fun String.toWorkoutDateTime(time: String): String {
     val localTime = LocalTime.parse(time, timeFormatter)
 
     return LocalDateTime.of(date, localTime)
-        .format(apiDateTimeFormatter)
+        .atZone(ZoneId.systemDefault())
+        .toInstant()
+        .toString()
 }
