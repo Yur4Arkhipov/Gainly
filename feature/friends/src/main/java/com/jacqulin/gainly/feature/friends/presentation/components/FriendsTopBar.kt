@@ -1,24 +1,34 @@
-package com.jacqulin.gainly.feature.friends.component
+package com.jacqulin.gainly.feature.friends.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Black
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
+import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.core.util.auth.components.CustomOutlinedTextField
 
@@ -44,7 +54,9 @@ fun FriendsTopBar(
                     bottomEnd = 40.dp
                 )
             )
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 10.dp)
+            .padding(top = 6.dp)
+            .padding(bottom = 16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -58,38 +70,35 @@ fun FriendsTopBar(
             )
 
             if (showAddFriendsButton) {
-                IconButton(
+                AddFriendsButton(
+                    requestsCount = 3,
                     onClick = onAddFriendsClick,
                     modifier = Modifier.align(Alignment.CenterEnd)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_add_friends),
-                        contentDescription = "Add friends",
-                    )
-                }
+                )
             }
 
             if (showBackButton) {
-                IconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = "Go back",
-                    )
-                }
+                Icon(
+                    painter = painterResource(R.drawable.ic_back_simple),
+                    contentDescription = "Назад",
+                    tint = GrayIconColor,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.CenterStart)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = onBackClick
+                        )
+                )
             }
         }
 
         Spacer(Modifier.height(8.dp))
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
-
             CustomOutlinedTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
@@ -102,7 +111,28 @@ fun FriendsTopBar(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+}
 
-        Spacer(Modifier.height(16.dp))
+@Preview
+@Composable
+fun FriendsTopBarPreview() {
+    GainlyTheme {
+        Column(modifier = Modifier.background(LightGrayColor)) {
+            FriendsTopBar(
+                text = "Друзья",
+                textStyle = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Black
+                ),
+                searchQuery = "",
+                onSearchQueryChange = {},
+                showBackButton = true,
+                showAddFriendsButton = true,
+                onAddFriendsClick = {},
+                onBackClick = {}
+            )
+        }
     }
 }

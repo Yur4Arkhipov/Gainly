@@ -29,7 +29,7 @@ import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.feature.friends.component.FriendRow
-import com.jacqulin.gainly.feature.friends.component.FriendsTopBar
+import com.jacqulin.gainly.feature.friends.presentation.components.FriendsTopBar
 import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
 
 @Composable
@@ -111,7 +111,7 @@ fun FriendsScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 10.dp)
         ) {
             when {
 //                uiState.isSearching && uiState.friends.isEmpty() -> {

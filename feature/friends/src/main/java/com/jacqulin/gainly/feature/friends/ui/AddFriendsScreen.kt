@@ -28,7 +28,7 @@ import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.feature.friends.component.FriendRow
-import com.jacqulin.gainly.feature.friends.component.FriendsTopBar
+import com.jacqulin.gainly.feature.friends.presentation.components.FriendsTopBar
 import com.jacqulin.gainly.feature.friends.viewmodel.AddFriendsViewModel
 
 @Composable
