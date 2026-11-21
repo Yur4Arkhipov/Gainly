@@ -1,16 +1,19 @@
 package com.jacqulin.gainly.core.domain.usecase.history
 
+import com.jacqulin.gainly.core.domain.auth.TokenStorage
 import com.jacqulin.gainly.core.domain.model.workout.Exercise
 import com.jacqulin.gainly.core.domain.model.workout.Set
 import com.jacqulin.gainly.core.domain.model.workout.Workout
+import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.WorkoutError
+import kotlinx.coroutines.flow.firstOrNull
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
-/*class GetWorkoutsForDateUseCase @Inject constructor(
+class GetWorkoutsForDateUseCase @Inject constructor(
     val repository: WorkoutRepository,
     val tokenStorage: TokenStorage
 ) {
@@ -23,32 +26,23 @@ import javax.inject.Inject
         return repository.getWorkoutHistory(
             accessToken = "Bearer $accessToken",
             from = date.minusDays(0).toString(),
-//            from = LocalDate.of(2024, 1, 1).toString(),
             to = date.plusDays(1).toString(),
-//            to = LocalDate.now().plusDays(1).toString(),
             last = 20
         )
     }
-}*/
+}
 
-
-class GetWorkoutsForDateUseCase @Inject constructor(
+/*class GetWorkoutsForDateUseCase @Inject constructor(
 
 ) {
     suspend operator fun invoke(date: LocalDate): Result<List<Workout>, WorkoutError> {
         return getWorkouts(date)
     }
-}
+}*/
 
 fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
     val res = when (date.dayOfWeek) {
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY,
-        DayOfWeek.WEDNESDAY -> listOf(
+        DayOfWeek.MONDAY -> listOf(
             createWorkout(
                 date = date,
                 title = "Тренировка верхней части тела",
@@ -118,6 +112,8 @@ fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
                     )
                 ),
             ),
+        )
+        DayOfWeek.TUESDAY -> listOf(
             createWorkout(
                 title = "Вечерняя тренировка",
                 date = date,
@@ -138,6 +134,9 @@ fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
                     )
                 )
             ),
+        )
+        DayOfWeek.THURSDAY,
+        DayOfWeek.FRIDAY -> listOf(
             createWorkout(
                 title = "Кардио",
                 date = date,
@@ -162,22 +161,22 @@ fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
                 title = "Тренировка ног",
                 date = date,
                 exercises = listOf(
-                   createExercise(
-                       "Приседания",
+                    createExercise(
+                        "Приседания",
                         listOf(
-                           createSet(15, 40, false),
+                            createSet(15, 40, false),
                             createSet(12, 50, false),
                             createSet(10, 60, false)
                         )
-                   ),
-                   createExercise(
-                       "Выпады",
+                    ),
+                    createExercise(
+                        "Выпады",
                         listOf(
                             createSet(12, 10, false),
                             createSet(12, 10, false),
                             createSet(10, 15, false)
                         )
-                   )
+                    )
                 )
             ),
             createWorkout(
@@ -188,17 +187,17 @@ fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
                         title = "Подтягивания",
                         sets = listOf(
                             createSet(12, 1),
-                                createSet(10, 2),
-                                createSet(8, 3)
-                            )
+                            createSet(10, 2),
+                            createSet(8, 3)
+                        )
                     ),
                     createExercise(
                         title = "Отжимания",
                         sets = listOf(
                             createSet(20, 1),
                             createSet(25,  2),
-                                createSet(20,  3)
-                            )
+                            createSet(20,  3)
+                        )
                     ),
                     createExercise(
                         title = "Приседания",
@@ -219,6 +218,10 @@ fun getWorkouts(date: LocalDate): Result<List<Workout>, WorkoutError> {
                     )
                 )
             ),
+        )
+        DayOfWeek.SATURDAY,
+        DayOfWeek.SUNDAY,
+        DayOfWeek.WEDNESDAY -> listOf(
             createWorkout(
                 title = "Вечерняя тренировка",
                 date = date,

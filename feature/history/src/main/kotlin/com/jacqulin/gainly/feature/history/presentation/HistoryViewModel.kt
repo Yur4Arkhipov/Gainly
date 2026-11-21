@@ -7,12 +7,14 @@ import com.jacqulin.gainly.core.domain.usecase.history.GetWorkoutsForDateUseCase
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
 import com.jacqulin.gainly.feature.history.presentation.model.toCardUi
 import com.jacqulin.gainly.feature.history.presentation.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -28,13 +30,13 @@ class HistoryViewModel @Inject constructor(
     private val initialDate = LocalDate.now()
 
     private val _state = MutableStateFlow(
-        value = HistoryViewState(
-            calendarDays = generateWeekDaysUseCase(initialDate).map { it.toUi() },
+        HistoryViewState(
             selectedDate = initialDate,
-            isLoading = true
+            calendarDays = generateWeekDaysUseCase(initialDate)
+                .map { it.toUi() }
         )
     )
-    val state: StateFlow<HistoryViewState> = _state
+    val state: StateFlow<HistoryViewState> = _state.asStateFlow()
 
     init {
         fetchWorkoutsForDate(initialDate)
@@ -80,10 +82,7 @@ class HistoryViewModel @Inject constructor(
 
         fetchJob = viewModelScope.launch {
             _state.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
+                it.copy(workoutsState = WorkoutsUiState.Loading)
             }
 
             try {
@@ -91,11 +90,11 @@ class HistoryViewModel @Inject constructor(
                     is Result.Success -> {
                         _state.update {
                             it.copy(
-                                isLoading = false,
-                                workouts = result.data.map { workout ->
-                                    workout.toCardUi()
-                                },
-                                errorMessage = null
+                                workoutsState = WorkoutsUiState.Success(
+                                    workouts = result.data.map { workout ->
+                                        workout.toCardUi()
+                                    }
+                                )
                             )
                         }
                     }
@@ -103,8 +102,9 @@ class HistoryViewModel @Inject constructor(
                     is Result.Error -> {
                         _state.update {
                             it.copy(
-                                isLoading = false,
-                                errorMessage = result.error.toString()
+                                workoutsState = WorkoutsUiState.Error(
+                                    message = result.error.toString()
+                                )
                             )
                         }
                     }
@@ -114,8 +114,9 @@ class HistoryViewModel @Inject constructor(
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Error fetching workouts"
+                        workoutsState = WorkoutsUiState.Error(
+                            message = e.message ?: "Error fetching workouts"
+                        )
                     )
                 }
             }

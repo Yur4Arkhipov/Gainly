@@ -21,6 +21,7 @@ import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
 import com.jacqulin.gainly.feature.history.presentation.sections.calendar.CalendarSection
 import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
 import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
@@ -82,14 +83,19 @@ fun HistoryScreen(
 
         item {
             WorkoutsSection(
-                workouts = state.workouts,
+                workoutsState = state.workoutsState,
+                selectedDate = state.selectedDate,
                 modifier = Modifier
                     .fillParentMaxSize()
                     .background(
                         color = LightGrayColor,
                         shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                     )
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 10.dp),
+                onTodayClick = {
+                    onEvent(HistoryEvent.TodayClicked)
+                },
+                onChooseAnotherDay = {}
             )
         }
     }
@@ -102,34 +108,36 @@ fun HistoryScreenPreview() {
         HistoryScreen(
             state = HistoryViewState(
                 selectedDate = LocalDate.now(),
-                workouts = listOf(
-                    WorkoutCardUi(
-                        id = "1",
-                        title = "Тренировка верхней части тела",
-                        date = "19.08.2008",
-                        exercises = listOf(
-                            ExerciseInfoUi(
-                                "Жим лёжа",
-                                listOf(
-                                    SetInfoUi(12, 40, false),
-                                    SetInfoUi(10, 50, false),
-                                    SetInfoUi(8, 60, false)
-                                )
-                            ),
-                            ExerciseInfoUi(
-                                "Тяга штанги",
-                                listOf(
-                                    SetInfoUi(12, 30, false),
-                                    SetInfoUi(10, 40, false),
-                                    SetInfoUi(10, 40, false)
-                                )
-                            ),
-                            ExerciseInfoUi(
-                                "Подтягивания",
-                                listOf(
-                                    SetInfoUi(10, 1, isOwnWeight = true),
-                                    SetInfoUi(8, 2, isOwnWeight = true),
-                                    SetInfoUi(6, 3, isOwnWeight = true)
+                workoutsState = WorkoutsUiState.Success(
+                    listOf(
+                        WorkoutCardUi(
+                            id = "1",
+                            title = "Тренировка верхней части тела",
+                            date = "19.08.2008",
+                            exercises = listOf(
+                                ExerciseInfoUi(
+                                    "Жим лёжа",
+                                    listOf(
+                                        SetInfoUi(12, 40, false),
+                                        SetInfoUi(10, 50, false),
+                                        SetInfoUi(8, 60, false)
+                                    )
+                                ),
+                                ExerciseInfoUi(
+                                    "Тяга штанги",
+                                    listOf(
+                                        SetInfoUi(12, 30, false),
+                                        SetInfoUi(10, 40, false),
+                                        SetInfoUi(10, 40, false)
+                                    )
+                                ),
+                                ExerciseInfoUi(
+                                    "Подтягивания",
+                                    listOf(
+                                        SetInfoUi(10, 1, isOwnWeight = true),
+                                        SetInfoUi(8, 2, isOwnWeight = true),
+                                        SetInfoUi(6, 3, isOwnWeight = true)
+                                    )
                                 )
                             )
                         )
