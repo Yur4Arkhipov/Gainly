@@ -47,8 +47,11 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 
-# Desugar
-desugar = "2.1.5"
+# Desugaring
+desugaring = "2.1.5"
+
+# Calendar
+calendar = "2.10.1"
 
 [libraries]
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
@@ -99,8 +102,11 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 
-# Desugare
-desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
+# Desugaring
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugaring" }
+
+# Calendar
+calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "calendar" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

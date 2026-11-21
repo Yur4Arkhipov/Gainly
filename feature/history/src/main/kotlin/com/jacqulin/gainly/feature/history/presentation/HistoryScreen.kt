@@ -8,6 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +26,7 @@ import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
 import com.jacqulin.gainly.feature.history.presentation.sections.calendar.CalendarSection
+import com.jacqulin.gainly.feature.history.presentation.sections.calendar.HistoryDatePickerSheet
 import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
 import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
 import java.time.LocalDate
@@ -47,16 +51,19 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     onEvent: (HistoryEvent) -> Unit = {},
 ) {
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+
     val russianLocale = Locale.forLanguageTag("ru-RU")
     val month = state.selectedDate.month
         .getDisplayName(TextStyle.FULL_STANDALONE, russianLocale)
         .replaceFirstChar { it.titlecase(russianLocale) }
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(White),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        overscrollEffect = null
     ) {
         item {
             HistoryTopBar(
@@ -74,7 +81,7 @@ fun HistoryScreen(
                 onDateSelected = { date ->
                     onEvent(HistoryEvent.DateSelected(date))
                 },
-                onMonthClick = {},
+                onMonthClick = { showDatePicker = true },
                 onTodayClick = {
                     onEvent(HistoryEvent.TodayClicked)
                 }
@@ -98,6 +105,17 @@ fun HistoryScreen(
                 onChooseAnotherDay = {}
             )
         }
+    }
+
+    if (showDatePicker) {
+        HistoryDatePickerSheet(
+            selectedDate = state.selectedDate,
+            onDismiss = { showDatePicker = false },
+            onConfirm = { date ->
+                onEvent(HistoryEvent.DateSelected(date))
+                showDatePicker = false
+            }
+        )
     }
 }
 

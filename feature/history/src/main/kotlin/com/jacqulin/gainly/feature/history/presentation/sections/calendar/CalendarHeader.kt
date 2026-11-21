@@ -69,13 +69,6 @@ fun CalendarHeader(
                     lineHeight = 22.sp
                 )
             }
-
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_down),
-                contentDescription = null,
-                tint = Black,
-                modifier = Modifier.size(20.dp)
-            )
         }
 
         Box(
