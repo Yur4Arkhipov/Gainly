@@ -1,72 +1,79 @@
 package com.jacqulin.gainly.feature.friends.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jacqulin.gainly.core.domain.auth.TokenStorage
-import com.jacqulin.gainly.core.domain.model.friends.FriendData
-import com.jacqulin.gainly.core.domain.repository.FriendsRepository
+import com.jacqulin.gainly.core.domain.usecase.friends.ObserveFriendsUseCase
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEffect
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEvent
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
-    private val repository: FriendsRepository,
-    private val tokenStorage: TokenStorage,
+    private val observeFriendsUseCase: ObserveFriendsUseCase,
 ) : ViewModel() {
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
+    private val _uiState = MutableStateFlow(FriendsUiState())
+    val uiState = _uiState.asStateFlow()
 
-//    val friends: StateFlow<List<FriendData>> =
-//        repository.observeFriends()
-//            .stateIn(
-//                viewModelScope,
-//                SharingStarted.WhileSubscribed(5000),
-//                emptyList()
-//            )
+    private val _effects = Channel<FriendsEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
-    fun syncFriends() {
-        viewModelScope.launch {
-            val token = tokenStorage.tokens.firstOrNull()?.accessToken ?: return@launch
-            try {
-                val remoteFriends = repository.getFriends(token)
-                repository.syncFriends(remoteFriends.friends)
-                Log.d("Friends VM", "friends synced")
-            } catch (e: Exception) {
-                Log.e("Friends VM", "friends sync error: $e")
+    init {
+        observeFriends()
+    }
+
+    fun onEvent(event: FriendsEvent) {
+        when (event) {
+            is FriendsEvent.SearchQueryChanged -> {
+                _uiState.update {
+                    it.copy(searchQuery = event.query)
+                }
             }
+
+            FriendsEvent.AddFriendsClicked -> navigateToAddFriends()
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val filteredFriends: StateFlow<List<FriendData>> =
-        _searchQuery
+    private fun observeFriends() {
+        _uiState
+            .map { it.searchQuery }
             .debounce(300.milliseconds)
             .distinctUntilChanged()
             .flatMapLatest { query ->
-                repository.observeFriends(query)
+                observeFriendsUseCase(query)
             }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                emptyList()
-            )
+            .onEach { friends ->
+                _uiState.update {
+                    it.copy(
+                        friends = friends,
+                        isLoading = false
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
-    fun onSearchQueryChange(newQuery: String) {
-        _searchQuery.value = newQuery
+    private fun navigateToAddFriends() {
+        viewModelScope.launch {
+            _effects.send(FriendsEffect.NavigateToAddFriends)
+        }
     }
 }
