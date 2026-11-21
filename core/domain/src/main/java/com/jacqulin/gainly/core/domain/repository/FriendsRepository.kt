@@ -10,14 +10,15 @@ interface FriendsRepository {
     suspend fun getFriends(accessToken: String): FriendsData
     suspend fun getUsers(accessToken: String, nickname: String): UsersData
     suspend fun sendFriendship(accessToken: String, nickname: String)
-    fun searchFriendsLocal(query: String): Flow<List<FriendData>>
     suspend fun saveFriendsLocal(friends: List<FriendData>)
-    fun observeFriendsLocal(): Flow<List<FriendData>>
-    suspend fun syncFriends(remote: List<FriendData>)
     suspend fun getPendingUsers(accessToken: String): PendingUsersData
     suspend fun respondForPendingUser(
         accessToken: String,
         friendshipId: String,
         accept: Boolean
     )
+
+    // Offline-first methods
+    fun observeFriends(query: String): Flow<List<FriendData>>
+    suspend fun syncFriends(remote: List<FriendData>)
 }

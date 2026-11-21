@@ -1,5 +1,7 @@
 package com.jacqulin.gainly.navigation
 
+import com.jacquin.gainly.feature.profile.presentation.navigation.ProfileBaseRoute
+import com.jacquin.gainly.feature.profile.presentation.navigation.ProfileRoute
 import com.jacqulin.gainly.core.designsystem.icon.AppIcons
 import com.jacqulin.gainly.feature.friends.navigation.FriendsBaseRoute
 import com.jacqulin.gainly.feature.friends.navigation.FriendsRoute
@@ -35,8 +37,6 @@ enum class TopLevelDestination(
         icon = AppIcons.History,
             iconTextId = "History",
             titleText = "History",
-//        route = HistoryRoute::class,
-//        baseRoute = HistoryBaseRoute::class
             route = HistoryRoute::class,
             baseRoute = HistoryBaseRoute::class
     ),
@@ -44,9 +44,7 @@ enum class TopLevelDestination(
         icon = AppIcons.Profile,
         iconTextId = "Profile",
         titleText = "Profile",
-//        route = ProfileRoute::class,
-//        baseRoute = ProfileBaseRoute::class
-        route = FriendsRoute::class,
-        baseRoute = FriendsBaseRoute::class
+        route = ProfileRoute::class,
+        baseRoute = ProfileBaseRoute::class
     )
 }

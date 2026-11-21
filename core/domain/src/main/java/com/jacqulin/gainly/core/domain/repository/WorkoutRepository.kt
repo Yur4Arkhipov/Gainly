@@ -1,7 +1,7 @@
 package com.jacqulin.gainly.core.domain.repository
 
+import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutData
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.Result
@@ -10,7 +10,7 @@ import com.jacqulin.gainly.core.util.errors.WorkoutError
 interface WorkoutRepository {
     suspend fun createWorkout(
         accessToken: String,
-        workout: WorkoutData
+        workout: Workout
     ): Result<WorkoutId, WorkoutError>
 
     suspend fun getWorkoutHistory(
@@ -18,7 +18,7 @@ interface WorkoutRepository {
         from: String,
         to: String,
         last: Int
-    ): Result<List<WorkoutListItem>, WorkoutError>
+    ): Result<List<Workout>, WorkoutError>
 
     suspend fun getFriendWorkoutHistory(
         accessToken: String,

@@ -2,11 +2,9 @@ package com.jacqulin.gainly.mainapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -14,6 +12,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.jacquin.gainly.feature.profile.presentation.navigation.navigateToProfile
 import com.jacqulin.gainly.feature.friends.navigation.navigateToFriends
 import com.jacqulin.gainly.feature.history.navigation.navigateToHistory
 import com.jacqulin.gainly.feature.home.navigation.navigateToHome
@@ -53,12 +52,6 @@ class AppState(
 
 ) {
     private val previousDestination = mutableStateOf<NavDestination?>(null)
-
-    var showAddWorkoutSheet by mutableStateOf(false)
-
-    fun showAddWorkoutSheet() {
-        showAddWorkoutSheet = true
-    }
 
     val currentDestination: NavDestination?
         @Composable get() {
@@ -103,7 +96,7 @@ class AppState(
                 TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
                 TopLevelDestination.FRIENDS -> navController.navigateToFriends(topLevelNavOptions)
                 TopLevelDestination.HISTORY -> navController.navigateToHistory(topLevelNavOptions)
-                TopLevelDestination.PROFILE -> navController.navigateToFriends(topLevelNavOptions)
+                TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
             }
         }
     }

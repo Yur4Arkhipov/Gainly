@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.data.repository
 
+import android.util.Log
 import com.jacqulin.gainly.core.data.mappers.toUsersData
 import com.jacqulin.gainly.core.data.local.dao.FriendDao
 import com.jacqulin.gainly.core.data.local.entity.FriendEntity
@@ -60,12 +61,6 @@ class FriendsRepositoryImpl(
         )
     }
 
-    override fun searchFriendsLocal(query: String): Flow<List<FriendData>> {
-        return friendDao.searchFriends(query).map { list ->
-            list.map { it.toDomain() }
-        }
-    }
-
     override suspend fun saveFriendsLocal(friends: List<FriendData>) {
         val entities = friends.map { friend ->
             FriendEntity(
@@ -77,8 +72,11 @@ class FriendsRepositoryImpl(
         friendDao.insertFriends(entities)
     }
 
-    override fun observeFriendsLocal(): Flow<List<FriendData>> {
-        return friendDao.observeFriends().map { entities ->
+    // Offline-first method
+
+    override fun observeFriends(query: String): Flow<List<FriendData>> {
+        Log.d("FriendsRepository", "observeFriends called")
+        return friendDao.observeFriends(query).map { entities ->
             entities.map { it.toDomain() }
         }
     }

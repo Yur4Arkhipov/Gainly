@@ -9,8 +9,10 @@ import com.jacqulin.gainly.core.domain.model.friends.UserData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +25,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class AddFriendsViewModel @Inject constructor(
@@ -68,10 +72,14 @@ class AddFriendsViewModel @Inject constructor(
 
     fun sendFriendRequest(username: String) {
         viewModelScope.launch {
+            val startThread = Thread.currentThread().name
+            Log.d("FRIEND_REQUEST", "[START] Поток: $startThread")
+
             val authData = tokenStorage.tokens.firstOrNull()
             val token = authData?.accessToken ?: return@launch
 
             try {
+                delay(2000.milliseconds)
                 repository.sendFriendship(token, username)
                 Log.d("FRIEND_REQUEST", "Friend request sent to $username")
             } catch (e: Exception) {
@@ -79,6 +87,27 @@ class AddFriendsViewModel @Inject constructor(
             }
         }
     }
+
+//    fun sendFriendRequest(username: String) {
+//        viewModelScope.launch {
+//            val startThread = Thread.currentThread().name
+//            Log.d("FRIEND_REQUEST", "[START] Поток: $startThread")
+//
+//            val authData = tokenStorage.tokens.firstOrNull()
+//            val token = authData?.accessToken ?: return@launch
+//
+//            try {
+//                withContext(Dispatchers.IO) {
+//                    val intoThreadName = Thread.currentThread().name
+//                    Log.d("FRIEND_REQUEST", "Перед вызовом repository: $intoThreadName")
+//                    repository.sendFriendship(token, username)
+//                }
+//                Log.d("FRIEND_REQUEST", "Friend request sent to $username")
+//            } catch (e: Exception) {
+//                Log.e("FRIEND_REQUEST", "Error sending friend request: $e")
+//            }
+//        }
+//    }
 
     fun loadPendingRequests() {
         viewModelScope.launch {
