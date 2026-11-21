@@ -16,8 +16,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
+import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
+import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
+import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import com.jacqulin.gainly.feature.history.presentation.sections.calendar.CalendarSection
 import com.jacqulin.gainly.feature.history.presentation.sections.main.HistoryTopBar
 import com.jacqulin.gainly.feature.history.presentation.sections.main.WorkoutsSection
@@ -40,9 +43,6 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     onEvent: (HistoryEvent) -> Unit = {},
 ) {
-//    val workouts = getMockTrainingCards(LocalDate.now())
-//    Log.d("HistoryScreen", "workouts: $workouts")
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -73,6 +73,7 @@ fun HistoryScreen(
             WorkoutsSection(
                 workouts = state.workouts,
                 modifier = Modifier
+                    .fillParentMaxSize()
                     .background(
                         color = LightGrayColor,
                         shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
@@ -91,8 +92,37 @@ fun HistoryScreenPreview() {
             state = HistoryViewState(
                 selectedDate = LocalDate.now(),
                 workouts = listOf(
-//                    WorkoutCardUi(),
-//                    WorkoutCardUi()
+                    WorkoutCardUi(
+                        id = "1",
+                        title = "Тренировка верхней части тела",
+                        date = "19.08.2008",
+                        exercises = listOf(
+                            ExerciseInfoUi(
+                                "Жим лёжа",
+                                listOf(
+                                    SetInfoUi(12, 40, false),
+                                    SetInfoUi(10, 50, false),
+                                    SetInfoUi(8, 60, false)
+                                )
+                            ),
+                            ExerciseInfoUi(
+                                "Тяга штанги",
+                                listOf(
+                                    SetInfoUi(12, 30, false),
+                                    SetInfoUi(10, 40, false),
+                                    SetInfoUi(10, 40, false)
+                                )
+                            ),
+                            ExerciseInfoUi(
+                                "Подтягивания",
+                                listOf(
+                                    SetInfoUi(10, 1, isOwnWeight = true),
+                                    SetInfoUi(8, 2, isOwnWeight = true),
+                                    SetInfoUi(6, 3, isOwnWeight = true)
+                                )
+                            )
+                        )
+                    )
                 )
             )
         )

@@ -24,7 +24,6 @@ import com.jacqulin.gainly.core.designsystem.theme.WaterProgressBarColor
 import com.jacqulin.gainly.feature.history.presentation.components.ExpandableInfoRow
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import com.jacqulin.gainly.feature.history.presentation.sections.goals.GoalCard
-import com.jacqulin.gainly.feature.history.presentation.sections.workout.BalancedTrainingCards
 
 @Composable
 fun DayInfoSection(
@@ -110,9 +109,9 @@ fun DayInfoSection(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        BalancedTrainingCards(
-                            trainingCards = trainingCards
-                        )
+//                        BalancedTrainingCards(
+//                            trainingCards = trainingCards
+//                        )
                     }
                 }
             }

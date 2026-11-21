@@ -1,5 +1,12 @@
 package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,39 +25,47 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.theme.Black
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
+import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
+import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
+import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 
 @Composable
 fun WorkoutCard(
-    workoutrTitle: String,
+    workoutTitle: String,
     exercises: List<ExerciseInfoUi>,
-    onClick: () -> Unit
 ) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    val arrowRotation by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "arrowRotation"
+    )
+
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = onClick,
-                indication = null,
-                interactionSource = remember {
-                    MutableInteractionSource()
-                }
-            ),
+        modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(20.dp)
     ) {
         Column(
@@ -60,74 +75,97 @@ fun WorkoutCard(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { expanded = !expanded },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = workoutrTitle,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF202124)
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "${exercises.size} упражн.",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color(0xFF777777)
+                        text = workoutTitle,
+                        style = TextStyle(
+                            fontFamily = GoogleSansFontFamily,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
+                            lineHeight = 20.sp,
+                            color = Black
+                        )
                     )
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_arrow_right),
-                        contentDescription = null,
-                        tint = Color(0xFF777777),
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        text = "${exercises.size} упражнения",
+                        style = TextStyle(
+                            fontFamily = GoogleSansFontFamily,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 16.sp,
+                            color = GrayTextColor
+                        )
                     )
                 }
+
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_down),
+                    contentDescription = if (expanded) "Свернуть" else "Развернуть",
+                    tint = GrayIconColor,
+                    modifier = Modifier
+                        .size(22.dp)
+                        .graphicsLayer { rotationZ = arrowRotation }
+                )
             }
 
-            HorizontalDivider(color = Color(0xFFEEEEEE))
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(animationSpec = tween(220)) + fadeIn(tween(220)),
+                exit = shrinkVertically(animationSpec = tween(180)) + fadeOut(tween(180))
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    HorizontalDivider(color = LightGrayColor)
 
-            exercises.forEachIndexed { index, exercise ->
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = exercise.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF303030)
-                    )
-
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        exercise.sets.forEach { set ->
-                            Surface(
-                                color = Color(0xFFF3F4F6),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = if (set.isOwnWeight) "${set.reps} повт."
-                                    else "${set.reps} повт. × ${set.weight} кг",
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = Color(0xFF454545)
+                    exercises.forEachIndexed { index, exercise ->
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = exercise.title,
+                                style = TextStyle(
+                                    fontFamily = GoogleSansFontFamily,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    lineHeight = 16.sp,
+                                    color = Black
                                 )
+                            )
+
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                exercise.sets.forEach { set ->
+                                    Surface(
+                                        color = LightGrayColor,
+                                        shape = RoundedCornerShape(8.dp)
+                                    ) {
+                                        Text(
+                                            text = if (set.isOwnWeight) "${set.reps} повт."
+                                            else "${set.reps} повт. × ${set.weight} кг",
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = GrayTextColor
+                                        )
+                                    }
+                                }
                             }
                         }
-                    }
-                }
 
-                if (index != exercises.lastIndex) {
-                    HorizontalDivider(
-                        color = Color(0xFFF0F0F0)
-                    )
+                        if (index != exercises.lastIndex) {
+                            HorizontalDivider(color = LightGrayColor)
+                        }
+                    }
                 }
             }
         }
@@ -139,7 +177,7 @@ fun WorkoutCard(
 private fun WorkoutCardPreview() {
     GainlyTheme {
         WorkoutCard(
-            workoutrTitle = "Тренировка ног",
+            workoutTitle = "Тренировка ног",
             exercises = listOf(
                 ExerciseInfoUi(
                     title = "Приседания со штангой",
@@ -163,7 +201,6 @@ private fun WorkoutCardPreview() {
                     )
                 )
             ),
-            onClick = {}
         )
     }
 }

@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-//import com.jacqulin.gainly.feature.history.getMockTrainingCards
+import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
+import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import com.jacqulin.gainly.feature.history.presentation.sections.workout.TrainingSection
 
@@ -20,7 +23,6 @@ fun WorkoutsSection(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 10.dp)
                 .padding(
                     top = 20.dp,
                     bottom = 100.dp
@@ -36,13 +38,45 @@ fun WorkoutsSection(
         }
     }
 }
-//
-//@Preview
-//@Composable
-//fun WorkoutSectionPreview() {
-//    GainlyTheme {
-//        WorkoutsSection(
-////            workouts = getMockTrainingCards(LocalDate.now())
-//        )
-//    }
-//}
+
+@Preview
+@Composable
+fun WorkoutSectionPreview() {
+    GainlyTheme {
+        WorkoutsSection(
+            workouts = listOf(
+                WorkoutCardUi(
+                    id = "1",
+                    title = "Тренировка верхней части тела",
+                    date = "19.08.2008",
+                    exercises = listOf(
+                        ExerciseInfoUi(
+                            "Жим лёжа",
+                            listOf(
+                                SetInfoUi(12, 40, false),
+                                SetInfoUi(10, 50, false),
+                                SetInfoUi(8, 60, false)
+                            )
+                        ),
+                        ExerciseInfoUi(
+                            "Тяга штанги",
+                            listOf(
+                                SetInfoUi(12, 30, false),
+                                SetInfoUi(10, 40, false),
+                                SetInfoUi(10, 40, false)
+                            )
+                        ),
+                        ExerciseInfoUi(
+                            "Подтягивания",
+                            listOf(
+                                SetInfoUi(10, 1, isOwnWeight = true),
+                                SetInfoUi(8, 2, isOwnWeight = true),
+                                SetInfoUi(6, 3, isOwnWeight = true)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
+}
