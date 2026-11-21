@@ -1,3 +1,4 @@
+/*
 package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
 import androidx.compose.foundation.Image
@@ -39,12 +40,13 @@ import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
 import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
-import com.jacqulin.gainly.feature.history.presentation.model.WorkoutInfoUi
+import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
+import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 
 @Composable
 fun TrainingCard(
     modifier: Modifier = Modifier,
-    trainingInfoList: List<WorkoutInfoUi>
+    trainingInfoList: List<ExerciseInfoUi>
 ) {
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -167,23 +169,24 @@ fun TrainingCardPreview() {
         TrainingCard(
             modifier = Modifier.width(170.dp),
             trainingInfoList = listOf(
-                WorkoutInfoUi(
+                ExerciseInfoUi(
                     title = "Подтягивания",
-                    text = "4 × 10"
+                    sets = listOf(
+                        SetInfoUi(1, 10, false),
+                        SetInfoUi(3, 15, false),
+                        SetInfoUi(2, 20, false),
+                    )
                 ),
-                WorkoutInfoUi(
-                    title = "Отжимания",
-                    text = "4 × 15"
-                ),
-                WorkoutInfoUi(
-                    title = "Приседания",
-                    text = "smth"
-                ),
-                WorkoutInfoUi(
-                    title = "Жим",
-                    text = "smth"
+                ExerciseInfoUi(
+                    title = "Подтягивания",
+                    sets = listOf(
+                        SetInfoUi(1, 10, false),
+                        SetInfoUi(3, 15, false),
+                        SetInfoUi(2, 20, false),
+                    )
                 )
             )
         )
     }
 }
+*/
