@@ -1,11 +1,18 @@
-/*
 package com.jacqulin.gainly.core.util.errors
 
 import com.jacqulin.gainly.core.util.RootError
 
 sealed interface AppError: RootError {
 
-    enum class Network: AppError {
+    data class HttpError(val type: Http) : AppError
+    data class LocalInternetError(val type: LocalInternet) : AppError
+    data class LocalError(val type: Local) : AppError
+    data class GoogleError(val type: Google) : AppError
+
+    object Serialization : AppError
+    object Unknown : AppError
+
+    enum class Http {
         BAD_REQUEST,                      // 400
         UNAUTHORIZED,                     // 401
         PAYMENT_REQUIRED,                 // 402
@@ -29,13 +36,23 @@ sealed interface AppError: RootError {
         TOO_MANY_REQUESTS,                // 429
         SERVER_ERROR,                     // 5**
 
-        NO_INTERNET,
-        LOCAL_REQUEST_TIMEOUT,
-
-        SERIALIZATION,
-
         UNKNOWN
     }
 
-    object UnknownAppError : AppError
-}*/
+    enum class LocalInternet {
+        NO_INTERNET,
+        LOCAL_REQUEST_TIMEOUT
+    }
+
+    enum class Local {
+        TOKEN_NOT_FOUND,
+        INVALID_TOKEN_FORMAT,
+        STORAGE_ERROR
+    }
+
+    enum class Google {
+        NO_TOKEN,
+        GOOGLE_TOKEN_ERROR,
+        CANCELLED
+    }
+}

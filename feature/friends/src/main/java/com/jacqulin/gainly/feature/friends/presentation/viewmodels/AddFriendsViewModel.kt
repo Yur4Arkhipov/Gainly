@@ -7,6 +7,8 @@ import com.jacqulin.gainly.core.domain.usecase.friends.GetPendingFriendRequestsU
 import com.jacqulin.gainly.core.domain.usecase.friends.GetUsersUseCase
 import com.jacqulin.gainly.core.domain.usecase.friends.RespondToFriendRequestUseCase
 import com.jacqulin.gainly.core.domain.usecase.friends.SendFriendRequestUseCase
+import com.jacqulin.gainly.core.util.Result
+import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacqulin.gainly.feature.friends.presentation.model.AddFriendsEffect
 import com.jacqulin.gainly.feature.friends.presentation.model.AddFriendsEvent
 import com.jacqulin.gainly.feature.friends.presentation.model.AddFriendsUiState
@@ -15,10 +17,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -81,26 +81,32 @@ class AddFriendsViewModel @Inject constructor(
                 flow {
                     if (query.isBlank() || query.length < 2) {
                         emit(emptyList())
-                    } else {
-                        _uiState.update {
-                            it.copy(isSearching = true)
+                        return@flow
+                    }
+
+                    _uiState.update {
+                        it.copy(isSearching = true)
+                    }
+
+                    when (val result = getUsersUseCase(query)) {
+                        is Result.Success -> {
+                            emit(result.data.users)
+                            Log.d("AddFriendsViewModel", "Success: ${result.data}")
                         }
 
-                        val result = getUsersUseCase(query)
-                        emit(result.users)
-                    }
-                }.catch { exception ->
-                    _uiState.update {
-                        it.copy(
-                            searchResult = emptyList(),
-                            isSearching = false
-                        )
-                    }
+                        is Result.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    searchResult = emptyList(),
+                                    isSearching = false
+                                )
+                            }
 
-//                    val message = ErrorUiMapper.toMessage(result.error)
-//                    Log.e("Workout", "Failed to create workout: $message")
-//                    _uiState.value = content
-                    _effects.send(AddFriendsEffect.ShowSnackbar(exception.message ?: "Unknown error"))
+                            Log.d("AddFriendsViewModel", "Error: ${result.error}")
+                            val message = ErrorUiMapper.toMessage(result.error)
+                            _effects.send(AddFriendsEffect.ShowSnackbar(message))
+                        }
+                    }
                 }
             }
             .onEach { users ->
@@ -116,48 +122,46 @@ class AddFriendsViewModel @Inject constructor(
 
     private fun sendFriendRequest(username: String) {
         viewModelScope.launch {
-            val startThread = Thread.currentThread().name
-            Log.d("FRIEND_REQUEST", "[START] Поток: $startThread")
-
-            try {
-                delay(2000.milliseconds)
-
-                sendFriendRequestUseCase(username)
-                Log.d("FRIEND_REQUEST", "Friend request sent to $username")
-
-                _uiState.update { state ->
-                    state.copy(
-                        searchResult = state.searchResult.map { user ->
-                            if (user.username == username) {
-                                user.copy(isRequestSent = true)
-                            } else {
-                                user
+            when (val result = sendFriendRequestUseCase(username)) {
+                is Result.Success -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            searchResult = state.searchResult.map { user ->
+                                if (user.username == username) {
+                                    user.copy(isRequestSent = true)
+                                } else {
+                                    user
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
+
+                    _effects.send(AddFriendsEffect.ShowSnackbar("Заявка отправлена"))
                 }
 
-                _effects.send(AddFriendsEffect.ShowSnackbar("Заявка отправлена"))
-            } catch (e: Exception) {
-                Log.e("FRIEND_REQUEST", "Error sending friend request: $e")
-                _effects.send(AddFriendsEffect.ShowSnackbar(e.message ?: "Не удалось отправить заявку"))
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    _effects.send(AddFriendsEffect.ShowSnackbar(message))
+                }
             }
         }
     }
 
     private fun loadPendingRequests() {
         viewModelScope.launch {
-            try {
-                val users = getPendingFriendRequestsUseCase()
-                _uiState.update { it.copy(pendingUsers = users) }
-                Log.d("PENDING_REQUESTS", "Loaded pending requests: ${users.size}")
-            } catch (e: Exception) {
-                _effects.send(
-                    AddFriendsEffect.ShowSnackbar(
-                        e.message ?: "Не удалось загрузить заявки"
-                    )
-                )
-                Log.e("PENDING_REQUESTS", "Error loading pending requests: $e")
+            when (val result = getPendingFriendRequestsUseCase()) {
+                is Result.Success -> {
+                    val users = result.data
+
+                    _uiState.update {
+                        it.copy(pendingUsers = users)
+                    }
+                }
+
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    _effects.send(AddFriendsEffect.ShowSnackbar(message))
+                }
             }
         }
     }
@@ -168,33 +172,29 @@ class AddFriendsViewModel @Inject constructor(
         accept: Boolean
     ) {
         viewModelScope.launch {
-            try {
-                respondToFriendRequestUseCase(
-                    friendshipId = friendshipId,
-                    accept = accept
-                )
+            when (val result = respondToFriendRequestUseCase(friendshipId, accept)) {
+                is Result.Success -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            pendingUsers = state.pendingUsers.filter {
+                                it.username != username
+                            }
+                        )
+                    }
 
-                _uiState.update { state ->
-                    state.copy(
-                        pendingUsers = state.pendingUsers.filter {
-                            it.username != username
-                        }
-                    )
+                    val message = if (accept) {
+                        "Заявка от $username принята"
+                    } else {
+                        "Заявка от $username отклонена"
+                    }
+
+                    _effects.send(AddFriendsEffect.ShowSnackbar(message))
                 }
 
-                val message = if (accept) {
-                    "Заявка от $username принята"
-                } else {
-                    "Заявка от $username отклонена"
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+                    _effects.send(AddFriendsEffect.ShowSnackbar(message))
                 }
-
-                _effects.send(AddFriendsEffect.ShowSnackbar(message))
-            } catch (e: Exception) {
-                _effects.send(
-                    AddFriendsEffect.ShowSnackbar(
-                        e.message ?: "Не удалось обработать заявку"
-                    )
-                )
             }
         }
     }
