@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
 import com.jacqulin.gainly.feature.friends.presentation.components.FriendRow
@@ -54,17 +55,6 @@ fun FriendsScreen(
                 is FriendsEffect.ShowSnackbar ->  {
 
                 }
-//                is FriendsEffect.NavigateToFriendWorkouts -> {
-//                    onFriendClick(effect.friendId, effect.friendName)
-//                }
-
-//                is FriendsEffect.ShowSyncSuccess -> {
-//                    Toast.makeText(context, "Друзья синхронизированы", Toast.LENGTH_SHORT).show()
-//                }
-
-//                is FriendsEffect.ShowError -> {
-//                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-//                }
             }
         }
     }
@@ -136,7 +126,7 @@ fun FriendsScreen(
                             text = if (state.searchQuery.isBlank()) "Друзей нет" else "Никого не найдено",
                             style = TextStyle(
                                 fontFamily = GainlyFontFamily,
-                                color = TextBlackColor
+                                color = GrayTextColor
                             )
                         )
                     }
