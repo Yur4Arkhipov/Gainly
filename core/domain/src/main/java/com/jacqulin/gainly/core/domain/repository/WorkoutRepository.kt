@@ -3,8 +3,8 @@ package com.jacqulin.gainly.core.domain.repository
 import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
-import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.util.Result
+import com.jacqulin.gainly.core.util.errors.AppError
 import com.jacqulin.gainly.core.util.errors.WorkoutError
 
 interface WorkoutRepository {
@@ -22,11 +22,11 @@ interface WorkoutRepository {
 
     suspend fun getFriendWorkoutHistory(
         accessToken: String,
-        friendsname: String,
+        username: String,
         from: String,
         to: String,
         last: Int
-    ): Result<List<WorkoutListItem>, WorkoutError>
+    ): Result<List<Workout>, AppError>
 
     suspend fun getWorkoutById(
         accessToken: String,
