@@ -91,7 +91,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Версия 1.0.0",
+            text = "Версия 0.0.0",
             style = TextStyle(
                 fontFamily = GoogleSansFontFamily,
                 lineHeight = 15.sp,

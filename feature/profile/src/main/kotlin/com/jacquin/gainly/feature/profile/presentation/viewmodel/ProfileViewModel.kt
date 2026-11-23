@@ -9,6 +9,7 @@ import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
 import com.jacquin.gainly.feature.profile.presentation.model.ProfileEffect
 import com.jacquin.gainly.feature.profile.presentation.model.ProfileEvent
 import com.jacquin.gainly.feature.profile.presentation.model.ProfileUiState
+import com.jacqulin.gainly.core.domain.usecase.profile.GetUserProfileInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -22,12 +23,17 @@ import kotlinx.coroutines.launch
 class ProfileViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val clearTokensUseCase: ClearTokensUseCase,
+    private val getUserProfileInfoUseCase: GetUserProfileInfoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _effects = Channel<ProfileEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
+
+    init {
+        loadUserProfile()
+    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -49,6 +55,30 @@ class ProfileViewModel @Inject constructor(
                     clearTokensUseCase()
                     val message = ErrorUiMapper.toMessage(result.error)
                     _uiState.update { it.copy(isSigningOut = false, errorMessage = message) }
+                    _effects.send(ProfileEffect.ShowMessage(message))
+                }
+            }
+        }
+    }
+
+    private fun loadUserProfile() {
+        viewModelScope.launch {
+            when (val result = getUserProfileInfoUseCase()) {
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(username = result.data.nickname,)
+                    }
+                }
+
+                is Result.Error -> {
+                    val message = ErrorUiMapper.toMessage(result.error)
+
+                    _uiState.update {
+                        it.copy(
+                            errorMessage = message
+                        )
+                    }
+
                     _effects.send(ProfileEffect.ShowMessage(message))
                 }
             }
