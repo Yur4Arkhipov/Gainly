@@ -1,11 +1,11 @@
-package com.jacquin.gainly.feature.profile.presentation.navigation
+package com.jacquin.gainly.feature.profile.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.jacquin.gainly.feature.profile.presentation.ui.ProfileScreen
+import com.jacquin.gainly.feature.profile.presentation.screens.ProfileScreenRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,8 +19,8 @@ fun NavGraphBuilder.profileSection(
     profileDestinations: NavGraphBuilder.() -> Unit
 ) {
     navigation<ProfileBaseRoute>(startDestination = ProfileRoute) {
-        composable<ProfileRoute>() {
-            ProfileScreen()
+        composable<ProfileRoute> {
+            ProfileScreenRoute()
         }
         profileDestinations()
     }

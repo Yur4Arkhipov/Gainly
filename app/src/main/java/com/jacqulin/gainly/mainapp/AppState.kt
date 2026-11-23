@@ -12,7 +12,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.jacquin.gainly.feature.profile.presentation.navigation.navigateToProfile
+import com.jacquin.gainly.feature.profile.navigation.navigateToProfile
 import com.jacqulin.gainly.feature.friends.navigation.navigateToFriends
 import com.jacqulin.gainly.feature.history.navigation.navigateToHistory
 import com.jacqulin.gainly.feature.home.navigation.navigateToHome
