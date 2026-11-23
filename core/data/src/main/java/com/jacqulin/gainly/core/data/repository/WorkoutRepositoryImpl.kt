@@ -8,9 +8,9 @@ import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import com.jacqulin.gainly.core.domain.model.workout.Workout
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutById
 import com.jacqulin.gainly.core.domain.model.workout.WorkoutId
+import com.jacqulin.gainly.core.domain.model.workout.WorkoutListItem
 import com.jacqulin.gainly.core.domain.repository.WorkoutRepository
 import com.jacqulin.gainly.core.util.Result
-import com.jacqulin.gainly.core.util.errors.AppError
 import com.jacqulin.gainly.core.util.errors.ErrorHandler
 import com.jacqulin.gainly.core.util.errors.WorkoutError
 import kotlinx.coroutines.async
@@ -87,44 +87,26 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override suspend fun getFriendWorkoutHistory(
         accessToken: String,
-        username: String,
+        friendsname: String,
         from: String,
         to: String,
         last: Int
-    ): Result<List<Workout>, AppError> {
+    ): Result<List<WorkoutListItem>, WorkoutError> {
         return try {
             val response = workoutApiService.getFriendWorkoutHistory(
                 accessToken = accessToken,
-                friendsname = username,
+                friendsname = friendsname,
                 from = from,
                 to = to,
                 last = last
             )
             Log.d("WorkoutRepository", "Get friend workout history response: $response")
-            val workouts = coroutineScope {
-                response.map { workoutListItemDto ->
-                    async {
-                        val workoutListItem = workoutListItemDto.toDomain()
-                        val workoutById = workoutApiService.getWorkoutById(
-                            accessToken = accessToken,
-                            workoutId = workoutListItem.workoutId
-                        ).toDomain()
-                        Workout(
-                            date = workoutListItem.date,
-                            title = workoutListItem.title,
-                            exercises = workoutById.exercises
-                        )
-                    }
-                }.awaitAll()
-            }
+            val items = response.map { it.toDomain() }
 
-            Result.Success(workouts)
-
+            Result.Success(items)
         } catch (e: Throwable) {
-            if (e is CancellationException) throw e
-
             Log.d("WorkoutRepository", "Get friend workout history error: $e")
-            Result.Error(ErrorHandler.mapAppError(e))
+            Result.Error(ErrorHandler.mapWorkoutError(e))
         }
     }
 
