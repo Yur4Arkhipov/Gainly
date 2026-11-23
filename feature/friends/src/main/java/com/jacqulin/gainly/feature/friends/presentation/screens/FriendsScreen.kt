@@ -41,7 +41,7 @@ import com.jacqulin.gainly.feature.friends.presentation.viewmodels.FriendsViewMo
 fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
     onAddFriendsClick: () -> Unit,
-    onFriendClick: (friendId: String, friendName: String) -> Unit = { _, _ -> }
+    onFriendClick: (username: String) -> Unit = { }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -71,7 +71,7 @@ fun FriendsScreen(
     state: FriendsUiState,
     modifier: Modifier = Modifier,
     onEvent: (FriendsEvent) -> Unit,
-    onFriendClick: (friendId: String, friendName: String) -> Unit = { _, _ -> },
+    onFriendClick: (username: String) -> Unit = { }
 ) {
     Column(
         modifier = modifier
@@ -151,7 +151,7 @@ fun FriendsScreen(
                                 name = friend.username,
                                 isAddFriendsScreen = false,
                                 onFriendClick = {
-                                    onFriendClick(friend.userId, friend.username)
+                                    onFriendClick(friend.username)
                                 }
                             )
                         }

@@ -15,7 +15,7 @@ fun NavController.navigateToFriends(navOptions: NavOptions) = navigate(route = F
 
 fun NavGraphBuilder.friendsSection(
     onAddFriendsClick: () -> Unit,
-    onFriendClick: (friendId: String, friendName: String) -> Unit,
+    onFriendClick: (username: String) -> Unit,
     addFriendsDestination: NavGraphBuilder.() -> Unit
 ) {
     navigation<FriendsBaseRoute>(startDestination = FriendsRoute) {
