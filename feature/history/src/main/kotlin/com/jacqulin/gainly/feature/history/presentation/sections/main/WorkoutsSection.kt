@@ -25,6 +25,7 @@ fun WorkoutsSection(
     onChooseAnotherDay: () -> Unit,
     onTodayClick: () -> Unit,
     onRetry: () -> Unit,
+    onDeleteWorkout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -57,7 +58,8 @@ fun WorkoutsSection(
                         trainings = workoutsState.workouts,
                         selectedDate = selectedDate,
                         onChooseAnotherDay = onChooseAnotherDay,
-                        onTodayClick = onTodayClick
+                        onTodayClick = onTodayClick,
+                        onDeleteWorkout = onDeleteWorkout
                     )
                 }
 
@@ -115,7 +117,8 @@ fun WorkoutSectionPreview() {
             selectedDate = LocalDate.now(),
             onTodayClick = {},
             onChooseAnotherDay = {},
-            onRetry = {}
+            onRetry = {},
+            onDeleteWorkout = {}
         )
     }
 }

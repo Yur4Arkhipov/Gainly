@@ -1,7 +1,6 @@
 package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,7 +16,8 @@ fun TrainingSection(
     trainings: List<WorkoutCardUi>,
     selectedDate: LocalDate,
     onChooseAnotherDay: () -> Unit,
-    onTodayClick: () -> Unit
+    onTodayClick: () -> Unit,
+    onDeleteWorkout: () -> Unit = {}
 ) {
     if (trainings.isEmpty()) {
         EmptyTrainingsCard(
@@ -44,7 +44,8 @@ fun TrainingSection(
             ) { workout ->
                 WorkoutCard(
                     workoutTitle = workout.title,
-                    exercises = workout.exercises
+                    exercises = workout.exercises,
+                    onDeleteClick = onDeleteWorkout
                 )
             }
         }
