@@ -5,18 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.jacqulin.gainly.feature.friends.presentation.screens.FriendWorkoutsScreen
+import com.jacqulin.gainly.feature.friends.presentation.screens.FriendWorkoutsScreenRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FriendWorkoutsRoute(val friendId: String, val friendName: String)
+data class FriendWorkoutsRoute(val username: String)
 
 fun NavController.navigateToFriendWorkouts(
-    friendId: String,
-    friendName: String,
+    username: String,
     navOptions: NavOptions? = null
 ) = navigate(
-    route = FriendWorkoutsRoute(friendId = friendId, friendName = friendName),
+    route = FriendWorkoutsRoute(username = username),
     navOptions = navOptions
 )
 
@@ -25,9 +24,8 @@ fun NavGraphBuilder.friendWorkoutsScreen(
 ) {
     composable<FriendWorkoutsRoute> { entry ->
         val route = entry.toRoute<FriendWorkoutsRoute>()
-        FriendWorkoutsScreen(
-            friendId = route.friendId,
-            friendName = route.friendName,
+        FriendWorkoutsScreenRoute(
+            username = route.username,
             onBackClick = onBackClick
         )
     }
