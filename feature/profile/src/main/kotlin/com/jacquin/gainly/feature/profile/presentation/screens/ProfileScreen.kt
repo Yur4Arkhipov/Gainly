@@ -83,7 +83,9 @@ fun ProfileScreen(
 
         ExitButton(
             isSigningOut = state.isSigningOut,
-            onExit = { }
+            onExit = {
+                onEvent(ProfileEvent.SignOutClicked)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
