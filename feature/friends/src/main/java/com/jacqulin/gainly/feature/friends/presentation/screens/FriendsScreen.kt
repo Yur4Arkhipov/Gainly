@@ -1,4 +1,4 @@
-package com.jacqulin.gainly.feature.friends.ui
+package com.jacqulin.gainly.feature.friends.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,65 +22,56 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
+import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
 import com.jacqulin.gainly.core.designsystem.theme.TextBlackColor
 import com.jacqulin.gainly.core.domain.model.friends.FriendData
-import com.jacqulin.gainly.feature.friends.component.FriendRow
-import com.jacqulin.gainly.feature.friends.component.FriendsTopBar
-import com.jacqulin.gainly.feature.friends.viewmodel.FriendsViewModel
+import com.jacqulin.gainly.feature.friends.presentation.components.FriendRow
+import com.jacqulin.gainly.feature.friends.presentation.components.FriendsTopBar
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEffect
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEvent
+import com.jacqulin.gainly.feature.friends.presentation.model.FriendsUiState
+import com.jacqulin.gainly.feature.friends.presentation.viewmodels.FriendsViewModel
 
 @Composable
 fun FriendsScreen(
     viewModel: FriendsViewModel = hiltViewModel(),
     onAddFriendsClick: () -> Unit,
-    onFriendClick: (friendId: String, friendName: String) -> Unit = { _, _ -> }
+    onFriendClick: (username: String) -> Unit = { }
 ) {
-//    val context = LocalContext.current
-//    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val friends by viewModel.filteredFriends.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is FriendsEffect.NavigateToAddFriends -> {
+                    onAddFriendsClick()
+                }
 
-//    // Handle effects
-//    LaunchedEffect(Unit) {
-//        viewModel.effects.collect { effect ->
-//            when (effect) {
-//                is FriendsEffect.NavigateToFriendWorkouts -> {
-//                    onFriendClick(effect.friendId, effect.friendName)
-//                }
-//
-//                is FriendsEffect.ShowSyncSuccess -> {
-//                    Toast.makeText(context, "Друзья синхронизированы", Toast.LENGTH_SHORT).show()
-//                }
-//
-//                is FriendsEffect.ShowError -> {
-//                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
-//    }
+                is FriendsEffect.ShowSnackbar ->  {
+
+                }
+            }
+        }
+    }
 
     FriendsScreen(
-        searchQuery = searchQuery,
-        friends = friends,
-        onSearchQueryChange = viewModel::onSearchQueryChange,
-        onAddFriendsClick = onAddFriendsClick,
+        state = state,
+        onEvent = viewModel::onEvent,
         onFriendClick = onFriendClick,
     )
 }
 
 @Composable
 fun FriendsScreen(
-    searchQuery: String,
-    friends: List<FriendData>,
+    state: FriendsUiState,
     modifier: Modifier = Modifier,
-    onSearchQueryChange: (String) -> Unit,
-    onAddFriendsClick: () -> Unit,
-    onFriendClick: (friendId: String, friendName: String) -> Unit = { _, _ -> },
+    onEvent: (FriendsEvent) -> Unit,
+    onFriendClick: (username: String) -> Unit = { }
 ) {
     Column(
         modifier = modifier
@@ -99,9 +91,13 @@ fun FriendsScreen(
             ),
             showBackButton = false,
             showAddFriendsButton = true,
-            searchQuery = searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            onAddFriendsClick = onAddFriendsClick,
+            searchQuery = state.searchQuery,
+            onSearchQueryChange = { query ->
+                onEvent(FriendsEvent.SearchQueryChanged(query))
+            },
+            onAddFriendsClick = {
+                onEvent(FriendsEvent.AddFriendsClicked)
+            },
             onBackClick = { },
         )
 
@@ -111,7 +107,7 @@ fun FriendsScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 10.dp)
         ) {
             when {
 //                uiState.isSearching && uiState.friends.isEmpty() -> {
@@ -120,17 +116,17 @@ fun FriendsScreen(
 //                    )
 //                }
 
-                friends.isEmpty() -> {
+                state.friends.isEmpty() -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = if (searchQuery.isBlank()) "Друзей нет" else "Никого не найдено",
+                            text = if (state.searchQuery.isBlank()) "Друзей нет" else "Никого не найдено",
                             style = TextStyle(
                                 fontFamily = GainlyFontFamily,
-                                color = TextBlackColor
+                                color = GrayTextColor
                             )
                         )
                     }
@@ -150,12 +146,12 @@ fun FriendsScreen(
 //                                }
 //                            )
 //                        }
-                        items(friends) { friend ->
+                        items(state.friends) { friend ->
                             FriendRow(
                                 name = friend.username,
                                 isAddFriendsScreen = false,
                                 onFriendClick = {
-                                    onFriendClick(friend.userId, friend.username)
+                                    onFriendClick(friend.username)
                                 }
                             )
                         }
@@ -174,10 +170,8 @@ fun FriendsScreen(
 fun FriendsScreenEmptyPreview() {
     GainlyTheme {
         FriendsScreen(
-            searchQuery = "",
-            friends = emptyList(),
-            onSearchQueryChange = {},
-            onAddFriendsClick = {},
+            state = FriendsUiState(),
+            onEvent = {},
         )
     }
 }
@@ -190,14 +184,14 @@ fun FriendsScreenEmptyPreview() {
 fun FriendsScreenPreview() {
     GainlyTheme {
         FriendsScreen(
-            searchQuery = "",
-            friends = listOf(
-                FriendData(userId = "1", username = "Иван Иванов", registrationDate = ""),
-                FriendData(userId = "2", username = "Мария Петрова", registrationDate = ""),
-                FriendData(userId = "3", username = "Alex", registrationDate = ""),
+            state = FriendsUiState(
+                friends = listOf(
+                    FriendData(userId = "1", username = "Иван Иванов", registrationDate = ""),
+                    FriendData(userId = "2", username = "Мария Петрова", registrationDate = ""),
+                    FriendData(userId = "3", username = "Alex", registrationDate = ""),
+                ),
             ),
-            onSearchQueryChange = {},
-            onAddFriendsClick = {},
+            onEvent = {},
         )
     }
 }
@@ -210,10 +204,10 @@ fun FriendsScreenPreview() {
 fun FriendsScreenNoResultsPreview() {
     GainlyTheme {
         FriendsScreen(
-            searchQuery = "некто",
-            friends = emptyList(),
-            onSearchQueryChange = {},
-            onAddFriendsClick = {},
+            state = FriendsUiState(
+                searchQuery = "некто",
+            ),
+            onEvent = {},
         )
     }
 }

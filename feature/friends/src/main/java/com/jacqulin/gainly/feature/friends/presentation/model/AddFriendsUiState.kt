@@ -1,12 +1,12 @@
-package com.jacqulin.gainly.feature.friends.presentation.addfriends
+package com.jacqulin.gainly.feature.friends.presentation.model
 
 import com.jacqulin.gainly.core.domain.model.friends.UserData
 
 data class AddFriendsUiState(
     val searchQuery: String = "",
-    val searchResults: List<UserData> = emptyList(),
+    val searchResult: List<UserData> = emptyList(),
     val pendingUsers: List<UserData> = emptyList(),
-    val isLoading: Boolean = false,
     val isSearching: Boolean = false,
-    val errorMessage: String? = null
+//    val isLoading: Boolean = false,
+//    val errorMessage: String? = null
 )

@@ -32,8 +32,8 @@ fun MainNavHost(
 
         friendsSection(
             onAddFriendsClick = navController::navigateToAddFriends,
-            onFriendClick = { friendId, friendName ->
-                navController.navigateToFriendWorkouts(friendId, friendName)
+            onFriendClick = { username ->
+                navController.navigateToFriendWorkouts(username)
             }
         ) {
             addFriendsScreen(
