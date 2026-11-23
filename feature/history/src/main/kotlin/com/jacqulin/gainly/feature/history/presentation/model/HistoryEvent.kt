@@ -12,4 +12,8 @@ sealed interface HistoryEvent {
     data class RetryLoading(
         val date: LocalDate
     ) : HistoryEvent
+
+    data class DeleteWorkout(
+        val workoutId: String
+    ) : HistoryEvent
 }

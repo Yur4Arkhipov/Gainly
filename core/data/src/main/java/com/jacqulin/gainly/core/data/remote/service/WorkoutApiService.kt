@@ -4,7 +4,9 @@ import com.jacqulin.gainly.core.data.remote.dto.workout.CreateWorkoutRequestDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutIdDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutListItemDto
 import com.jacqulin.gainly.core.data.remote.dto.workout.WorkoutByIdDto
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -53,4 +55,10 @@ interface WorkoutApiService {
         @Header("Authorization") accessToken: String,
         @Path("workoutId") workoutId: String
     ): WorkoutByIdDto
+
+    @DELETE("workout/api/Workout/{workoutId}")
+    suspend fun deleteWorkoutById(
+        @Header("Authorization") accessToken: String,
+        @Path("workoutId") workoutId: String,
+    ): Response<Unit>
 }

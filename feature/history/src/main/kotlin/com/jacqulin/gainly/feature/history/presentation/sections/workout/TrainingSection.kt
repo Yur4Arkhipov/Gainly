@@ -17,7 +17,7 @@ fun TrainingSection(
     selectedDate: LocalDate,
     onChooseAnotherDay: () -> Unit,
     onTodayClick: () -> Unit,
-    onDeleteWorkout: () -> Unit = {}
+    onDeleteWorkout: (String) -> Unit
 ) {
     if (trainings.isEmpty()) {
         EmptyTrainingsCard(
@@ -45,7 +45,7 @@ fun TrainingSection(
                 WorkoutCard(
                     workoutTitle = workout.title,
                     exercises = workout.exercises,
-                    onDeleteClick = onDeleteWorkout
+                    onDeleteClick = { onDeleteWorkout(workout.id) }
                 )
             }
         }

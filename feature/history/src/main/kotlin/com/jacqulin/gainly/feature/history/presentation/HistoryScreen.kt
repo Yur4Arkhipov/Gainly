@@ -8,9 +8,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -19,9 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.theme.LightBlackTextColor
 import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
+import com.jacqulin.gainly.core.designsystem.theme.VeryLightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.White
 import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryEffect
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
@@ -41,10 +50,37 @@ fun HistoryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    HistoryScreen(
-        state = state,
-        onEvent = viewModel::handleEvent
-    )
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is HistoryEffect.ShowSnackbar ->  {
+                    snackbarHostState.showSnackbar(
+                        message = effect.message
+                    )
+                }
+            }
+        }
+    }
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = VeryLightGrayColor,
+                    contentColor = LightBlackTextColor,
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+        }
+    ) { innerPadding ->
+        HistoryScreen(
+            state = state,
+            modifier = Modifier.padding(innerPadding),
+            onEvent = viewModel::handleEvent
+        )
+    }
 }
 
 @Composable
@@ -108,10 +144,9 @@ fun HistoryScreen(
             onRetry = {
                 onEvent(HistoryEvent.RetryLoading(state.selectedDate))
             },
-            onDeleteWorkout = { }
-//            onDeleteWorkout = { workoutId ->
-//                onEvent(HistoryEvent.DeleteWorkout(workoutId))
-//            }
+            onDeleteWorkout = { workoutId ->
+                onEvent(HistoryEvent.DeleteWorkout(workoutId))
+            }
         )
     }
 

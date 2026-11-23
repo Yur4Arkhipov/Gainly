@@ -25,7 +25,7 @@ fun WorkoutsSection(
     onChooseAnotherDay: () -> Unit,
     onTodayClick: () -> Unit,
     onRetry: () -> Unit,
-    onDeleteWorkout: () -> Unit,
+    onDeleteWorkout: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(

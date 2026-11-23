@@ -2,10 +2,12 @@ package com.jacqulin.gainly.feature.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.gainly.core.domain.usecase.history.DeleteWorkoutByIdUseCase
 import com.jacqulin.gainly.core.domain.usecase.history.GenerateWeekDaysUseCase
 import com.jacqulin.gainly.core.domain.usecase.history.GetWorkoutsForDateUseCase
 import com.jacqulin.gainly.core.util.Result
 import com.jacqulin.gainly.core.util.errors.ErrorUiMapper
+import com.jacqulin.gainly.feature.history.presentation.model.HistoryEffect
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryEvent
 import com.jacqulin.gainly.feature.history.presentation.model.HistoryViewState
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutsUiState
@@ -13,9 +15,11 @@ import com.jacqulin.gainly.feature.history.presentation.model.toCardUi
 import com.jacqulin.gainly.feature.history.presentation.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -25,7 +29,8 @@ import kotlin.coroutines.cancellation.CancellationException
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val generateWeekDaysUseCase: GenerateWeekDaysUseCase,
-    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase
+    private val getWorkoutsForDateUseCase: GetWorkoutsForDateUseCase,
+    private val deleteWorkoutByIdUseCase: DeleteWorkoutByIdUseCase
 ) : ViewModel() {
 
     private val initialDate = LocalDate.now()
@@ -38,6 +43,9 @@ class HistoryViewModel @Inject constructor(
         )
     )
     val state: StateFlow<HistoryViewState> = _state.asStateFlow()
+
+    private val _effects = Channel<HistoryEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     init {
         fetchWorkoutsForDate(initialDate)
@@ -58,6 +66,10 @@ class HistoryViewModel @Inject constructor(
 
                 is HistoryEvent.RetryLoading -> {
                     fetchWorkoutsForDate(event.date)
+                }
+
+                is HistoryEvent.DeleteWorkout -> {
+                    deleteWorkout(event.workoutId)
                 }
             }
         }
@@ -108,6 +120,48 @@ class HistoryViewModel @Inject constructor(
                                 )
                             )
                         }
+                    }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _state.update {
+                    it.copy(
+                        workoutsState = WorkoutsUiState.Error(
+                            message = e.message ?: "Error fetching workouts"
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun deleteWorkout(workoutId: String) {
+        viewModelScope.launch {
+            try {
+                when (val result = deleteWorkoutByIdUseCase(workoutId)) {
+                    is Result.Success -> {
+                        _state.update { currentState ->
+                            val currentWorkoutsState = currentState.workoutsState
+
+                            if (currentWorkoutsState is WorkoutsUiState.Success) {
+                                currentState.copy(
+                                    workoutsState = currentWorkoutsState.copy(
+                                        workouts = currentWorkoutsState.workouts.filterNot {
+                                            it.id == workoutId
+                                        }
+                                    )
+                                )
+                            } else {
+                                currentState
+                            }
+                        }
+                        _effects.send(HistoryEffect.ShowSnackbar("Тренировка удалена"))
+                    }
+
+                    is Result.Error -> {
+                        val message = ErrorUiMapper.toMessage(result.error)
+                        _effects.send(HistoryEffect.ShowSnackbar(message))
                     }
                 }
             } catch (e: CancellationException) {

@@ -16,6 +16,7 @@ import com.jacqulin.gainly.core.util.errors.WorkoutError
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import retrofit2.HttpException
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -67,6 +68,7 @@ class WorkoutRepositoryImpl @Inject constructor(
                         val workoutById = workoutByIdDto.toDomain()
                         Log.d("WorkoutRepository", "workoutById: $workoutById")
                         Workout(
+                            id = workoutListItem.workoutId,
                             date = workoutListItem.date,
                             title = workoutListItem.title,
                             exercises = workoutById.exercises
@@ -144,6 +146,30 @@ class WorkoutRepositoryImpl @Inject constructor(
         } catch (e: Throwable) {
             Log.d("WorkoutRepository", "Get workout by id error: $e")
             Result.Error(ErrorHandler.mapWorkoutError(e))
+        }
+    }
+
+    override suspend fun deleteWorkout(
+        accessToken: String,
+        workoutId: String
+    ): Result<Unit, AppError> {
+        return try {
+            val response = workoutApiService.deleteWorkoutById(
+                accessToken = accessToken,
+                workoutId = workoutId
+            )
+
+            val result = if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(ErrorHandler.mapAppError(HttpException(response)))
+            }
+
+            result
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
         }
     }
 //

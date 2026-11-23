@@ -8,6 +8,7 @@ package com.jacqulin.gainly.core.domain.model.workout
  * @param exercises список упражнений
  */
 data class Workout(
+    val id: String = "",
     val date: String,
     val title: String,
     val exercises: List<Exercise>

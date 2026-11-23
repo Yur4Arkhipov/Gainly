@@ -1,7 +1,6 @@
 package com.jacqulin.gainly.feature.history.presentation.model
 
 import com.jacqulin.gainly.core.domain.model.workout.Workout
-import java.util.UUID
 
 data class WorkoutCardUi(
     val id: String,
@@ -12,7 +11,7 @@ data class WorkoutCardUi(
 
 fun Workout.toCardUi(): WorkoutCardUi {
     return WorkoutCardUi(
-        id = UUID.randomUUID().toString(),
+        id = id,
         title = title,
         date = date,
         exercises = exercises.map { exercise ->
