@@ -2,7 +2,11 @@ package com.jacqulin.gainly.feature.history.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,56 +62,55 @@ fun HistoryScreen(
         .getDisplayName(TextStyle.FULL_STANDALONE, russianLocale)
         .replaceFirstChar { it.titlecase(russianLocale) }
 
-    LazyColumn(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(White),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        overscrollEffect = null
     ) {
-        item {
-            HistoryTopBar(
-                modifier = Modifier.padding(horizontal = 10.dp)
-            )
-        }
+        HistoryTopBar(
+            modifier = Modifier
+                .padding(
+                    vertical = 10.dp,
+                    horizontal = 10.dp
+                ),
+        )
 
-        item {
-            CalendarSection(
-                days = state.calendarDays,
-                selectedDate = state.selectedDate,
-                month = month,
-                year = state.selectedDate.year.toString(),
-                modifier = Modifier.padding(horizontal = 10.dp),
-                onDateSelected = { date ->
-                    onEvent(HistoryEvent.DateSelected(date))
-                },
-                onMonthClick = { showDatePicker = true },
-                onTodayClick = {
-                    onEvent(HistoryEvent.TodayClicked)
-                }
-            )
-        }
+        CalendarSection(
+            days = state.calendarDays,
+            selectedDate = state.selectedDate,
+            month = month,
+            year = state.selectedDate.year.toString(),
+            modifier = Modifier.padding(horizontal = 10.dp),
+            onDateSelected = { date ->
+                onEvent(HistoryEvent.DateSelected(date))
+            },
+            onMonthClick = { showDatePicker = true },
+            onTodayClick = {
+                onEvent(HistoryEvent.TodayClicked)
+            }
+        )
 
-        item {
-            WorkoutsSection(
-                workoutsState = state.workoutsState,
-                selectedDate = state.selectedDate,
-                modifier = Modifier
-                    .fillParentMaxSize()
-                    .background(
-                        color = LightGrayColor,
-                        shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-                    )
-                    .padding(horizontal = 10.dp),
-                onTodayClick = {
-                    onEvent(HistoryEvent.TodayClicked)
-                },
-                onChooseAnotherDay = { showDatePicker = true },
-                onRetry = {
-                    onEvent(HistoryEvent.RetryLoading(state.selectedDate))
-                }
-            )
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        WorkoutsSection(
+            workoutsState = state.workoutsState,
+            selectedDate = state.selectedDate,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(
+                    color = LightGrayColor,
+                    shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+                )
+                .padding(horizontal = 10.dp),
+            onTodayClick = {
+                onEvent(HistoryEvent.TodayClicked)
+            },
+            onChooseAnotherDay = { showDatePicker = true },
+            onRetry = {
+                onEvent(HistoryEvent.RetryLoading(state.selectedDate))
+            }
+        )
     }
 
     if (showDatePicker) {
