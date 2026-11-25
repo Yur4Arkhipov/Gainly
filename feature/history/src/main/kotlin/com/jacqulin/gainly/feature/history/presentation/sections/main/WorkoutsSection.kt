@@ -34,8 +34,7 @@ fun WorkoutsSection(
         Column(
             modifier = Modifier
                 .padding(
-                    top = 20.dp,
-                    bottom = 100.dp
+                    top = 20.dp
                 )
         ) {
 //            GoalsSection()

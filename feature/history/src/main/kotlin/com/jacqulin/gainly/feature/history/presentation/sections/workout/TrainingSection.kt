@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.feature.history.presentation.sections.workout
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.extensions.fadeScrollableVerticalEdges
+import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBarScrollPadding
 import com.jacqulin.gainly.feature.history.presentation.model.WorkoutCardUi
 import java.time.LocalDate
 
@@ -30,6 +32,7 @@ fun TrainingSection(
 
         LazyColumn(
             state = listState,
+            contentPadding = PaddingValues(bottom = FloatingBottomBarScrollPadding),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             overscrollEffect = null,
             modifier = Modifier

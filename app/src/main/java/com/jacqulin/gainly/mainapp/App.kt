@@ -38,7 +38,7 @@ internal fun App(
         )
     }
 
-    Scaffold { paddingValues ->
+    Scaffold(modifier = modifier) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

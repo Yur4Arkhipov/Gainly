@@ -29,6 +29,7 @@ import com.jacquin.gainly.feature.profile.presentation.model.ProfileEvent
 import com.jacquin.gainly.feature.profile.presentation.model.ProfileUiState
 import com.jacquin.gainly.feature.profile.presentation.viewmodel.ProfileViewModel
 import com.jacqulin.gainly.core.designsystem.theme.GainlyTheme
+import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBarScrollPadding
 import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayBackgroundMain
 import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
@@ -63,11 +64,39 @@ fun ProfileScreen(
             .background(GrayBackgroundMain)
             .padding(horizontal = 10.dp)
             .verticalScroll(rememberScrollState())
+            .padding(bottom = FloatingBottomBarScrollPadding)
     ) {
         ProfileTopAppBar()
 
         UserCard(
             username = state.username,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsCard(
+            onAccountClick = {},
+            onNotificationClick = {},
+            onConfidentialityClick = {},
+            onHelpClick = {}
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsCard(
+            onAccountClick = {},
+            onNotificationClick = {},
+            onConfidentialityClick = {},
+            onHelpClick = {}
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsCard(
+            onAccountClick = {},
+            onNotificationClick = {},
+            onConfidentialityClick = {},
+            onHelpClick = {}
         )
 
         Spacer(modifier = Modifier.height(16.dp))
