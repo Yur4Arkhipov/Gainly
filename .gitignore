@@ -3,6 +3,7 @@ build
 .kotlin
 
 local.properties
+keystore.properties
 
 *.log
 
