@@ -80,34 +80,6 @@ fun ProfileScreen(
             onConfidentialityClick = {},
             onHelpClick = {}
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsCard(
-            onAccountClick = {},
-            onNotificationClick = {},
-            onConfidentialityClick = {},
-            onHelpClick = {}
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsCard(
-            onAccountClick = {},
-            onNotificationClick = {},
-            onConfidentialityClick = {},
-            onHelpClick = {}
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsCard(
-            onAccountClick = {},
-            onNotificationClick = {},
-            onConfidentialityClick = {},
-            onHelpClick = {}
-        )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         ExitButton(
