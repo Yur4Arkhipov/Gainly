@@ -93,7 +93,7 @@ class AppState(
             }
 
             when (topLevelDestination) {
-                TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
+                TopLevelDestination.HOME -> { }/*navController.navigateToHome(topLevelNavOptions)*/
                 TopLevelDestination.FRIENDS -> navController.navigateToFriends(topLevelNavOptions)
                 TopLevelDestination.HISTORY -> navController.navigateToHistory(topLevelNavOptions)
                 TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
