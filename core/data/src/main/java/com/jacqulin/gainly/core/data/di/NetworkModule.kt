@@ -1,5 +1,7 @@
 package com.jacqulin.gainly.core.data.di
 
+import android.util.Log
+import com.auth0.android.jwt.BuildConfig
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.AvatarApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
@@ -26,22 +28,22 @@ object NetworkModule {
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor { message ->
-            android.util.Log.d("Workout", message)
+            Log.d("Gainly", message)
         }.apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+            redactHeader("Authorization")
         }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient =
+    fun provideOkHttpClient(
+        logging: HttpLoggingInterceptor
+    ): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain
-                    .request()
-                    .newBuilder()
-                    .build()
-                chain.proceed(request)
-            }
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)

@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retrofit uses Gson reflection for these API models. Keep their field names
+# stable so release obfuscation does not change the JSON sent to the backend.
+-keep class com.jacqulin.gainly.core.data.remote.dto.** { *; }
+-keep class com.jacqulin.gainly.core.domain.model.** { *; }
