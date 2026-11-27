@@ -10,6 +10,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,6 +49,9 @@ import com.jacqulin.gainly.core.designsystem.theme.GoogleSansFontFamily
 import com.jacqulin.gainly.core.designsystem.theme.GrayIconColor
 import com.jacqulin.gainly.core.designsystem.theme.GrayTextColor
 import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
+import com.jacqulin.gainly.core.designsystem.theme.Red
+import com.jacqulin.gainly.feature.history.presentation.components.AppDropdownMenu
+import com.jacqulin.gainly.feature.history.presentation.components.AppDropdownMenuItem
 import com.jacqulin.gainly.feature.history.presentation.model.ExerciseInfoUi
 import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 
@@ -54,8 +59,10 @@ import com.jacqulin.gainly.feature.history.presentation.model.SetInfoUi
 fun WorkoutCard(
     workoutTitle: String,
     exercises: List<ExerciseInfoUi>,
+    onDeleteClick: () -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    var menuExpanded by remember { mutableStateOf(false) }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
@@ -110,14 +117,46 @@ fun WorkoutCard(
                     )
                 }
 
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_down),
-                    contentDescription = if (expanded) "Свернуть" else "Развернуть",
-                    tint = GrayIconColor,
-                    modifier = Modifier
-                        .size(22.dp)
-                        .graphicsLayer { rotationZ = arrowRotation }
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow_down),
+                        contentDescription = if (expanded) "Свернуть" else "Развернуть",
+                        tint = GrayIconColor,
+                        modifier = Modifier
+                            .size(22.dp)
+                            .graphicsLayer { rotationZ = arrowRotation }
+                    )
+
+                    Box {
+                        IconButton(
+                            onClick = { menuExpanded = true },
+                            modifier = Modifier.size(22.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_more),
+                                contentDescription = "Дополнительные действия",
+                                tint = GrayIconColor
+                            )
+                        }
+
+                        AppDropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+                            AppDropdownMenuItem(
+                                text = "Удалить тренировку",
+                                textColor = Red,
+                                onClick = {
+                                    menuExpanded = false
+                                    onDeleteClick()
+                                }
+                            )
+                        }
+                    }
+                }
             }
 
             AnimatedVisibility(
@@ -201,6 +240,7 @@ private fun WorkoutCardPreview() {
                     )
                 )
             ),
+            onDeleteClick = {}
         )
     }
 }

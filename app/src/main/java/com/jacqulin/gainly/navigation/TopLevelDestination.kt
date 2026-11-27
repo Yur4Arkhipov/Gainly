@@ -1,7 +1,7 @@
 package com.jacqulin.gainly.navigation
 
-import com.jacquin.gainly.feature.profile.presentation.navigation.ProfileBaseRoute
-import com.jacquin.gainly.feature.profile.presentation.navigation.ProfileRoute
+import com.jacquin.gainly.feature.profile.navigation.ProfileBaseRoute
+import com.jacquin.gainly.feature.profile.navigation.ProfileRoute
 import com.jacqulin.gainly.core.designsystem.icon.AppIcons
 import com.jacqulin.gainly.feature.friends.navigation.FriendsBaseRoute
 import com.jacqulin.gainly.feature.friends.navigation.FriendsRoute

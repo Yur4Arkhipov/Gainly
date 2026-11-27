@@ -4,6 +4,7 @@ import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.AvatarApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
 import com.jacqulin.gainly.core.data.remote.service.HealthApiService
+import com.jacqulin.gainly.core.data.remote.service.UserApiService
 import com.jacqulin.gainly.core.data.remote.service.WorkoutApiService
 import dagger.Module
 import dagger.Provides
@@ -92,5 +93,10 @@ object NetworkModule {
         @Named("AvatarRetrofit") retrofit: Retrofit
     ): AvatarApiService {
         return retrofit.create(AvatarApiService::class.java)
+    }
+
+    @Provides
+    fun provideUserApiService(retrofit: Retrofit): UserApiService {
+        return retrofit.create(UserApiService::class.java)
     }
 }

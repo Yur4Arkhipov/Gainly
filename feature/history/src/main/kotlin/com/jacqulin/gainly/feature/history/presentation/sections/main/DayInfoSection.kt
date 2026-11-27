@@ -3,6 +3,7 @@ package com.jacqulin.gainly.feature.history.presentation.sections.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.R
+import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBarScrollPadding
 import com.jacqulin.gainly.core.designsystem.theme.CaloriesProgressBarColor
 import com.jacqulin.gainly.core.designsystem.theme.LightGrayColor
 import com.jacqulin.gainly.core.designsystem.theme.StepsProgressBarColor
@@ -41,12 +43,12 @@ fun DayInfoSection(
             )
     ) {
         LazyColumn(
+            contentPadding = PaddingValues(bottom = FloatingBottomBarScrollPadding),
             modifier = Modifier
                 .padding(
                     start = 12.dp,
                     end = 12.dp,
-                    top = 16.dp,
-                    bottom = 100.dp
+                    top = 16.dp
                 )
         ) {
             item {

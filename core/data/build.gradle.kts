@@ -35,6 +35,7 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":core:util"))
+    implementation(project(":core:model"))
 
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)

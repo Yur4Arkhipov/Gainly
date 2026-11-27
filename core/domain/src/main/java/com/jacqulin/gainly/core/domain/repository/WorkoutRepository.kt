@@ -32,4 +32,9 @@ interface WorkoutRepository {
         accessToken: String,
         workoutId: String
     ): Result<WorkoutById, WorkoutError>
+
+    suspend fun deleteWorkout(
+        accessToken: String,
+        workoutId: String
+    ): Result<Unit, AppError>
 }
