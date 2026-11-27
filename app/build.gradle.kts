@@ -1,3 +1,30 @@
+import java.util.Properties
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        load(keystorePropertiesFile.inputStream())
+    }
+}
+
+fun getSigningProperty(name: String): String? {
+    return providers.environmentVariable(name).orNull
+        ?: keystoreProperties.getProperty(name)
+}
+
+val releaseStoreFile = getSigningProperty("RELEASE_STORE_FILE")
+val releaseStorePassword = getSigningProperty("RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = getSigningProperty("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = getSigningProperty("RELEASE_KEY_PASSWORD")
+
+val hasReleaseSigningConfig = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword
+).all { !it.isNullOrBlank() }
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -13,28 +40,52 @@ android {
     defaultConfig {
         applicationId = "com.jacqulin.gainly"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+    signingConfigs {
+        if (hasReleaseSigningConfig) {
+            create("release") {
+                storeFile = file(releaseStoreFile!!)
+                storePassword = releaseStorePassword!!
+                keyAlias = releaseKeyAlias!!
+                keyPassword = releaseKeyPassword!!
+            }
         }
     }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
+
+        release {
+            isDebuggable = false
+            isProfileable = true
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+
+            optimization {
+                enable = true
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
 
         isCoreLibraryDesugaringEnabled = true
     }
+
     buildFeatures {
         compose = true
     }
