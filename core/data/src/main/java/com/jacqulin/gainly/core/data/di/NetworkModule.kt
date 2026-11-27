@@ -1,6 +1,7 @@
 package com.jacqulin.gainly.core.data.di
 
 import android.util.Log
+import com.auth0.android.jwt.BuildConfig
 import com.jacqulin.gainly.core.data.remote.service.AuthApiService
 import com.jacqulin.gainly.core.data.remote.service.AvatarApiService
 import com.jacqulin.gainly.core.data.remote.service.FriendsApiService
@@ -29,7 +30,11 @@ object NetworkModule {
         HttpLoggingInterceptor { message ->
             Log.d("Gainly", message)
         }.apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
             redactHeader("Authorization")
         }
 

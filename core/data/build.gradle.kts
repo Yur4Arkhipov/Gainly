@@ -7,7 +7,11 @@ plugins {
 
 android {
     namespace = "com.jacqulin.gainly.core.data"
-    compileSdk = 35
+    compileSdk = 37
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         minSdk = 24

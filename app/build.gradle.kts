@@ -70,6 +70,11 @@ android {
             isDebuggable = false
             isProfileable = true
 
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
             check(hasReleaseSigningConfig) {
                 """
                 Release signing configuration is missing.
