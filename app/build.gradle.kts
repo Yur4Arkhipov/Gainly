@@ -69,9 +69,15 @@ android {
         release {
             isDebuggable = false
             isProfileable = true
-            if (hasReleaseSigningConfig) {
-                signingConfig = signingConfigs.getByName("release")
+
+            check(hasReleaseSigningConfig) {
+                """
+                Release signing configuration is missing.
+                Check keystore.properties or RELEASE_* environment variables.
+                """.trimIndent()
             }
+
+            signingConfig = signingConfigs.getByName("release")
 
             optimization {
                 enable = true
