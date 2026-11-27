@@ -9,7 +9,7 @@ import com.jacqulin.gainly.core.util.errors.AppError
 import kotlinx.coroutines.flow.Flow
 
 interface FriendsRepository {
-    suspend fun getFriends(accessToken: String): FriendsData
+    suspend fun getFriends(accessToken: String): Result<FriendsData, AppError>
 
     suspend fun getUsers(
         accessToken: String,

@@ -25,9 +25,13 @@ class FriendsRepositoryImpl(
     private val friendDao: FriendDao
 ) : FriendsRepository {
 
-    override suspend fun getFriends(accessToken: String): FriendsData {
-        val response = api.getFriends("Bearer $accessToken")
-        return response.toFriendsData()
+    override suspend fun getFriends(accessToken: String): Result<FriendsData, AppError> {
+        return try {
+            val response = api.getFriends("Bearer $accessToken")
+            Result.Success(response.toFriendsData())
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
+        }
     }
 
     override suspend fun getUsers(accessToken: String, nickname: String): Result<UsersData, AppError> {

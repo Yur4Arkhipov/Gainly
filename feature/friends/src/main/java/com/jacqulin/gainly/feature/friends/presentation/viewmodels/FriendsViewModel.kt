@@ -2,6 +2,7 @@ package com.jacqulin.gainly.feature.friends.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jacqulin.gainly.core.domain.usecase.friends.GetFriendsUseCase
 import com.jacqulin.gainly.core.domain.usecase.friends.ObserveFriendsUseCase
 import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEffect
 import com.jacqulin.gainly.feature.friends.presentation.model.FriendsEvent
@@ -23,10 +24,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import com.jacqulin.gainly.core.util.Result
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
     private val observeFriendsUseCase: ObserveFriendsUseCase,
+    private val getFriendsUseCase: GetFriendsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FriendsUiState())
@@ -36,7 +39,8 @@ class FriendsViewModel @Inject constructor(
     val effects = _effects.receiveAsFlow()
 
     init {
-        observeFriends()
+//        observeFriends()
+        loadFriends()
     }
 
     fun onEvent(event: FriendsEvent) {
@@ -69,6 +73,19 @@ class FriendsViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun loadFriends() {
+        viewModelScope.launch {
+            when (val result = getFriendsUseCase()) {
+                is Result.Success -> {
+                    _uiState.update { it.copy(friends = result.data.friends) }
+                }
+                is Result.Error -> {
+                    // Error loading friends
+                }
+            }
+        }
     }
 
     private fun navigateToAddFriends() {
