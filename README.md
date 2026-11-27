@@ -7,6 +7,7 @@ Screenshots: https://disk.yandex.ru/d/RsZZASFFON8Vsg
 
 **Gainly** is an Android application designed to help users track their workouts, monitor their progress, and stay connected with their friends through fitness.
 
+
 The project is built as a **multi-module Android application** with a clear separation between application, feature, and core modules. The current codebase includes authentication, onboarding and friends features, while the project continues to evolve.
 
 ## Features
