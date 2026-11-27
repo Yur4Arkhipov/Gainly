@@ -119,6 +119,8 @@ val LightAuthButtonTextColor = Color(0xFFFFFFFF)
 
 val BottomSheetContainerColor = Color(0xFFF3F2F8)
 
+val LightGrayColor = Color(0xFFF3F2F8)
+
 val WorkoutColors = listOf(
     Color(0xFFA287F9),
     Color(0xFFC37BFE),
@@ -136,7 +138,7 @@ val WorkoutColors = listOf(
 
 val SaveWorkoutButtonContainerColor = Color(0xFF99BBFE)
 val SelectedAddWorkoutItem = Color(0xFF99BBFE)
-val UnselectedAddWorkoutItem = Color(0xFFE5E5EA)
+val UnselectedAddWorkoutItem = Color(0xFFF3F3F6)
 
 val UncheckedSwitchTrackColor = Color(0xFFD3D3D3)
 
@@ -148,12 +150,34 @@ val SelectedToRemoveBlue = Color(0xFF2196F3)
 val TextBlackColor = Color(0xFF1C1C0D)
 
 val BadgeColor = Color(0xFFE85451)
-val GrayBackgroundMain = Color(0xFFF3F2F8)
-val GrayIconColor = Color(0xFF717171)
 val SearchFieldTextColor = Color(0x87000000)
 val GreenCheckmark = Color(0xFF34C759)
 val RedCheckmark = Color(0xFFFF383C)
-val  BottomNavBarContainer = Color(0xFFFFFFFF)
+val BottomNavBarContainer = Color(0xFFE2E8FF)
 val BottomNavBarAddButtonContainer = Color(0xFF99BBFE)
 val SelectedBottomBarItem = Color(0xFF99BBFE)
 val UnselectedBottomBarItem = Color(0xFFADA4A5)
+
+val CaloriesProgressBarColor = Color(0xFFFFCC00)
+val StepsProgressBarColor = Color(0xFF34C759)
+val WaterProgressBarColor = Color(0xFF25C0EF)
+
+val GrayColor = Color(0xFF3E3E3F)
+
+
+
+
+
+
+val PrimaryBlue = Color(0xFF99BBFE)
+val GrayBackgroundMain = Color(0xFFF3F2F8)
+val GrayIconColor = Color(0xFF717171)
+val LightBlackTextColor = Color(0xFF343434)
+val GrayTextColor = Color(0xFF717171)
+val LightGrayTextColor = Color(0xFF8E8E93)
+val BlueWorkoutColor = Color(0xFF505b92)
+val VeryLightGrayColor = Color(0xFFF3F3F6)
+val LightRedColor = Color(0xFFEF5350)
+val PinkColor = Color(0xFFFF6B70)
+val OrangeColor = Color(0xFFFFB86A)
+val BlackColor = Color(0xFF17171C)

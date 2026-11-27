@@ -20,19 +20,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.R
 import com.jacqulin.gainly.core.designsystem.theme.BottomNavBarAddButtonContainer
 import com.jacqulin.gainly.core.designsystem.theme.BottomNavBarContainer
 import com.jacqulin.gainly.core.designsystem.theme.SelectedBottomBarItem
 import com.jacqulin.gainly.core.designsystem.theme.UnselectedBottomBarItem
+import com.jacqulin.gainly.core.designsystem.theme.White
+
+/** Extra scrollable space needed to move the last item above the floating bar. */
+val FloatingBottomBarScrollPadding = 84.dp
 
 data class BottomBarItem(
     val icon: Painter,
@@ -50,9 +54,9 @@ fun FloatingBottomBar(
     NavigationBar(
         modifier = modifier
             .clip(RoundedCornerShape(30.dp))
-            .height(80.dp)
+            .height(64.dp)
             .widthIn(max = 400.dp),
-        containerColor = BottomNavBarContainer.copy(alpha = 0.9f),
+        containerColor = BottomNavBarContainer.copy(alpha = 0.96f),
     ) {
         val centerIndex = items.size / 2
         items.forEachIndexed { index, item ->
@@ -73,7 +77,7 @@ fun FloatingBottomBar(
                         Icon(
                             painter = painterResource(R.drawable.ic_add),
                             contentDescription = "Add",
-                            tint = BottomNavBarContainer
+                            tint = White
                         )
                     }
                 }
@@ -92,7 +96,7 @@ fun FloatingBottomBar(
 private fun BottomBarNavigationItem(
     item: BottomBarItem
 ) {
-    val offsetY by animateDpAsState(
+    val offsetY = animateDpAsState(
         targetValue = if (item.selected) (-4).dp else 0.dp,
         label = "offset"
     )
@@ -113,7 +117,9 @@ private fun BottomBarNavigationItem(
             contentDescription = item.contentDescription,
             tint = if (item.selected) SelectedBottomBarItem
                 else UnselectedBottomBarItem,
-            modifier = Modifier.offset(y = offsetY)
+            modifier = Modifier.offset {
+                IntOffset(x = 0, y = offsetY.value.roundToPx())
+            }
         )
 
         AnimatedVisibility(item.selected) {

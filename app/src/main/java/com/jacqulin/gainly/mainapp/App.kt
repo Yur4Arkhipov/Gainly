@@ -3,7 +3,9 @@ package com.jacqulin.gainly.mainapp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.jacqulin.gainly.core.designsystem.component.BottomBarItem
 import com.jacqulin.gainly.core.designsystem.component.FloatingBottomBar
-import com.jacqulin.gainly.feature.workout.ui.AddWorkoutBottomSheet
+import com.jacqulin.gainly.feature.workout.navigation.navigateToCreateWorkout
 import com.jacqulin.gainly.navigation.MainNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +38,7 @@ internal fun App(
         )
     }
 
-    Scaffold { paddingValues ->
+    Scaffold(modifier = modifier) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,13 +48,18 @@ internal fun App(
                     start = paddingValues.calculateStartPadding(LocalLayoutDirection.current)/* + 12.dp*/,
                     end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) /*+ 12.dp*/
                 )
+                .consumeWindowInsets(paddingValues)
+                .imePadding()
         ) {
-            MainNavHost(appState = appState)
+            MainNavHost(
+                appState = appState,
+                modifier = Modifier.fillMaxSize()
+            )
 
             if (appState.currentTopLevelDestination != null) {
                 FloatingBottomBar(
                     items = bottomBarItems,
-                    onAddClick =  { appState.showAddWorkoutSheet() },
+                    onAddClick = { appState.navController.navigateToCreateWorkout() },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 20.dp, vertical = 4.dp)
@@ -60,11 +67,5 @@ internal fun App(
                 )
             }
         }
-    }
-
-    if (appState.showAddWorkoutSheet) {
-        AddWorkoutBottomSheet(
-            onDismiss = { appState.showAddWorkoutSheet = false }
-        )
     }
 }

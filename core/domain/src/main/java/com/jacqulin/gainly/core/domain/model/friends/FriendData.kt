@@ -4,4 +4,5 @@ data class FriendData(
     val userId: String,
     val username: String,
     val registrationDate: String,
+    val avatarUrl: String? = null
 )

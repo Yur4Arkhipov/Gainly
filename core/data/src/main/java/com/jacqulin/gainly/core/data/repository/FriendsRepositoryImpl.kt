@@ -1,5 +1,6 @@
 package com.jacqulin.gainly.core.data.repository
 
+import android.util.Log
 import com.jacqulin.gainly.core.data.mappers.toUsersData
 import com.jacqulin.gainly.core.data.local.dao.FriendDao
 import com.jacqulin.gainly.core.data.local.entity.FriendEntity
@@ -12,6 +13,9 @@ import com.jacqulin.gainly.core.domain.model.friends.FriendsData
 import com.jacqulin.gainly.core.domain.model.friends.PendingUsersData
 import com.jacqulin.gainly.core.domain.model.friends.UsersData
 import com.jacqulin.gainly.core.domain.repository.FriendsRepository
+import com.jacqulin.gainly.core.util.Result
+import com.jacqulin.gainly.core.util.errors.AppError
+import com.jacqulin.gainly.core.util.errors.ErrorHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.collections.map
@@ -26,43 +30,53 @@ class FriendsRepositoryImpl(
         return response.toFriendsData()
     }
 
-    override suspend fun getUsers(accessToken: String, nickname: String): UsersData {
-        val response = api.getUsers(
-            accessToken = "Bearer $accessToken",
-            nickname = nickname
-        )
-        return response.toUsersData()
+    override suspend fun getUsers(accessToken: String, nickname: String): Result<UsersData, AppError> {
+        return try {
+            val response = api.getUsers(
+                accessToken = "Bearer $accessToken",
+                nickname = nickname
+            )
+            Result.Success(response.toUsersData())
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
+        }
     }
 
-    override suspend fun sendFriendship(accessToken: String, nickname: String) {
-        api.sendFriendshipRequest(
-            accessToken = "Bearer $accessToken",
-            nickname = nickname
-        )
+    override suspend fun sendFriendship(accessToken: String, nickname: String): Result<Unit, AppError> {
+        return try {
+            api.sendFriendshipRequest(
+                accessToken = "Bearer $accessToken",
+                nickname = nickname
+            )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
+        }
     }
 
-    override suspend fun getPendingUsers(accessToken: String): PendingUsersData {
-        val response = api.getPendingUsers("Bearer $accessToken")
-        return PendingUsersData(
-            pendingUsers = response.map { it.toDomain() }
-        )
+    override suspend fun getPendingUsers(accessToken: String): Result<PendingUsersData, AppError> {
+        return try {
+            val response = api.getPendingUsers("Bearer $accessToken")
+            Result.Success(PendingUsersData(pendingUsers = response.map { it.toDomain() }))
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
+        }
     }
 
     override suspend fun respondForPendingUser(
         accessToken: String,
         friendshipId: String,
         accept: Boolean
-    ) {
-        api.respondForPendingUser(
-            accessToken = "Bearer $accessToken",
-            friendshipId = friendshipId,
-            accept = accept
-        )
-    }
-
-    override fun searchFriendsLocal(query: String): Flow<List<FriendData>> {
-        return friendDao.searchFriends(query).map { list ->
-            list.map { it.toDomain() }
+    ): Result<Unit, AppError> {
+        return try {
+            api.respondForPendingUser(
+                accessToken = "Bearer $accessToken",
+                friendshipId = friendshipId,
+                accept = accept
+            )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(ErrorHandler.mapAppError(e))
         }
     }
 
@@ -77,8 +91,11 @@ class FriendsRepositoryImpl(
         friendDao.insertFriends(entities)
     }
 
-    override fun observeFriendsLocal(): Flow<List<FriendData>> {
-        return friendDao.observeFriends().map { entities ->
+    // Offline-first method
+
+    override fun observeFriends(query: String): Flow<List<FriendData>> {
+        Log.d("FriendsRepository", "observeFriends called")
+        return friendDao.observeFriends(query).map { entities ->
             entities.map { it.toDomain() }
         }
     }

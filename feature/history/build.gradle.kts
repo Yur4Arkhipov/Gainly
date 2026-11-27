@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -9,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.jacqulin.gainly.feature.history"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24
@@ -33,18 +32,14 @@ android {
 
         isCoreLibraryDesugaringEnabled = true
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
+    implementation(project(":core:model"))
     implementation(project(":core:util"))
-
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -57,7 +52,6 @@ dependencies {
     // Hilt, hilt navigation
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    debugImplementation(libs.androidx.compose.ui.tooling)
     ksp(libs.hilt.android.compiler)
 
     // Compose navigation
@@ -65,4 +59,12 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Calendar
+    implementation(libs.calendar)
+
+    // Desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
