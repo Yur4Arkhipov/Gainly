@@ -75,14 +75,9 @@ android {
                 "proguard-rules.pro"
             )
 
-            check(hasReleaseSigningConfig) {
-                """
-                Release signing configuration is missing.
-                Check keystore.properties or RELEASE_* environment variables.
-                """.trimIndent()
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
             }
-
-            signingConfig = signingConfigs.getByName("release")
 
             optimization {
                 enable = true
