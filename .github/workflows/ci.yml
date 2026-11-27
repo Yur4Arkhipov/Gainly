@@ -35,4 +35,4 @@ jobs:
           cache-provider: basic
 
       - name: Build Debug
-        run: ./gradlew :app:assembleDebug
+        run: bash gradlew :app:assembleDebug
